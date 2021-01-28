@@ -1,0 +1,31 @@
+Package: hourglass
+Title: This Package Provides Iterative Visualizations of Annotated Numeric Data
+Version: 0.0.0.9000
+Authors@R: person("Kazeera", "Aliar", , "kazeeraaliar@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: This package allows creation of a dataset list object (with numeric matrix, row and column annotations)
+    and iteratively creates plots into directories for each comparison specified. Plot functions can also be used seperately, similar to ggpubr.
+License: `use_mit_license()`, `use_gpl3_license()` or friends to
+    pick a license
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.1
+Depends:
+    R (>= 3.5.0)
+Imports:
+    ggplot2,
+    ggpubr,
+    ggsignif,
+    reshape2,
+    pheatmap,
+    RColorBrewer,
+    scales,
+    corrplot,
+    viridis,
+    psych,
+    plyr,
+    dplyr,
+    ComplexHeatmap,
+    gtools,
+    survival,
+    survminer
