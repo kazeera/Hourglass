@@ -3,7 +3,7 @@
 #' @inheritParams run_comparisons ds,rowAnns,colAnns
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @export
-run_paired_analysis <- function(ds, rowAnns, colAnns, out_dir = ".") {
+run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".") {
   # Get data frame with individual pairs
   ds_sub <- get_paired_df(ds, rowAnns[1])
   # Get color palette for row annotations
@@ -84,7 +84,7 @@ get_paired_df <- function(ds, rowAnn1, pair_id = 1) {
   colnames(avg_df)[1:2] <- rowAnns
 
   # Print
-  print(sprintf("Subset data only to 2+ cores that belong to same patient. 
+  print(sprintf("Subset data only to 2+ cores that belong to same patient.
                 Average across same %s for each patient.
                 Cores dropped from %s to %s for %s unique %ss.", rowAnn1, nrow(df), nrow(avg_df), length(unique(avg_df[, 1])), pair_id))
 

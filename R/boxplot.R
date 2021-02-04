@@ -6,7 +6,7 @@
 #' @param out_dir The output directory where the plots will be saved, default is current working directory.
 #' @param make.overview.boxplot,make.indiv.boxplot Logical indicating which types of boxplots to create
 #' @export
-run_boxplot_analysis <- function(ds, rowAnns, colAnns, out_dir = ".", make.overview.boxplot = T, make.indiv.boxplot = T) {
+run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.overview.boxplot = T, make.indiv.boxplot = T) {
   if (is.null(ds$comparison)) {
     ds$comparison <- "Comparison"
   }

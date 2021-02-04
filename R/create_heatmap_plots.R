@@ -6,7 +6,7 @@
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
 #' @param out_dir The output directory where the plots will be saved, default is current working directory.
 #' @export
-create_heatmap_plots <- function(ds, rowAnns = c(1, NA), colAnns = c(1, NA), out_dir = ".", labels = "Sub1") {
+create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = "Sub1") {
   # Create folder
   out_dir <- create_folder(sprintf("%s/%s", out_dir, paste(labels, collapse = "_")))
 
@@ -86,7 +86,7 @@ create_heatmap_plots <- function(ds, rowAnns = c(1, NA), colAnns = c(1, NA), out
 #' @param make.heatmap,make.corrplot,make.overview.corrscatt,make.indiv.corrscatt,make.barplot,make.indiv.boxplot,make.overview.boxplot,make.FC.pval.plot Logicals indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.
 #' @param clust_row,clust_col Logicals indicating whether to cluster rows and columns in heatmap.
 #' @export
-create_heatmap_plots_helper <- function(ds, rowAnns = c(1, NA), colAnns = 1:2, out_dir = ".", labels = "", pal = NA, clust_row = F, clust_col = F,
+create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = "", pal = NA, clust_row = F, clust_col = F,
                                         make.heatmap = F, make.corrplot = F, make.overview.corrscatt = F, make.indiv.corrscatt = F,
                                         make.barplot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.FC.pval.plot = T) {
   # If there are no stains or rows to plot, return incomplete

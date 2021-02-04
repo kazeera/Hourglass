@@ -11,13 +11,9 @@
 #' @param ds.imp A dataset object similar to ds with imputed or another transformation values.
 #' @param customAn A list of 2 data frames for plotting specific rows and columns. @seealso customAn read in using \code{\link{import_custom_analysis_file}}, see description of file.
 #' @export
-run_comparisons <- function(ds, rowAnns, colAnns, heatmap_folder = ".", boxplot_folder = ".", run = list(), ds.imp = NULL, customAn = NULL) {
+run_comparisons <- function(ds, rowAnns, colAnns = NA, heatmap_folder = ".", boxplot_folder = ".", run = list(), ds.imp = NULL, customAn = NULL) {
   # Make comparison label which will be the main out directory
-  if (!any(c(is.null(run$EXC_HRD), is.null(run$EXC_NEO)))) {
-    current_comparison <- get_out_dir(current_dir = rowAnns[1], rowAnn2 = rowAnns[2], EXC_HRD = run$EXC_HRD, EXC_NEO = run$EXC_NEO)
-  } else {
-    current_comparison <- get_out_dir(rowAnns[1], rowAnns[2])
-  }
+  current_comparison <- get_out_dir(current_dir = rowAnns[1], rowAnn2 = rowAnns[2], EXC_HRD = isTRUE(run$EXC_HRD), EXC_NEO = isTRUE(run$EXC_NEO))
   ds$comparison <- current_comparison
 
   # If name is NULL, redirect all output to home

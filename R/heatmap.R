@@ -2,7 +2,7 @@
 #'
 #' @inheritParams run_comparisons ds,rowAnns,colAnns,heatmap_folder,customAn
 #' @export
-run_heatmap_analysis <- function(ds, rowAnns = c(1, NA), colAnns = NA, heatmap_folder = ".", customAn = NULL) {
+run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder = ".", customAn = NULL) {
   # Analysis 1: Make heatmaps for all parameters and stains
   if (all(!is.na(colAnns))) {
     # Create a directory in each comparison folder
