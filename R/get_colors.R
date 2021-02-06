@@ -108,6 +108,7 @@ get_element_colors <- function(v, colRamp, rearr = F) {
 #' @return A vector with color names from unique groups in data frame
 #' @export
 get_ann_colors <- function(df, ann_cols, pal = "") {
+  ann_cols <- ann_cols[ann_cols %in% colnames(df)]
   pal2 <- lapply(ann_cols, function(c) {
     elem <- unique(df[, c])
     # If any colors exist in palette

@@ -326,10 +326,15 @@ as_numeric_factor <- function(x) {
 #'
 #' @param ann_df A data frame with row names
 #' @param anns Column names in ann_df desired in output
-#' @return The data frame, ann_df, with columns subsetted to names specified by anns
+#' @return The data frame, ann_df, with columns subsetted to names specified by anns or NA if
 #' @examples
 #' reform_ann_df(DNase, "conc")
 reform_ann_df <- function(ann_df, anns) {
+  found <- anns %in% colnames(ann_df)
+  # Return NA if all annotations are not found in column names
+  if(isTRUE(all(is.na(anns) |!found)))
+    return(NA)
+  anns <- anns[found]
   ann_df2 <-
     # only annotation columns that are not NA
     ann_df[, anns[!is.na(anns)]] %>%

@@ -152,6 +152,7 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
 
     # Font size
     if (x >= 10) font_size <- 10
+    if (x >= 50) font_size <- 5
 
     # Plot
     # Create the heatmap
@@ -205,9 +206,11 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
       )
 
     if (save.to.file) {
+      # Graphing params
+      file_h <- (length(unique(mat2$Var2)) + 7) / 4 + 2 # file width
       # Print to file
       filename <- sprintf("%s/%s_corrplot.pdf", out_dir, paste(labels, collapse = "_"))
-      ggsave(filename, plot = p, width = 7.5, height = 7.5)
+      ggsave(filename, plot = p, width = file_h, height = file_h, units = "cm", limitsize = F)
     } else {
       # Print to image panel
       print(p)

@@ -25,10 +25,10 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
     tryCatch(
       {
         create_heatmap_plots_helper(ds, rowAnns, colAnns, out_dir, labels, pal,
-          clust_row = T,
-          make.corrplot = T, make.overview.corrscatt = T,
-          make.heatmap = T, make.barplot = T,
-          make.indiv.boxplot = T, make.overview.boxplot = T
+                                    clust_row = T,
+                                    make.corrplot = T, make.overview.corrscatt = T,
+                                    make.heatmap = T, make.barplot = T,
+                                    make.indiv.boxplot = T, make.overview.boxplot = T
         )
       },
       error = function(err) {
@@ -42,8 +42,8 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
       {
         # 1) Run all cores with NAs, unclustered
         create_heatmap_plots_helper(ds, rowAnns, colAnns, out_dir, labels, pal,
-          make.heatmap = T, make.barplot = T,
-          make.indiv.boxplot = T, make.overview.boxplot = T
+                                    make.heatmap = T, make.barplot = T,
+                                    make.indiv.boxplot = T, make.overview.boxplot = T
         )
       },
       error = function(err) {
@@ -63,10 +63,10 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
 
           # Run complete cores, clustered
           create_heatmap_plots_helper(ds_comp, rowAnns, colAnns, sub_out_dir,
-            labels = c(labels, "complete"), pal, clust_row = T,
-            make.corrplot = T, make.overview.corrscatt = T,
-            make.heatmap = T, make.barplot = T,
-            make.indiv.boxplot = T, make.overview.boxplot = T
+                                      labels = c(labels, "complete"), pal, clust_row = T,
+                                      make.corrplot = T, make.overview.corrscatt = T,
+                                      make.heatmap = T, make.barplot = T,
+                                      make.indiv.boxplot = T, make.overview.boxplot = T
           )
         }
       },
@@ -78,7 +78,6 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
   turn_off_null_devices()
 }
 
-
 #' Create heatmap plots helper
 #'
 #' @inheritParams create_heatmap_plots ds,rowAnns,colAnns,labels
@@ -86,6 +85,7 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
 #' @param make.heatmap,make.corrplot,make.overview.corrscatt,make.indiv.corrscatt,make.barplot,make.indiv.boxplot,make.overview.boxplot,make.FC.pval.plot Logicals indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.
 #' @param clust_row,clust_col Logicals indicating whether to cluster rows and columns in heatmap.
 #' @export
+#' @importFrom reshape2
 create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = "", pal = NA, clust_row = F, clust_col = F,
                                         make.heatmap = F, make.corrplot = F, make.overview.corrscatt = F, make.indiv.corrscatt = F,
                                         make.barplot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.FC.pval.plot = T) {
@@ -95,7 +95,11 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
   }
 
   # First rename columns
-  colnames(ds$vals) <- ds$colAnn[, colAnns[2]]
+  if(all(is.na(colAnns))){
+    colnames(ds$vals) <- get_nth_part(colnames(ds$vals), "_", 1)
+  } else{
+    colnames(ds$vals) <- ds$colAnn[, colAnns[2]]
+  }
 
   # - 1st df: col1 = rowAnn1, cols2:n = values
   # Make the first column the main row annotation/stratification variable
@@ -192,7 +196,7 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
     colnames(df)[1] <- rowAnns[2]
   }
   # Wide to long data format
-  df2 <- reshape2::melt(df)
+  df2 <- melt(df) # reshape2
 
   ## Make overview boxplots
   if (make.overview.boxplot) {
@@ -230,14 +234,14 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
       }
       # y-axis label
       # ylab <- ifelse(length(labels) == 1, labels, "")
-      ylab <- ds$colAnn[ds$colAnn[, colAnns[2]] == v, colAnns[1]][1]
-
+      ylab <- ifelse(all(is.na(colAnns)), "",
+                     ds$colAnn[ds$colAnn[, colAnns[2]] == v, colAnns[1]][1])
       # Plot
       tryCatch(
         {
           plot_indiv_boxplot(df3,
-            labels = c(labels, v), out_dir, color_pal = pal, font_size = 30,
-            xlab = rowAnns[1], ylab = ylab, rowAnns = rowAnns, save.to.file = F
+                             labels = c(labels, v), out_dir, color_pal = pal, font_size = 30,
+                             xlab = rowAnns[1], ylab = ylab, rowAnns = rowAnns, save.to.file = F
           )
         },
         error = function(err) {
@@ -248,34 +252,54 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
     dev.off()
   }
 
-  # 3rd -
-  # Remove some rows with NAs to plot heatmaps with NA
-  # ds <- subset_dataset(ds, rows_to_keep = has_at.least_n.vals(ds$vals, "row", 3), cols_to_keep = has_at.least_n.vals(ds$vals, "column", 3))
-  # Order rows
-  row_order <- sort_dataframe(ds$rowAnn, "row", rowAnns[1]) %>%
-    rownames()
-  ds <- sort_dataset(ds, row_order = row_order)
-
-  if ("PAL_SCAFF" %in% ls(envir = .GlobalEnv)) { # TODO remove  = previous & length(colAnns) > 2) {
-    # colAnns <- colAnns[-c(1:2)] #TODO remove = previous
-    colAnns <- colAnns[colAnns != "Stain"]
-  }
-  # Get annotations colors
-  ann_colors <- NA
-  tryCatch(
-    {
-      ann_colors <- c(get_ann_colors(ds$rowAnn, rowAnns[!is.na(rowAnns)], pal), get_ann_colors(ds$colAnn, colAnns, pal))
-    },
-    error = function(err) {
-      print(sprintf("%s", err))
-    }
-  )
-
-  # Make annotation column
-  ann_col <- reform_ann_df(ds$colAnn, colAnns)
-  rownames(ann_col) <- colnames(ds$vals) <- make.unique(colnames(ds$vals))
   ## Make heatmap
   if (make.heatmap) {
+
+    ## Heatmaps annotations
+    if ("PAL_SCAFF" %in% ls(envir = .GlobalEnv)) { # TODO remove  = previous & length(colAnns) > 2) {
+      # colAnns <- colAnns[-c(1:2)] #TODO remove = previous
+      colAnns <- colAnns[!colAnns %in% c("Stain", "Gene")]
+    }
+    # Get annotations colors
+    ann_colors <- NA
+    tryCatch(
+      {
+        ann_colors <- c(get_ann_colors(ds$rowAnn, rowAnns[!is.na(rowAnns)], pal))
+        ann_colors <- c(ann_colors, get_ann_colors(ds$colAnn, colAnns, pal))
+      },
+      error = function(err) {
+        print(sprintf("%s", err))
+      }
+    )
+
+    # Order rows
+    row_order <- sort_dataframe(ds$rowAnn, "row", rowAnns[1]) %>%
+      rownames()
+    ds <- sort_dataset(ds, row_order = row_order)
+    #  Order columns
+    tryCatch(
+      {
+        col_order <- sort_dataframe(ds$colAnn, "column", colAnns[1]) %>%
+          rownames()
+        ds <- sort_dataset(ds, col_order = col_order)
+      },
+      error = function(err) {
+        print(sprintf("%s", err))
+      }
+    )
+
+    # Make annotation column
+    ann_col <- NA
+    tryCatch(
+      {
+        ann_col <- reform_ann_df(ds$colAnn, colAnns)
+        rownames(ann_col) <- colnames(ds$vals) <- make.unique(colnames(ds$vals))
+      },
+      error = function(err) {
+        print(sprintf("%s", err))
+      })
+
+    # Heatmap 1 - sorted, unclustered
     tryCatch(
       {
         plot_heatmap(
@@ -297,9 +321,21 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
 
     # Make "unclustered" heatmap    # cluster_within rowAnn1
     if (isTRUE(clust_row)) {
-      library(ComplexHeatmap)
+      # Cluster rows
       dend_row <- cluster_within_group(t(ds$vals), factor(ds$rowAnn[, rowAnns[1]]))
       hclust_row <- as.hclust(dend_row)
+
+      # Cluster columns
+      hclust_col <- clust_row
+      tryCatch(
+        {
+          dend_col <- cluster_within_group(ds$vals, factor(ds$colAnn[, colAnns[1]]))
+          hclust_col <- as.hclust(dend_col)
+        },
+        error = function(err) {
+          print(sprintf("%s", err))
+        })
+
       tryCatch(
         { # Get the new df and ann_row
           plot_heatmap(
@@ -311,7 +347,7 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
             out_dir = out_dir,
             labels = c(labels, "2"),
             clust_row = hclust_row,
-            clust_col = T
+            clust_col = hclust_col
           )
         },
         error = function(err) {

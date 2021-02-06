@@ -92,6 +92,6 @@ plot_indiv_corrscatt <- function(df, rowAnn_col = 1, cor.method = "spearman", ou
       cor.coef = TRUE, cor.method = cor.method, title = sprintf("%s-%s, %s", v1, v2, label),
       xlab = v1, ylab = v2
     )
-    ggsave(sprintf("%s/%s.%s_pearson_corr_regression2.png", out_dir, v1, v2), plot = p)
+    ggsave(sprintf("%s/%s.%s_%s_corr_regression2.png", out_dir, v1, v2, cor.method), plot = p)
   })
 }

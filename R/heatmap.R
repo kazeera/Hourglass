@@ -61,8 +61,8 @@ run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder =
 
           # Check whether any colann1/colann2 combo is duplicated, e.g. TIMP1-Pos.Pix.Perc shows up in more than one place
           # Prevents error: duplication leads to incorrect dimensions for colAnn
-          dup <- duplicated(customAn$values[rows_customAn, c(colAnn2, colAnn1_custom)])
-          rows_customAn <- rows_customAn & !dup
+          dup <- duplicated(customAn$values[, c(colAnn2, colAnn1_custom)])
+          rows_customAn <- !dup & rows_customAn
 
           # Subset to columns in column annotation of interest
           cols_to_keep <- interaction(ds$colAnn[, c(colAnn2, colAnn1)]) %in%
@@ -74,17 +74,19 @@ run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder =
           ds_sub <- subset_dataset(ds, cols_to_keep = cols_to_keep)
 
           # Prevents error: column order of ds$vals and ds$colAnn are not the same
-          colnames(ds_sub$vals) <- paste(ds_sub$colAnn[, colAnn2], ds_sub$colAnn[, colAnn1], sep = "_")
-          # Make unique column to merge by
-          df <- reform_ann_df(customAn$values[rows_customAn, ], new_colAnns)
-          df$MergeID <- paste(customAn$values[rows_customAn, colAnn2], customAn$values[rows_customAn, colAnn1_custom], sep = "_")
-          ds_sub$colAnn$MergeID <- paste(ds_sub$colAnn[, colAnn2], ds_sub$colAnn[, colAnn1], sep = "_")
+          if(any(rownames(ds_sub$colAnn) != colnames(ds_sub$vals))){
+            colnames(ds_sub$vals) <- paste(ds_sub$colAnn[, colAnn2], ds_sub$colAnn[, colAnn1], sep = "_")
+            # Make unique column to merge by
+            df <- reform_ann_df(customAn$values[rows_customAn, ], new_colAnns)
+            df$MergeID <- paste(customAn$values[rows_customAn, colAnn2], customAn$values[rows_customAn, colAnn1_custom], sep = "_")
+            ds_sub$colAnn$MergeID <- paste(ds_sub$colAnn[, colAnn2], ds_sub$colAnn[, colAnn1], sep = "_")
 
-          # Merge with annotations from values Excel sheet
-          ds_sub$colAnn <- merge(x = ds_sub$colAnn, y = df[c("MergeID", new_colAnns)], by = "MergeID")
-          # Rename rows
-          rownames(ds_sub$colAnn) <- ds_sub$colAnn$MergeID
-          ds_sub <- sort_dataset(ds_sub, col_order = colnames(ds_sub$vals))
+            # Merge with annotations from values Excel sheet
+            ds_sub$colAnn <- merge(x = ds_sub$colAnn, y = df[c("MergeID", new_colAnns)], by = "MergeID")
+            # Rename rows
+            rownames(ds_sub$colAnn) <- ds_sub$colAnn$MergeID
+            ds_sub <- sort_dataset(ds_sub, col_order = colnames(ds_sub$vals))
+          }
 
           # Create plots
           create_heatmap_plots(ds_sub, rowAnns, colAnns, out_dir, labels = c(customAn_name))
@@ -129,7 +131,7 @@ run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder =
 #' @param ... Additional plotting parameters. Parameters passed to pheatmap, see ?pheatmap.
 #' @export
 plot_heatmap <- function(mat, ann_row = NA, ann_col = NA, ann_colors = NA, plot_title = "", out_dir = ".", labels = "",
-                         clust_row = F, clust_col = F, log10 = F, z_score = F, man_scale = T, man_scale_range = c(-2, 2), scale_func = F, col.or.row = 2, pheatmap_scale = "none",
+                         clust_row = F, clust_col = F, fontsize_col = 5, log10 = F, z_score = F, man_scale = T, man_scale_range = c(-2, 2), scale_func = F, col.or.row = 2, pheatmap_scale = "none",
                          clustering_distance_rows = "euclidean", clustering_distance_cols = "euclidean", clustering_method = "complete",
                          show_colnames = T, show_rownames = F, pal_brew = "RdBu", border_color = NA, ...) {
   # Perform log10
@@ -169,7 +171,7 @@ plot_heatmap <- function(mat, ann_row = NA, ann_col = NA, ann_colors = NA, plot_
   if (isTRUE(man_scale)) {
     # Scale each column (stain) so range is forced between 2 values {-4, 4}
     mat <- apply(mat, col.or.row, function(x) {
-      scales::rescale(x, to = man_scale_range)
+      scales::rescale(x, to = man_scale_range) # scales pkg
     })
   }
   if (isFALSE(clust_row)) {
@@ -182,25 +184,29 @@ plot_heatmap <- function(mat, ann_row = NA, ann_col = NA, ann_colors = NA, plot_
   # Make heatmap
   tryCatch(
     {
-      pheatmap(mat,
-        scale = pheatmap_scale,
-        show_rownames = show_rownames,
-        show_colnames = show_colnames,
-        color = pal_grad,
-        cluster_rows = clust_row,
-        cluster_cols = clust_col,
-        clustering_distance_rows = clustering_distance_rows,
-        clustering_distance_cols = clustering_distance_cols,
-        clustering_method = clustering_method,
-        annotation_row = ann_row,
-        annotation_col = ann_col,
-        annotation_colors = ann_colors,
-        main = plot_title,
-        na_col = "black",
-        border_color = border_color,
-        filename = sprintf("%s/%s_heatmap.pdf", out_dir, paste(labels, collapse = "_")),
-        ...
+      # Make heatmap
+      p <- pheatmap::pheatmap(mat,
+                    scale = pheatmap_scale,
+                    show_rownames = show_rownames,
+                    show_colnames = show_colnames,
+                    fontsize_col = fontsize_col,
+                    color = pal_grad,
+                    cluster_rows = clust_row,
+                    cluster_cols = clust_col,
+                    clustering_distance_rows = clustering_distance_rows,
+                    clustering_distance_cols = clustering_distance_cols,
+                    clustering_method = clustering_method,
+                    annotation_row = ann_row,
+                    annotation_col = ann_col,
+                    annotation_colors = ann_colors,
+                    main = plot_title,
+                    na_col = "black",
+                    border_color = border_color
       )
+      # Print to file
+      pdf(sprintf("%s/%s_heatmap.pdf", out_dir, paste(labels, collapse = "_"))) #file
+      print(p)
+      dev.off()
     },
     error = function(err) {
       ## do something with 'err', then maybe throw it again stop(err)

@@ -6,11 +6,11 @@
 #' @param parameters Group names or parameters in colAnns[1] that required its own barplot
 #' @param out_dir The output directory where the plots will be saved, default is current working directory.
 #' @export
-run_discrete_barplot_analysis <- function(ds, rowAnn1, colAnns, parameters = "", out_dir = ".") {
+run_discrete_barplot_analysis <- function(ds, rowAnn1=2, colAnns=NA, parameters = "", out_dir = ".") {
   if (is.numeric(rowAnn1)) {
     rowAnn1 <- colnames(df)[rowAnn1]
   }
-
+  if(is.na(colAnns)) return()
   for (parameter in parameters) {
     # Define columns of interest if parameter matches
     keep_cols <- ds$colAnn[, colAnns[1]] == parameter # names

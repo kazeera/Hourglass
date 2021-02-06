@@ -274,7 +274,9 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
 
   # Save to file
   if (save.to.file) {
-    ggsave(device = "pdf", filename = sprintf("%s/%s_pval_FC_grid%s.pdf", out_dir, plot_title, ifelse(apply_scale_colFC, "_scaled", "")), plot = p) # , height = nrow(df)*0.6, width = 4)
+    # Graphing params
+    file_h <- (length(unique(df$Var)) + 7) / 4 + 2 # file width
+    ggsave(device = "pdf", height = file_h, limitsize = F, filename = sprintf("%s/%s_pval_FC_grid%s.pdf", out_dir, plot_title, ifelse(apply_scale_colFC, "_scaled", "")), plot = p) # , height = nrow(df)*0.6, width = 4)
   } else {
     print(p)
   }
