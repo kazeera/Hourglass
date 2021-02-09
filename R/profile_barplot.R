@@ -134,7 +134,7 @@ plot_profile_barplot <- function(df2, pos = "stack", var_colors = NA, out_dir = 
           axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), # increase space between x axis title and labels
           axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
           # legend
-          legend.text = element_text(colour = "black", size = font_size/3, face = "bold"),
+          legend.text = element_text(colour = "black", size = font_size / 3, face = "bold"),
           legend.title = element_blank(), # element_text(colour = "black", size = 7, face = "bold"),
           # legend.position="bottom",
           legend.key.size = unit(1, "line")

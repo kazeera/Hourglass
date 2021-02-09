@@ -74,7 +74,7 @@ run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder =
           ds_sub <- subset_dataset(ds, cols_to_keep = cols_to_keep)
 
           # Prevents error: column order of ds$vals and ds$colAnn are not the same
-          if(any(rownames(ds_sub$colAnn) != colnames(ds_sub$vals))){
+          if (any(rownames(ds_sub$colAnn) != colnames(ds_sub$vals))) {
             colnames(ds_sub$vals) <- paste(ds_sub$colAnn[, colAnn2], ds_sub$colAnn[, colAnn1], sep = "_")
             # Make unique column to merge by
             df <- reform_ann_df(customAn$values[rows_customAn, ], new_colAnns)
@@ -186,25 +186,25 @@ plot_heatmap <- function(mat, ann_row = NA, ann_col = NA, ann_colors = NA, plot_
     {
       # Make heatmap
       p <- pheatmap::pheatmap(mat,
-                    scale = pheatmap_scale,
-                    show_rownames = show_rownames,
-                    show_colnames = show_colnames,
-                    fontsize_col = fontsize_col,
-                    color = pal_grad,
-                    cluster_rows = clust_row,
-                    cluster_cols = clust_col,
-                    clustering_distance_rows = clustering_distance_rows,
-                    clustering_distance_cols = clustering_distance_cols,
-                    clustering_method = clustering_method,
-                    annotation_row = ann_row,
-                    annotation_col = ann_col,
-                    annotation_colors = ann_colors,
-                    main = plot_title,
-                    na_col = "black",
-                    border_color = border_color
+        scale = pheatmap_scale,
+        show_rownames = show_rownames,
+        show_colnames = show_colnames,
+        fontsize_col = fontsize_col,
+        color = pal_grad,
+        cluster_rows = clust_row,
+        cluster_cols = clust_col,
+        clustering_distance_rows = clustering_distance_rows,
+        clustering_distance_cols = clustering_distance_cols,
+        clustering_method = clustering_method,
+        annotation_row = ann_row,
+        annotation_col = ann_col,
+        annotation_colors = ann_colors,
+        main = plot_title,
+        na_col = "black",
+        border_color = border_color
       )
       # Print to file
-      pdf(sprintf("%s/%s_heatmap.pdf", out_dir, paste(labels, collapse = "_"))) #file
+      pdf(sprintf("%s/%s_heatmap.pdf", out_dir, paste(labels, collapse = "_"))) # file
       print(p)
       dev.off()
     },

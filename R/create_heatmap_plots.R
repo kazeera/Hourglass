@@ -25,10 +25,10 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
     tryCatch(
       {
         create_heatmap_plots_helper(ds, rowAnns, colAnns, out_dir, labels, pal,
-                                    clust_row = T,
-                                    make.corrplot = T, make.overview.corrscatt = T,
-                                    make.heatmap = T, make.barplot = T,
-                                    make.indiv.boxplot = T, make.overview.boxplot = T
+          clust_row = T,
+          make.corrplot = T, make.overview.corrscatt = T,
+          make.heatmap = T, make.barplot = T,
+          make.indiv.boxplot = T, make.overview.boxplot = T
         )
       },
       error = function(err) {
@@ -42,8 +42,8 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
       {
         # 1) Run all cores with NAs, unclustered
         create_heatmap_plots_helper(ds, rowAnns, colAnns, out_dir, labels, pal,
-                                    make.heatmap = T, make.barplot = T,
-                                    make.indiv.boxplot = T, make.overview.boxplot = T
+          make.heatmap = T, make.barplot = T,
+          make.indiv.boxplot = T, make.overview.boxplot = T
         )
       },
       error = function(err) {
@@ -63,10 +63,10 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
 
           # Run complete cores, clustered
           create_heatmap_plots_helper(ds_comp, rowAnns, colAnns, sub_out_dir,
-                                      labels = c(labels, "complete"), pal, clust_row = T,
-                                      make.corrplot = T, make.overview.corrscatt = T,
-                                      make.heatmap = T, make.barplot = T,
-                                      make.indiv.boxplot = T, make.overview.boxplot = T
+            labels = c(labels, "complete"), pal, clust_row = T,
+            make.corrplot = T, make.overview.corrscatt = T,
+            make.heatmap = T, make.barplot = T,
+            make.indiv.boxplot = T, make.overview.boxplot = T
           )
         }
       },
@@ -95,9 +95,9 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
   }
 
   # First rename columns
-  if(all(is.na(colAnns))){
+  if (all(is.na(colAnns))) {
     colnames(ds$vals) <- get_nth_part(colnames(ds$vals), "_", 1)
-  } else{
+  } else {
     colnames(ds$vals) <- ds$colAnn[, colAnns[2]]
   }
 
@@ -235,13 +235,14 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
       # y-axis label
       # ylab <- ifelse(length(labels) == 1, labels, "")
       ylab <- ifelse(all(is.na(colAnns)), "",
-                     ds$colAnn[ds$colAnn[, colAnns[2]] == v, colAnns[1]][1])
+        ds$colAnn[ds$colAnn[, colAnns[2]] == v, colAnns[1]][1]
+      )
       # Plot
       tryCatch(
         {
           plot_indiv_boxplot(df3,
-                             labels = c(labels, v), out_dir, color_pal = pal, font_size = 30,
-                             xlab = rowAnns[1], ylab = ylab, rowAnns = rowAnns, save.to.file = F
+            labels = c(labels, v), out_dir, color_pal = pal, font_size = 30,
+            xlab = rowAnns[1], ylab = ylab, rowAnns = rowAnns, save.to.file = F
           )
         },
         error = function(err) {
@@ -297,7 +298,8 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
       },
       error = function(err) {
         print(sprintf("%s", err))
-      })
+      }
+    )
 
     # Heatmap 1 - sorted, unclustered
     tryCatch(
@@ -334,7 +336,8 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
         },
         error = function(err) {
           print(sprintf("%s", err))
-        })
+        }
+      )
 
       tryCatch(
         { # Get the new df and ann_row
