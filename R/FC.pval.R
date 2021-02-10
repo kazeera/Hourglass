@@ -160,6 +160,7 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
 #' @param font_size The size of text labels plot. legend title. The size of plot title, axis text, legend text is font_size. The size of plot subtitle is font_size / 1.5.
 #' @param line_size The thickness of grid lines.
+#' @param alphabetical_row Logical; should the y axis be sorted alphabetically or preserve the order of df$Var? 
 #'
 #' @return Plot object if save.to.file is FALSE.
 #' @export
@@ -168,7 +169,7 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #'
 make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_dir = ".", p_signif = "stars", pal_brew = "RdBu",
                               group_name_sep = "/", trim_x = 3, pval_size = 8, pval_color = "white", log2FC = F, apply_scale_colFC = T,
-                              x_axis_angle = 0, save.to.file = F, font_size = 10, line_size = 1) {
+                              x_axis_angle = 0, save.to.file = F, font_size = 10, line_size = 1, alphabetical_row = F) {
   # Apply log transformation
   if (log2FC) {
     df$Fold.change <- log2(df$Fold.change)
@@ -225,6 +226,10 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
   # Color gradient for heatmap
   pal_grad <- get_col_palette(pal_brew, rev = T) %>% get_col_gradient(100)
 
+  # Should rows not be sorted?
+  if(isFALSE(alphabetical_row)) {
+    df$Var <- factor(df$Var, levels = unique(df$Var))
+  }
   # Plot
   p <- ggplot(df, aes(x = group, y = Var, fill = Fold.change)) +
     geom_tile() +

@@ -36,60 +36,13 @@ run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder =
     new_colAnns <- colnames(customAn$values)[2:new_colAnns] # name of col anns
 
     # ca = custom analysis
-    for (i in 1:nrow(customAn$keys)) {
+    for (i in 15:16) { #1:nrow(customAn$keys)) {
       tryCatch(
         {
-          # Name of analysis
-          customAn_name <- customAn$keys[i, 1]
-          # This line splits the group numbers into a vector: eg. "1,2,3,4" turns into "1" "2" "3" "4"
-          grp.num <- strsplit(customAn$keys[i, "Group.Numbers"], split = ",") %>% unlist()
-          # Get type: ex. standard or PPC?
-          grp <- customAn$keys[i, "Group"]
-          # Get the rows in stain info
-          rows_customAn <- customAn$values[, paste(grp, "Group.Numbers", sep = "_")] %in% grp.num
-          # Which columns are we stratifying by in colAnn
-          cn <- colnames(customAn$values)
-          colAnn2 <- cn[1] # Stain, this is right
-          # Get the column of interest, ex. "Parameter" from "PPC_Parameter"
-          colAnn1 <- (grepl(grp, cn) & !grepl("Group.Numbers", cn)) %>%
-            cn[.] %>%
-            get_nth_part("_", 2)
-          colAnn1_custom <- paste(grp, colAnn1, sep = "_")
-          customAn$values[, colAnn1] <- customAn$values[, colAnn1_custom]
-          # Get all new column annotations
-          colAnns <- c(colAnn1, colAnn2, new_colAnns) %>% unique()
-
-          # Check whether any colann1/colann2 combo is duplicated, e.g. TIMP1-Pos.Pix.Perc shows up in more than one place
-          # Prevents error: duplication leads to incorrect dimensions for colAnn
-          dup <- duplicated(customAn$values[, c(colAnn2, colAnn1_custom)])
-          rows_customAn <- !dup & rows_customAn
-
-          # Subset to columns in column annotation of interest
-          cols_to_keep <- interaction(ds$colAnn[, c(colAnn2, colAnn1)]) %in%
-            interaction(customAn$values[rows_customAn, c(colAnn2, colAnn1_custom)])
-          # # Do not continue with analysis if the parameter and stains don't match the columns in the input data
-          if (sum(cols_to_keep) < 3) next # next in loop
-
-          # Subset dataset object accordingly
-          ds_sub <- subset_dataset(ds, cols_to_keep = cols_to_keep)
-
-          # Prevents error: column order of ds$vals and ds$colAnn are not the same
-          if (any(rownames(ds_sub$colAnn) != colnames(ds_sub$vals))) {
-            colnames(ds_sub$vals) <- paste(ds_sub$colAnn[, colAnn2], ds_sub$colAnn[, colAnn1], sep = "_")
-            # Make unique column to merge by
-            df <- reform_ann_df(customAn$values[rows_customAn, ], new_colAnns)
-            df$MergeID <- paste(customAn$values[rows_customAn, colAnn2], customAn$values[rows_customAn, colAnn1_custom], sep = "_")
-            ds_sub$colAnn$MergeID <- paste(ds_sub$colAnn[, colAnn2], ds_sub$colAnn[, colAnn1], sep = "_")
-
-            # Merge with annotations from values Excel sheet
-            ds_sub$colAnn <- merge(x = ds_sub$colAnn, y = df[c("MergeID", new_colAnns)], by = "MergeID")
-            # Rename rows
-            rownames(ds_sub$colAnn) <- ds_sub$colAnn$MergeID
-            ds_sub <- sort_dataset(ds_sub, col_order = colnames(ds_sub$vals))
-          }
-
+          # Subset dataset
+          res <- get_customAn_ds(ds, customAn, i, new_colAnns)
           # Create plots
-          create_heatmap_plots(ds_sub, rowAnns, colAnns, out_dir, labels = c(customAn_name))
+          create_heatmap_plots(res$ds, rowAnns, res$colAnns, out_dir, labels = res$customAn_name)
         },
         error = function(err) {
           print(sprintf("%s", err))
@@ -131,7 +84,7 @@ run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder =
 #' @param ... Additional plotting parameters. Parameters passed to pheatmap, see ?pheatmap.
 #' @export
 plot_heatmap <- function(mat, ann_row = NA, ann_col = NA, ann_colors = NA, plot_title = "", out_dir = ".", labels = "",
-                         clust_row = F, clust_col = F, fontsize_col = 5, log10 = F, z_score = F, man_scale = T, man_scale_range = c(-2, 2), scale_func = F, col.or.row = 2, pheatmap_scale = "none",
+                         clust_row = F, clust_col = F, fontsize_col = 10, log10 = F, z_score = F, man_scale = T, man_scale_range = c(-2, 2), scale_func = F, col.or.row = 2, pheatmap_scale = "none",
                          clustering_distance_rows = "euclidean", clustering_distance_cols = "euclidean", clustering_method = "complete",
                          show_colnames = T, show_rownames = F, pal_brew = "RdBu", border_color = NA, ...) {
   # Perform log10
