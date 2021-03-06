@@ -61,7 +61,7 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
             sub_out_dir,
             labels = param, lvl.colors = pal,
             legend.title = rowAnns[1], xlab = colAnns[2], ylab = param,
-            log10 = T
+            log10_y = T
           )
         },
         error = function(err) {
@@ -127,8 +127,9 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
 #' @param df3 A data frame in long format with 3 columns: order must be: 1) variable to group by (groups of boxes) = factor/character, 2) levels within each group (boxes) = factor/character, 3) values = numeric
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
-#' @param log10 Logical (TRUE/FALSE) indicating whether to log10-transform values before plotting.
-#' @param lvl.colors A vector of colors to manually specify levels colors.
+#' @param log10_y Logical (TRUE/FALSE) indicating whether to log10-transform y-axis.
+#' @param lvl.colors A vector of colors to manually specify levels colors = box colors.
+#' @param dot_color A string indicating what color to make points, if NA, points will not be shown.
 #' @param pal_brew RColorBrewer palette for variable colors if lvl.colors is NA. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.
 #' @param legend.title Title for legend.
 #' @param xlab X axis label.
@@ -144,8 +145,8 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
 #' df <- cbind(ToothGrowth, var = rep(paste("Chicken", 1:5), 6))
 #' plot_overview_boxplot(df[,c("var", supp", "len")], save.to.file = F)
 #' @export
-plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10 = F, lvl.colors = NA, pal_brew = "RdBu", legend.title = "Group", xlab = "variable",
-                                  ylab = "value", font_size = 15, line_size = 1.3, save.to.file = T) {
+plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10_y = F, lvl.colors = NA, pal_brew = "RdBu", legend.title = "Group", xlab = "variable",
+                                  dot_color = "black", ylab = "value", font_size = 15, line_size = 1.3, save.to.file = T) {
   # Rename columns
   colnames(df3) <- c("variable", "level", "value")
   # Get colors
@@ -158,11 +159,11 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10 = F, lv
   # Make plot
   p3 <- ggplot(df3, aes(x = variable, y = value, fill = level)) +
     geom_boxplot(aes(fill = level), outlier.color = NA) +
-    geom_point(position = position_jitterdodge(), size = 0.8, alpha = 0.5) +
+    geom_point(position = position_jitterdodge(), color = dot_color, size = 0.8, alpha = 0.5) +
     scale_fill_manual(values = lvl.colors) +
     labs(
-      title = paste(labels, collapse = "_"),
-      y = sprintf("%s%s", ifelse(log10, "log10 ", ""), ylab),
+      title = paste(labels, collapse = "_",
+      y = ylab),
       x = xlab,
       fill = legend.title,
       subtitle = out_dir
@@ -190,8 +191,8 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10 = F, lv
       legend.title = element_text(colour = "black", size = font_size, face = "bold")
     )
 
-  # Log10 the value # logging does not affect significance
-  if (log10) {
+  # Log10 the y-axis to show point spread better
+  if (log10_y) {
     p3 <- p3 + scale_y_continuous(trans = "log10") # log transform
   }
 
@@ -216,7 +217,7 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10 = F, lv
 #' @param df A data frame in long format with 2-3 columns: 1) Box or level = factor/character, 2) Value = numeric, 3) Dots/points (color, optional) = factor/character.
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
-#' @param log10 Logical (TRUE/FALSE) indicating whether to log10-transform values before plotting.
+#' @param log10_y Logical (TRUE/FALSE) indicating whether to log10-transform y-axis.
 #' @param font_size The size of axis.text. The size of axis.title and plot.title is font_size / 1.3 and font_size / 2, respectively. The size of plot.subtitle, legend.text, and legend.title is font_size/3.
 #' @param line_size The thickness of axis lines.
 #' @param color_pal  A vector of colors to manually specify box colors.
@@ -227,8 +228,9 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10 = F, lv
 #' @param alpha_box Transparency (alpha) of boxes. Accepted values in range 0-1.
 #' @param point_size Size of dots.
 #' @param jit_w Jitter width of dots.
-#' @param pval.test String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".
-#' @param pval.label String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).
+#' @param show_stats Logical, if TRUE, will show statistics between all comparisons/boxes.
+#' @param pval.test Only applies if show_stats is TRUE. String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".
+#' @param pval.label Only applies if show_stats is TRUE. String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).
 #' @param trim_x Number of characters in x-axis labels.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
 #'
@@ -240,7 +242,7 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10 = F, lv
 #' plot_indiv_boxplot(ToothGrowth[,c("supp", "len")], save.to.file = F)
 #' # color code dots is third column
 #' plot_indiv_boxplot(ToothGrowth[,c("supp", "len", "dose")], save.to.file = F)
-plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10 = T, font_size = 25, line_size = 1.3, color_pal = NA, xlab = "", ylab = "value", rowAnns = c(NA, NA), alpha_dots = 0.8, alpha_box = 1, point_size = 2, jit_w = 0.1, pval.test = "wilcox.test", pval.label = "p.signif", trim_x = 3, save.to.file = T) {
+plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T, font_size = 25, show_stats = T, line_size = 1.3, color_pal = NA, xlab = "", ylab = "value", rowAnns = c(NA, NA), alpha_dots = 0.8, alpha_box = 1, point_size = 2, jit_w = 0.1, pval.test = "wilcox.test", pval.label = "p.signif", trim_x = 3, save.to.file = T) {
   #' @param df 2-3 columns. 1) Box or level, 2) Value 3) Dots (color)
   #' @param pval.label p-values on box plots, either "p.signif" (stars), "p.format" (numeric), etc.
 
@@ -260,23 +262,25 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10 = T, f
   a <- ggplot(df, aes(box, value)) +
     geom_boxplot(aes(fill = box), width = 0.8, lwd = 1, color = "black", na.rm = T, outlier.color = NA) + # , alpha = alpha_box) +
     scale_fill_manual(values = color_pal)
+  if(isTRUE(show_stats)){
 
-  # Make list of unique elements
-  ele <- unique(as.character(df$box))
-  # Make list of combinations (order doesn't matter) for p-values
-  comb <- combinations(n = length(ele), r = 2, v = ele, repeats.allowed = F) %>% # gtools
-    split(., seq(nrow(.)))
+    # Make list of unique elements
+    ele <- unique(as.character(df$box))
+    # Make list of combinations (order doesn't matter) for p-values
+    comb <- combinations(n = length(ele), r = 2, v = ele, repeats.allowed = F) %>% # gtools
+      split(., seq(nrow(.)))
 
-  # Add significance levels
-  # Star height relative to bars
-  vjust <- ifelse(pval.label == "p.signif", 0.5, -0.1)
-  a <- a + stat_compare_means(
-    method = pval.test, comparisons = comb, na.rm = T, vjust = vjust, hide.ns = T,
-    label = pval.label, size = font_size / 2.5, bracket.size = 1
-  )
+    # Add significance levels
+    # Star height relative to bars
+    vjust <- ifelse(pval.label == "p.signif", 0.5, -0.1)
+    a <- a + stat_compare_means(
+      method = pval.test, comparisons = comb, na.rm = T, vjust = vjust, hide.ns = T,
+      label = pval.label, size = font_size / 2.5, bracket.size = 1
+    )
+  }
 
   # Log scale
-  if (log10) {
+  if (log10_y) {
     a <- a + scale_y_continuous(trans = "log10") # log transform
   }
 
@@ -297,9 +301,9 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10 = T, f
       # Set subtype orders - PDAC
       panc_order <- PANC_TISS_ORDER[PANC_TISS_ORDER %in% ele] # PANC_TISS_ORDER <- c("adj_normal", "mature", "intermediate","immature") # in "1.import_data.R"
       a <- a + scale_x_discrete(limits = panc_order, labels = function(x) strtrim(x, trim_x))
-    } else {
-      a <- a + scale_x_discrete(labels = function(x) strtrim(x, trim_x))
     }
+  } else {
+    a <- a + scale_x_discrete(labels = function(x) strtrim(x, trim_x))
   }
 
   # Add labels to graph
@@ -308,9 +312,8 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10 = T, f
       title = paste(labels, collapse = "_"),
       fill = ifelse(!is.na(rowAnns[1]), rowAnns[1], ""),
       color = ifelse(!is.na(rowAnns[2]), rowAnns[2], ""),
-      caption = sprintf("%s%s", pval.test, ifelse(pval.label == "p.signif", ", p: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", "")),
-      subtitle = out_dir,
-      y = sprintf("%s%s", ifelse(log10, "log10 ", ""), ylab),
+      caption = ifelse(show_stats, sprintf("%s%s", pval.test, ifelse(pval.label == "p.signif", ", p: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", "")), ""),      subtitle = out_dir,
+      y = ylab,
       x = xlab
     )
 
