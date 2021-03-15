@@ -19,3 +19,7 @@ split_one.by.one(x, delimiter, un_list = T)
 \description{
 Split string and iteratively return parts pasted to first part
 }
+\examples{
+split_one.by.one("Heatmaps/BY.CORE/TMA.stromal.subtype_all excl HRD excl neo dots Moffitt/Surv", "/")
+returns:
+}

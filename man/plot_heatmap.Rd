@@ -14,6 +14,7 @@ plot_heatmap(
   labels = "",
   clust_row = F,
   clust_col = F,
+  fontsize_col = 10,
   log10 = F,
   z_score = F,
   man_scale = T,

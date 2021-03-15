@@ -8,11 +8,12 @@ plot_overview_boxplot(
   df3,
   out_dir = ".",
   labels = "",
-  log10 = F,
+  log10_y = F,
   lvl.colors = NA,
   pal_brew = "RdBu",
   legend.title = "Group",
   xlab = "variable",
+  dot_color = "black",
   ylab = "value",
   font_size = 15,
   line_size = 1.3,
@@ -26,15 +27,17 @@ plot_overview_boxplot(
 
 \item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
 
-\item{log10}{Logical (TRUE/FALSE) indicating whether to log10-transform values before plotting.}
+\item{log10_y}{Logical (TRUE/FALSE) indicating whether to log10-transform y-axis.}
 
-\item{lvl.colors}{A vector of colors to manually specify levels colors.}
+\item{lvl.colors}{A vector of colors to manually specify levels colors = box colors.}
 
 \item{pal_brew}{RColorBrewer palette for variable colors if lvl.colors is NA. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.}
 
 \item{legend.title}{Title for legend.}
 
 \item{xlab}{X axis label.}
+
+\item{dot_color}{A string indicating what color to make points, if NA, points will not be shown.}
 
 \item{ylab}{Y axis label.}
 

@@ -85,7 +85,6 @@ create_heatmap_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", l
 #' @param make.heatmap,make.corrplot,make.overview.corrscatt,make.indiv.corrscatt,make.barplot,make.indiv.boxplot,make.overview.boxplot,make.FC.pval.plot Logicals indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.
 #' @param clust_row,clust_col Logicals indicating whether to cluster rows and columns in heatmap.
 #' @export
-#' @importFrom reshape2
 create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = "", pal = NA, clust_row = F, clust_col = F,
                                         make.heatmap = F, make.corrplot = F, make.overview.corrscatt = F, make.indiv.corrscatt = F,
                                         make.barplot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.FC.pval.plot = T) {

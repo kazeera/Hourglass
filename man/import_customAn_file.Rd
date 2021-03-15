@@ -15,3 +15,26 @@ List of 2 data frames: 1) keys, 2) values
 \description{
 Read in custom analysis file
 }
+\section{Custom analysis file description}{
+
+
+For custom/handpicked parameters for each strata, keys and values worksheets need to be specified.
+
+Worksheet Names:
+I. "Keys"
+Table with 3 columns:
+Analysis_Name	Names of custom analyses
+Group	The classifications
+Group.Numbers	The numbers belonging to each classification
+
+II. "Values"
+Table with atleast 3 columns:
+Column 1 must share a name with a column annotation
+Optional: next n columns can be additional column annotations e.g. Stroma or Tumor, Group..
+For each "Group" in key, 2 columns are needed:
+\enumerate{
+\item x_y, where x is the group name in keys and y is a column in column annotations
+\item x_Group.Numbers, where x is the group name
+}
+}
+

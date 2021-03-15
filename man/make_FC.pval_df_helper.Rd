@@ -35,3 +35,11 @@ A data frame with p-values and fold-changes
 \description{
 Find p-values and fold-change (FC) for each group
 }
+\section{Output data frame}{
+
+group    p.value Fold.change
+1 intermed/high 0.03457640   0.2216307
+2      low/high 0.02586801   0.5496807
+3  low/intermed 0.65911963   2.4801647
+}
+

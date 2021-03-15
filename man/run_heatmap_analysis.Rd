@@ -6,7 +6,7 @@
 \usage{
 run_heatmap_analysis(
   ds,
-  rowAnns = c(1, NA),
+  rowAnns = 1,
   colAnns = NA,
   heatmap_folder = ".",
   customAn = NULL

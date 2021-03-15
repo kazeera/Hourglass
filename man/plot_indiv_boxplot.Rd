@@ -8,8 +8,9 @@ plot_indiv_boxplot(
   df,
   labels = "Group",
   out_dir = ".",
-  log10 = T,
+  log10_y = T,
   font_size = 25,
+  show_stats = T,
   line_size = 1.3,
   color_pal = NA,
   xlab = "",
@@ -32,9 +33,11 @@ plot_indiv_boxplot(
 
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
 
-\item{log10}{Logical (TRUE/FALSE) indicating whether to log10-transform values before plotting.}
+\item{log10_y}{Logical (TRUE/FALSE) indicating whether to log10-transform y-axis.}
 
 \item{font_size}{The size of axis.text. The size of axis.title and plot.title is font_size / 1.3 and font_size / 2, respectively. The size of plot.subtitle, legend.text, and legend.title is font_size/3.}
+
+\item{show_stats}{Logical, if TRUE, will show statistics between all comparisons/boxes.}
 
 \item{line_size}{The thickness of axis lines.}
 
@@ -54,7 +57,7 @@ plot_indiv_boxplot(
 
 \item{jit_w}{Jitter width of dots.}
 
-\item{pval.test}{String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".}
+\item{pval.test}{Only applies if show_stats is TRUE. String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".}
 
 \item{pval.label}{p-values on box plots, either "p.signif" (stars), "p.format" (numeric), etc.}
 

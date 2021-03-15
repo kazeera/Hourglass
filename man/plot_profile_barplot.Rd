@@ -42,6 +42,15 @@ Plot object if save.to.file is FALSE.
 \description{
 Plot profile bar graph
 }
+\section{Example of input data frame}{
+
+group         ID        variable     value
+1       low 1_21043      CD3  273.2400
+2       low 1_36312      CD3  700.2100
+3       low 1_37265      CD3  931.1133
+4       low 1_39924      CD3 1503.2325
+}
+
 \seealso{
 Other plotting: 
 \code{\link{plot_corrplotgg}()},

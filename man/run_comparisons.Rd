@@ -7,7 +7,7 @@
 run_comparisons(
   ds,
   rowAnns,
-  colAnns,
+  colAnns = NA,
   heatmap_folder = ".",
   boxplot_folder = ".",
   run = list(),

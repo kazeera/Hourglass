@@ -4,7 +4,7 @@
 \alias{run_paired_analysis}
 \title{Makes multiple correlation plots in 1 PDF file}
 \usage{
-run_paired_analysis(ds, rowAnns, colAnns, out_dir = ".")
+run_paired_analysis(ds, rowAnns, colAnns = NA, out_dir = ".")
 }
 \arguments{
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}

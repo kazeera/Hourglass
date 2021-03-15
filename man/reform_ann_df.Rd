@@ -12,8 +12,11 @@ reform_ann_df(ann_df, anns)
 \item{anns}{Column names in ann_df desired in output}
 }
 \value{
-The data frame, ann_df, with columns subsetted to names specified by anns
+The data frame, ann_df, with columns subsetted to names specified by anns or NA if
 }
 \description{
 Prevents subset of data frame with one column from becoming a vector.
+}
+\examples{
+reform_ann_df(DNase, "conc")
 }

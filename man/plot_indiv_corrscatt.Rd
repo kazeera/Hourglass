@@ -26,6 +26,11 @@ plot_indiv_corrscatt(
 \description{
 Plot all correlation scatter plots for pairwise variables
 }
+\section{Warning}{
+
+This function will take a long time to run depending on the number of variables.
+}
+
 \seealso{
 Other plotting: 
 \code{\link{plot_corrplotgg}()},

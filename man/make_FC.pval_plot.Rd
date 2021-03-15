@@ -21,7 +21,8 @@ make_FC.pval_plot(
   x_axis_angle = 0,
   save.to.file = F,
   font_size = 10,
-  line_size = 1
+  line_size = 1,
+  alphabetical_row = F
 )
 }
 \arguments{
@@ -53,6 +54,8 @@ make_FC.pval_plot(
 
 \item{line_size}{The thickness of grid lines.}
 
+\item{alphabetical_row}{Logical; should the y axis be sorted alphabetically or preserve the order of df$Var?}
+
 \item{xlab}{X axis label.}
 
 \item{ylab}{Y axis label.}
@@ -65,6 +68,15 @@ Plot object if save.to.file is FALSE.
 \description{
 Plot grid of FC values as fill (with color scale) and p-value as stars/numbers in the centre of each tile.
 }
+\section{Example of input data frame}{
+
+group   p.value       Fold.change      Var
+neo/non 0.6747883 1.5617445    CD11B
+neo/non 0.4820339 1.7443427      CD3
+neo/non 0.9082967 1.0589647      CD4
+neo/non 0.9691466 0.9896168     CD45
+}
+
 \examples{
 
 }

@@ -6,8 +6,8 @@
 \usage{
 run_discrete_barplot_analysis(
   ds,
-  rowAnn1,
-  colAnns,
+  rowAnn1 = 2,
+  colAnns = NA,
   parameters = "",
   out_dir = "."
 )

@@ -6,8 +6,8 @@
 \usage{
 create_heatmap_plots(
   ds,
-  rowAnns = c(1, NA),
-  colAnns = c(1, NA),
+  rowAnns = 1,
+  colAnns = NA,
   out_dir = ".",
   labels = "Sub1"
 )

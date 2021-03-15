@@ -7,7 +7,7 @@
 run_boxplot_analysis(
   ds,
   rowAnns,
-  colAnns,
+  colAnns = NA,
   out_dir = ".",
   make.overview.boxplot = T,
   make.indiv.boxplot = T
