@@ -36,7 +36,7 @@ run_heatmap_analysis <- function(ds, rowAnns = 1, colAnns = NA, heatmap_folder =
     new_colAnns <- colnames(customAn$values)[2:new_colAnns] # name of col anns
 
     # ca = custom analysis
-    for (i in 15:16) { #1:nrow(customAn$keys)) {
+    for (i in 1:nrow(customAn$keys)) {
       tryCatch(
         {
           # Subset dataset

@@ -31,3 +31,17 @@ remove_outliers2 <- function(x) {
 remove_outliers_df <- function(df, row.or.col = 2) {
   apply(df, row.or.col, remove_outliers) %>% data.frame()
 }
+
+#' Identify outliers outside of 1st and 3rd quartile by making the values "lower" and "upper" respectively
+#'
+#' @param x A numeric vector, can contain NA.
+#' @return The numeric vector where outliers have the values "lower" and "upper" (points outside 1st/3rd quartiles respectively)
+#' @export
+get_outliers <- function(x) {
+  qnt <- quantile(x, probs = c(.25, .75), na.rm = TRUE)
+  H <- 1.5 * IQR(x, na.rm = TRUE)
+  y <- x
+  y[x < (qnt[1] - H)] <- "lower"
+  y[x > (qnt[2] + H)] <- "upper"
+  return(y)
+}

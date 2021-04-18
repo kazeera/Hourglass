@@ -144,15 +144,17 @@ plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", log10 = F, fo
   tryCatch({
     a <- a + stat_compare_means(method = pval.test, comparisons = comb, na.rm = T, paired = T, label = pval.label, size = font_size / 5, bracket.size = 1)
   })
+  # a <- a + stat_compare_means(method=pval.test,comparisons = comb, na.rm=T, label=pval.label, size = font_size/5, bracket.size = 1)
 
   # Trim x labels to 3 characters
+  a <- a + scale_x_discrete(labels = function(x) strtrim(x, 3))
+
+  # Account for PDAC-specific analysis
   if (all(c("TMA.STROMAL.SUBTYPE", "MAIN.STROMAL.SUBTYPE", "PANC_TISS_ORDER") %in% ls(envir = .GlobalEnv))) {
     if (get_nth_part(rowAnns[1], "_", 1) %in% c(TMA.STROMAL.SUBTYPE, MAIN.STROMAL.SUBTYPE) | (grepl(PANC.TISSUE, rowAnns[1]) & length(e) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
       # Set subtype orders - PDAC
       panc_order <- PANC_TISS_ORDER[PANC_TISS_ORDER %in% e] # PANC_TISS_ORDER <- c("adj_normal", "mature", "intermediate","immature") # in "1.import_data.R"
       a <- a + scale_x_discrete(limits = panc_order, labels = function(x) strtrim(x, 3))
-    } else {
-      a <- a + scale_x_discrete(labels = function(x) strtrim(x, 3))
     }
   }
 

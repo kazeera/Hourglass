@@ -155,12 +155,13 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #' @param pval_size Size of p-values.
 #' @param pval_color Color of p-values.
 #' @param log2FC Logical (TRUE/FALSE). Should log2 transformation be applied to Fold.change column before plotting?
-#' @param apply_scale_colFC Logical (TRUE/FALSE). Should scale be applied to FC for each group, ie. column-wise?
+#' @param scale_FC Either "scale_column", "scale_row", "none", or "cap_outliers" (default). Should scale be applied to FC for each group (column), Var (row)? In "cap_outliers", non-outliers are unscaled, but upper and lower outliers (points outside 1st/3rd quartiles respectively) become upper and lower values of range of non-outliers.
+#' @param rescale_to A numeric vector of length 2, indicating lower and upper limits of scale. Default is 0 to 1: c(0,1). Only applied if "scale_FC" parameter is not "none".
 #' @param x_axis_angle Angle of the x-axis label. Default is 0 (horizontal), 90 is vertical.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
 #' @param font_size The size of text labels plot. legend title. The size of plot title, axis text, legend text is font_size. The size of plot subtitle is font_size / 1.5.
 #' @param line_size The thickness of grid lines.
-#' @param alphabetical_row Logical; should the y axis be sorted alphabetically or preserve the order of df$Var? 
+#' @param alphabetical_row Logical; should the y axis be sorted alphabetically or preserve the order of df$Var?
 #'
 #' @return Plot object if save.to.file is FALSE.
 #' @export
@@ -168,18 +169,38 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #' @examples
 #'
 make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_dir = ".", p_signif = "stars", pal_brew = "RdBu",
-                              group_name_sep = "/", trim_x = 3, pval_size = 8, pval_color = "white", log2FC = F, apply_scale_colFC = T,
+                              group_name_sep = "/", trim_x = 3, pval_size = 8, pval_color = "white", log2FC = F, scale_FC = "cap_outliers", rescale_to = c(0,1),
                               x_axis_angle = 0, save.to.file = F, font_size = 10, line_size = 1, alphabetical_row = F) {
+  # Error checking
+  if(!scale_FC %in% c("scale_column", "scale_row", "none", "cap_outliers")){
+    errorCondition(message = "Ensure scale_FC parameter in make_FC.pval_plot has value of: 'scale_column', 'scale_row', 'none', or 'cap_outliers'")
+    return()
+  }
+
   # Apply log transformation
-  if (log2FC) {
+  if (log2FC){
     df$Fold.change <- log2(df$Fold.change)
   }
 
-  # Apply scale to each group
-  if (apply_scale_colFC) {
-    df$Fold.change <- ave(as.numeric(df$Fold.change), df$group, FUN = function(x) {
-      scales::rescale(x, to = c(-2, 2))
+  # Apply scale to each group/Variable
+  if (scale_FC == "scale_column" | scale_FC == "scale_row") {
+    scale_by <- ifelse(scale_FC == "scale_row", "Var", "group")
+    # Apply scale
+    df$Fold.change <- ave(as.numeric(df$Fold.change), df[,scale_by], FUN = function(x) {
+      scales::rescale(x, to = rescale_to)
     })
+  }
+
+  # Apply limit to outliers, upper outliers become upper limit of scale and lower becomes lower limit
+  if (scale_FC == "cap_outliers") {
+    # Find outliers (logical)
+    outliers <- get_outliers(df$Fold.change)
+    # Rescale non-outliers
+    unchanged <- !outliers %in% c("upper", "lower")
+    # df$Fold.change[unchanged] <- scales::rescale(df$Fold.change[unchanged], to = rescale_to)
+    # # Make outliers limit
+    df$Fold.change[outliers == "lower"] <- df$Fold.change[unchanged] %>% min(na.rm = T) # rescale_to[1]
+    df$Fold.change[outliers == "upper"] <- df$Fold.change[unchanged] %>% max(na.rm = T)  # rescale_to[2]
   }
 
   # Add stars
@@ -241,7 +262,7 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
       x = x_lab,
       y = y_lab
     ) +
-    scale_fill_gradientn(colors = pal_grad, name = paste0(ifelse(log2FC, "log2 ", ""), ifelse(apply_scale_colFC, "scaled ", ""), "FC")) +
+    scale_fill_gradientn(colors = pal_grad, name = paste0(ifelse(log2FC, "log2 ", ""), "FC ", ifelse(scale_FC == "none", "", scale_FC))) +
     scale_x_discrete(expand = c(0, 0)) + # remove space between grid and axes
     scale_y_discrete(expand = c(0, 0)) +
     theme(
@@ -258,7 +279,6 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
       axis.text.y = element_text(margin = margin(t = 0, r = 7, b = 0, l = 0)),
       # axes tick labels
       axis.title = element_text(colour = "black", size = font_size, face = "bold"), # axes title labels
-      # axis.text.x = element_text(angle = 45, hjust = 1),
       # legend
       legend.text = element_text(colour = "black", size = font_size, face = "bold"),
       legend.title = element_text(colour = "black", size = font_size, face = "bold"),
@@ -281,7 +301,7 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
   if (save.to.file) {
     # Graphing params
     file_h <- (length(unique(df$Var)) + 7) / 4 + 2 # file width
-    ggsave(device = "pdf", height = file_h, limitsize = F, filename = sprintf("%s/%s_pval_FC_grid%s.pdf", out_dir, plot_title, ifelse(apply_scale_colFC, "_scaled", "")), plot = p) # , height = nrow(df)*0.6, width = 4)
+    ggsave(device = "pdf", height = file_h, limitsize = F, filename = sprintf("%s/%s_pval_FC_grid%s.pdf", out_dir, plot_title, ifelse(scale_FC == "none", "", scale_FC)), plot = p) # , height = nrow(df)*0.6, width = 4)
   } else {
     print(p)
   }

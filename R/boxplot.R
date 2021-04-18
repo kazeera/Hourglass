@@ -242,7 +242,7 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10_y = F, 
 #' plot_indiv_boxplot(ToothGrowth[,c("supp", "len")], save.to.file = F)
 #' # color code dots is third column
 #' plot_indiv_boxplot(ToothGrowth[,c("supp", "len", "dose")], save.to.file = F)
-plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T, font_size = 25, show_stats = T, line_size = 1.3, color_pal = NA, xlab = "", ylab = "value", rowAnns = c(NA, NA), alpha_dots = 0.8, alpha_box = 1, point_size = 2, jit_w = 0.1, pval.test = "wilcox.test", pval.label = "p.signif", trim_x = 3, save.to.file = T) {
+plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T, font_size = 25, show_stats = T, line_size = 1.3, color_pal = NA, xlab = "", ylab = "value", rowAnns = c(NA, NA), alpha_dots = 0.8, alpha_box = 1, point_size = 2, jit_w = 0.1, pval.test = "wilcox.test", pval.label = "p.signif", trim_x = 3, save.to.file = T, legend_position = "right") {
   #' @param df 2-3 columns. 1) Box or level, 2) Value 3) Dots (color)
   #' @param pval.label p-values on box plots, either "p.signif" (stars), "p.format" (numeric), etc.
 
@@ -262,6 +262,7 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T,
   a <- ggplot(df, aes(box, value)) +
     geom_boxplot(aes(fill = box), width = 0.8, lwd = 1, color = "black", na.rm = T, outlier.color = NA) + # , alpha = alpha_box) +
     scale_fill_manual(values = color_pal)
+
   if(isTRUE(show_stats)){
 
     # Make list of unique elements
@@ -296,14 +297,15 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T,
   }
 
   # Trim x axis text to 3 characters
+  a <- a + scale_x_discrete(labels = function(x) strtrim(x, trim_x))
+
+  # If it belongs to a PDAC-specific analysis, reorder cols
   if (all(c("TMA.STROMAL.SUBTYPE", "MAIN.STROMAL.SUBTYPE", "PANC_TISS_ORDER") %in% ls(envir = .GlobalEnv))) {
     if (get_nth_part(rowAnns[1], "_", 1) %in% c(TMA.STROMAL.SUBTYPE, MAIN.STROMAL.SUBTYPE) | (grepl(PANC.TISSUE, rowAnns[1]) & length(ele) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
       # Set subtype orders - PDAC
       panc_order <- PANC_TISS_ORDER[PANC_TISS_ORDER %in% ele] # PANC_TISS_ORDER <- c("adj_normal", "mature", "intermediate","immature") # in "1.import_data.R"
       a <- a + scale_x_discrete(limits = panc_order, labels = function(x) strtrim(x, trim_x))
     }
-  } else {
-    a <- a + scale_x_discrete(labels = function(x) strtrim(x, trim_x))
   }
 
   # Add labels to graph
@@ -339,9 +341,8 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T,
       axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
       # legend
       legend.text = element_text(colour = "black", size = font_size / 3),
-      legend.title = element_text(colour = "black", size = font_size / 3)
-    )
-  # legend.position = "bottom")+
+      legend.title = element_text(colour = "black", size = font_size / 3),
+      legend.position = legend_position)
   # guides(fill=guide_legend(nrow=ncol(df)-1,byrow=TRUE))# number of rows for legend
 
   if (save.to.file) {

@@ -264,7 +264,8 @@ sep_param_by_levels <- function(ds, custom_name) {
     # Get columns of current exp.stain/parameter e.g. custom_name =  "TIMP1;Pos.Pix.Perc.Total"
     j <- which(ds$colAnn$StainParameter == gsub(";", ".", custom_name))
     # Make a new column in rowAnn for the stain expression (low, high, med)
-    rowAnn1 <- paste(ds$colAnn$Stain[j], "Exp", sep = "_")
+    rowAnn1 <- paste(get_nth_part(ds$colAnn$Stain[j], "_", 1), ds$colAnn$Parameter[j], sep = "_")# Changed
+    # rowAnn1 <- paste(ds$colAnn$Stain[j], "Exp", sep = "_")
     # Assign each value in this rowAnn to a quantile (n=3)
     v <- get_levels(ds$vals[, j], 3)
   } else {

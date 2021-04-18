@@ -205,7 +205,7 @@ create_heatmap_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir =
           df3 = df2[, c("variable", rowAnns[1], "value")],
           out_dir, labels, lvl.colors = pal,
           legend.title = rowAnns[1], xlab = colAnns[2],
-          log10 = T
+          log10_y = T, ylab = ""
         )
       },
       error = function(err) {
