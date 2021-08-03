@@ -221,6 +221,7 @@ split_one.by.one <- function(x, delimiter, un_list = T) {
 #' # [1] 1 1 1 2 2 2 3 3 3
 #' @export
 get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
+  
   if (!"LEVELS" %in% ls(envir = .GlobalEnv)) {
     LEVELS <- list(l = "low", i = "intermed", h = "high")
   }
@@ -252,30 +253,30 @@ get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
 
 #' Make a custom row annotation column
 #'
-#' Make new rowAnn column of expression level (low, intermediate, high) of a specific stain/parameter (i.e. any column in the data matrix ds$vals) or ds$rowAnn column
+#' Make new rowAnn column of expression level (low, intermediate, high) of a specific continuos variable in ds$rowAnn or ds$vals
 #'
 #' @param ds A dataset object (a list with vals, rowAnn, colAnn, comparison, name).
-#' @param custom_name Either a column name in ds$rowAnn or a column in ds$vals.
-#' @return A list of 2 elements: 1) rowAnn1 = new row annotation column name, 2) rowAnn = new ds$rowAnn with the rowAnn1 column
+#' @param col_name A column name of a continuous numeric variable in either ds$rowAnn or ds$vals.
+#' @return A list of 2 elements named: 1) rowAnn1 = new row annotation column name, 2) rowAnn = new ds$rowAnn with the rowAnn1 column
 #' @export
-sep_param_by_levels <- function(ds, custom_name) {
-  # used in main.script_2 and run.comparisons
-  if (grepl(";", custom_name)) {
-    # Get columns of current exp.stain/parameter e.g. custom_name =  "TIMP1;Pos.Pix.Perc.Total"
-    j <- which(ds$colAnn$StainParameter == gsub(";", ".", custom_name))
-    # Make a new column in rowAnn for the stain expression (low, high, med)
-    rowAnn1 <- paste(get_nth_part(ds$colAnn$Stain[j], "_", 1), ds$colAnn$Parameter[j], sep = "_")# Changed
-    # rowAnn1 <- paste(ds$colAnn$Stain[j], "Exp", sep = "_")
-    # Assign each value in this rowAnn to a quantile (n=3)
-    v <- get_levels(ds$vals[, j], 3)
-  } else {
-    # Make a new column in rowAnn for the stain expression (low, high, med)
-    rowAnn1 <- paste(custom_name, "lvl", sep = "_")
-    # Assign each value in this rowAnn to a quantile (n=3)
-    v <- get_levels(ds$rowAnn[, custom_name], 3)
+add_to_rowAnn <- function(ds, col_name) {
+  # Make a new column name in rowAnn for the stain expression (low, high, med)
+  rowAnn1 <- col_name
+  
+  # Retrieve the values of the column/continuous variable 
+  if (col_name %in% colnames(ds$vals)) {
+    v1 <- ds$vals[, col_name]
   }
+  if (col_name %in% colnames(ds$rowAnn)) {
+    v1 <- ds$rowAnn[, col_name]
+    rowAnn1 <- paste(rowAnn1, "level")
+  }
+  
+  # Assign each value in this rowAnn to a quantile (n=3)
+  v2 <- get_levels(v1, n_quantiles = 3)
+    
   # Add new group to row annotations
-  ds$rowAnn[, rowAnn1] <- v
+  ds$rowAnn[, rowAnn1] <- v2
 
   # Return two new groups
   list(

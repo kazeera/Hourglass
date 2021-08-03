@@ -1,13 +1,14 @@
 #' Makes multiple correlation plots in 1 PDF file
 #'
-#' @inheritParams run_comparisons ds,rowAnns,colAnns
+#' @inheritParams run_comparison ds,rowAnns,colAnns,global_palette
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
+#' @param pair_id Name or column index in ds$rowAnn that count as patients or groups to pair by, i.e. which ID to average over, e.g. patient ID (if there are multiple rows per patient) 
 #' @export
-run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".") {
+run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", global_palette = NULL, pair_id = 1) {
   # Get data frame with individual pairs
-  ds_sub <- get_paired_df(ds, rowAnns[1])
+  ds_sub <- get_paired_df(ds, rowAnns[1], pair_id)
   # Get color palette for row annotations
-  pal <- get_rowAnn_color_pal(ds_sub, rowAnns[1]) %>%
+  pal <- get_rowAnn_color_pal(ds_sub, rowAnns[1], global_palette) %>%
     .[["pal"]]
 
   # Get a vector of all the unique variables
@@ -26,9 +27,10 @@ run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".") {
         {
           # Subset data frame to only column of interest
           df <- data.frame(
-            case = ds_sub$rowAnn[, CASE_ID],
+            case = ds_sub$rowAnn[, pair_id],
             box = ds_sub$rowAnn[, rowAnn1],
-            value = ds_sub$vals[, col_name], stringsAsFactors = F
+            value = ds_sub$vals[, col_name], 
+            stringsAsFactors = F
           )
           df <- get_duplicated_cases(df, col = "case", rm.NA = "value")
           # In case there are a couple of cases or zero left, do not continue
@@ -54,7 +56,7 @@ run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".") {
 #' Produces a dataset in which duplicated pair_id are averaged across different groups specified in
 #'
 #' @param ds A dataset object (a list with vals, rowAnn, colAnn, comparison, name).
-#' @param pair_id Name or column index in ds$rowAnn that count as patients or groups to pair by
+#' @param pair_id Name or column index in ds$rowAnn that count as patients or groups to pair by.
 #' @param rowAnn1 A column name in df indicating which groups to stratify by
 #' @return A new dataset object averaged for each rowAnn pair_id
 #' @export
@@ -62,10 +64,6 @@ get_paired_df <- function(ds, rowAnn1, pair_id = 1) {
   # Get name of column to pair by
   pair_id <- ifelse(is.numeric(pair_id), colnames(ds$rowAnn)[pair_id], pair_id)
 
-  # all(rownames(ds$vals) == ds$rowAnn$Unique.ID)
-  if (all(c("CASE_ID") %in% ls(envir = .GlobalEnv))) {
-    pair_id <- CASE_ID
-  }
   # Merge df with row annotations
   rowAnns <- c(pair_id, rowAnn1)
   df <- cbind(ds$rowAnn[, rowAnns], ds$vals)

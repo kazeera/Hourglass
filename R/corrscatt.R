@@ -12,12 +12,6 @@
 #' @return Plot object if save.to.file is FALSE.
 #' @export
 plot_overview_corr_scatt <- function(mat, out_dir = ".", labels = "", corr_method = "pearson", hist.col = "#92C5DE", save.to.file = T, compute_w_NA = F, ...) {
-  # out_dir = "."; labels=""; corr_method = "spearman"; hist.col = "#92C5DE"; save.to.file = T; compute_w_NA = F
-  # df[is.na(df)] <- runif(sum(is.na(df)), 1,59)
-  # mat = df[,-1]
-  # save.image("corrscat.RData")
-
-
   # Only consider columns and rows with at least 7 values (not default)
   if (compute_w_NA) { # Prevent this error: "Error in r.con(r12, n): number of subjects must be greater than 3\n"
     if (ncol(mat) >= 7) {
@@ -39,8 +33,7 @@ plot_overview_corr_scatt <- function(mat, out_dir = ".", labels = "", corr_metho
     alpha = 0.05, # confidence levels alpha
     stars = T, # significance of linear models
     hist.col = hist.col,
-    ellipses = F,
-    ...
+    ellipses = F
   )
   title(main = paste(labels, collapse = "_"))
 

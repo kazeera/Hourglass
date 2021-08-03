@@ -148,10 +148,10 @@ get_ann_colors <- function(df, ann_cols, pal = "") {
 #'
 #' @param ds A dataset object (a list with vals, rowAnn (required), colAnn)
 #' @param rowAnns A character vector of 1-2 column names in ds$rowAnn.
+#' @param global_palette A named vector with colors as values and annotations/groups as names.
 #' @return A list of 2 elements: 1) ds without NAs in rowAnn[1], 2) rowAnns
-#' @note Specify PAL_SCAFF in global environment, named vector of current groups (preset).
 #' @export
-get_rowAnn_color_pal <- function(ds, rowAnns) {
+get_rowAnn_color_pal <- function(ds, rowAnns, global_palette = NULL) {
   # Get unique row annotation elements
   elements <- ds$rowAnn[, rowAnns[1]] %>%
     as.character() %>%
@@ -170,8 +170,8 @@ get_rowAnn_color_pal <- function(ds, rowAnns) {
   }
 
   # Get color palette
-  if ("PAL_SCAFF" %in% ls(envir = .GlobalEnv)) {
-    pal <- PAL_SCAFF[names(PAL_SCAFF) %in% elements]
+  if (isFALSE(is.null(global_palette))) {
+    pal <- global_palette[names(global_palette) %in% elements]
     # If this is a new type of analysis, get new colors
     if (length(pal) == 0) {
       elements <- elements[!is.na(elements)]
@@ -185,11 +185,11 @@ get_rowAnn_color_pal <- function(ds, rowAnns) {
       # If any are true (not found in color palette), replace with NA
       if (any(excl_index)) {
         ds$rowAnn[excl_index, rowAnns[2]] <- "NA_"
-        pal <- c(pal, PAL_SCAFF["NA_"])
+        pal <- c(pal, global_palette["NA_"])
       }
     }
   } else {
-    pal <- get_element_colors(elements, colRamp = get_col_palette("RdBu"))
+    pal <- get_element_colors(elements, colRamp = get_col_palette("Spectral"))
   }
   return(list(ds = ds, pal = pal))
 }

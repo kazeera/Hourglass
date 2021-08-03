@@ -8,10 +8,10 @@
 #' @param group_name_sep A character indicating how the labels for groups should be presented, "/" in low/high
 #' @param vs.other logical, indicating whether to compare all groups to other, eg. high vs (low+intermed)
 #' @param FC.method Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)
-#' @param p.method Significance test to use, either "t.test" or "wilcox"
+#' @param p.method Significance test to use, either "t.test" or "wilcox.test"
 #' @return A data frame with p-vals and fold-changes for each group (rowAnn) in each variable (column)
 #' @export
-make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_name_sep = "/", FC.method = "divide", p.method = "wilcox") {
+make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_name_sep = "/", FC.method = "divide", p.method = "wilcox.test") {
   tryCatch(expr = {
     if (is.numeric(rowAnn_col)) {
       rowAnn_col <- colnames(df)[rowAnn_col]
@@ -75,7 +75,7 @@ make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_nam
 #' @param rev Logical indicating whether to reverse the order of the default FC (default is TRUE), ex. low-hig --> hig-low
 #' @param group_name_sep A character indicating how the labels for groups should be presented, "/" in low/high
 #' @param FC.method Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)
-#' @param p.method Significance test to use, either "t.test" or "wilcox"
+#' @param p.method Significance test to use, either "t.test" or "wilcox.test"
 #' @return A data frame with p-values and fold-changes
 #' @section Output data frame:
 #'          group    p.value Fold.change
@@ -83,9 +83,9 @@ make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_nam
 #' 2      low/high 0.02586801   0.5496807
 #' 3  low/intermed 0.65911963   2.4801647
 #' @export
-make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, group_name_sep = "/", FC.method = "divide", p.method = "wilcox") {
+make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, group_name_sep = "/", FC.method = "divide", p.method = "wilcox.test") {
   # Get p values
-  if (p.method == "wilcox") {
+  if (p.method == "wilcox.test") {
     df4 <- perform_wilcox(df3[, val_col], df3[, rowAnn_col]) %>%
       melt() %>%
       filter(!is.na(value))
@@ -148,8 +148,8 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #' @param ylab Y axis label.
 #' @param plot_title Title of plot.
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
-#' @param p.signif How p-values should be plotted. Either "stars" or "number".
-#' @param pal_brew RColorBrewer palette for fold-change values. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.
+#' @param pval.label How p-values are represented. Allowed values are "p.signif" (stars) and "p.format" (number).
+#' @param gradient_palette RColorBrewer palette for fold-change values. See RColorBrewer::display.brewer.all() for all options.
 #' @param group_name_sep A character indicating how the labels for groups should be presented, "/" in low/high
 #' @param trim_x Number, indicating the number of characters for each part (that is, length of truncated output string).
 #' @param pval_size Size of p-values.
@@ -168,7 +168,7 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #'
 #' @examples
 #'
-make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_dir = ".", p_signif = "stars", pal_brew = "RdBu",
+make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_dir = ".", pval.label = "p.signif", gradient_palette = "RdBu",
                               group_name_sep = "/", trim_x = 3, pval_size = 8, pval_color = "white", log2FC = F, scale_FC = "cap_outliers", rescale_to = c(0,1),
                               x_axis_angle = 0, save.to.file = F, font_size = 10, line_size = 1, alphabetical_row = F) {
   # Error checking
@@ -204,7 +204,7 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
   }
 
   # Add stars
-  if (p_signif == "stars") {
+  if (pval.label == "p.signif") {
     df$p_stars <- pval_to_stars(df$p.value)
   } else {
     df$p.value <- round(df$p.value, 3)
@@ -239,13 +239,9 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
     other <- ifelse(isFALSE(trim_x), "other", strtrim("other", trim_x)) %>% grepl(e)
     df$group <- factor(df$group, levels = c(as.character(e[!other]), as.character(e[other])))
   }
-
-  # If brewer palette specified in global constants/variables, make it as default palette
-  if (isTRUE("PAL_BREWER" %in% ls(envir = .GlobalEnv))) {
-    pal_brew <- PAL_BREWER
-  }
+  
   # Color gradient for heatmap
-  pal_grad <- get_col_palette(pal_brew, rev = T) %>% get_col_gradient(100)
+  pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(100)
 
   # Should rows not be sorted?
   if(isFALSE(alphabetical_row)) {
@@ -257,7 +253,7 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
     ggtitle(paste(plot_title)) +
     labs(
       title = plot_title,
-      caption = ifelse(!isFALSE(p_signif), "p <= 0.001 '****', 0.001 '***', 0.01 '**', 0.05 '*'", ""),
+      caption = ifelse(!isFALSE(pval.label), "p <= 0.001 '****', 0.001 '***', 0.01 '**', 0.05 '*'", ""),
       subtitle = out_dir,
       x = x_lab,
       y = y_lab
@@ -282,16 +278,16 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
       # legend
       legend.text = element_text(colour = "black", size = font_size, face = "bold"),
       legend.title = element_text(colour = "black", size = font_size, face = "bold"),
-      # legend.position = "bottom", legend.box = "vertical"
+      legend.position = "bottom", legend.box = "vertical"
     )
 
   # Add stars if applicable
-  if (!isFALSE(p_signif)) {
-    if (p_signif == "stars") {
+  if (!isFALSE(pval.label)) {
+    if (pval.label == "p.signif") {
       p <- p +
         geom_text(aes(label = p_stars), size = pval_size, color = pval_color, vjust = 0.8)
     }
-    if (p_signif == "text") {
+    if (pval.label == "p.format") {
       p <- p +
         geom_text(aes(label = p.value), size = pval_size, color = pval_color, vjust = 0.5)
     }
@@ -300,8 +296,8 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
   # Save to file
   if (save.to.file) {
     # Graphing params
-    file_h <- (length(unique(df$Var)) + 7) / 4 + 2 # file width
-    ggsave(device = "pdf", height = file_h, limitsize = F, filename = sprintf("%s/%s_pval_FC_grid%s.pdf", out_dir, plot_title, ifelse(scale_FC == "none", "", scale_FC)), plot = p) # , height = nrow(df)*0.6, width = 4)
+    file_h <- (length(unique(df$Var)) + 4) / 4 + 2 # file height
+    ggsave(device = "pdf", height = file_h, limitsize = F, filename = sprintf("%s/%s_pval_FC.pdf", out_dir, plot_title), plot = p) # , height = nrow(df)*0.6, width = 4)
   } else {
     print(p)
   }

@@ -5,12 +5,14 @@
 #' @family plotting
 #' @param df A data frame - first column: rowAnnotation column with groups, the rest of the columns are values.
 #' @param rowAnn_col A column index (numeric) or name in df indicating which groups to stratify by.
-#' @param pal_brew RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.
+#' @param gradient_palette RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options.
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
 #' @param plot_gg Should we use the function \code{link{plot_corrplotgg}} from this package? Otherwise, it uses \code{link{plot_corrplot}}.
+#' @param pval.label How to display p-values? Allowed values are "p.signif" (stars) and "p.format" (number).
+#' @param corr_method A character vector of 2 that correspond to "use" and "method" parameters in \code{\link[stats]{cor}}. The first defaults to "pairwise.complete.obs" and second should be one of "pearson","spearman","kendall".
 #' @export
-run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", pal_brew = "RdBu", plot_gg = T) {
+run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", gradient_palette = "RdBu", plot_gg = T, corr_method = c("pairwise.complete.obs", "spearman"), pval.label = "p.signif") {
   # Get column name of rowAnn if it's an index
   if (is.numeric(rowAnn_col)) {
     rowAnn_col <- colnames(df)[rowAnn_col]
@@ -38,12 +40,7 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
   if (any(is.na(df[, val_cols]))) {
     return()
   }
-
-  # If brewer palette specified in global constants/variables, make it as function parameter
-  if ("PAL_BREWER" %in% ls(envir = .GlobalEnv)) {
-    pal_brew <- PAL_BREWER
-  }
-
+  
   # Specify point sizes
   text_size <- ifelse(n_stains < 20, 0.071 * n_stains, 0.035 * n_stains) # stain label size
   pch_size <- ifelse(n_stains < 20, 0.081 * n_stains, 0.04 * n_stains) # star size
@@ -59,23 +56,23 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
     if (plot_gg) {
       # save.image("run_cor.RData")
       # For all data points regardless of stratification
-      plot_corrplotgg(df[, val_cols], labels = c("All", labels), pal_brew = pal_brew, out_dir = out_dir)
+      plot_corrplotgg(df[, val_cols], labels = c("All", labels), gradient_palette = gradient_palette, out_dir = out_dir, corr_method = corr_method, pval.label = pval.label)
 
       # For each group,
       for (group in grps) {
         # Get indices
         keep_rows <- as.character(df[, rowAnn_col]) == group
-        plot_corrplotgg(df[keep_rows, val_cols], labels = c(group, labels), pal_brew = pal_brew, out_dir = out_dir)
+        plot_corrplotgg(df[keep_rows, val_cols], labels = c(group, labels), gradient_palette = gradient_palette, out_dir = out_dir, corr_method = corr_method, pval.label = pval.label)
       }
     } else {
       # For all grps in' scaffold column name regardless of subtype
-      plot_corrplot(df[, val_cols], labels = c("All", labels), pal_brew = pal_brew)
+      plot_corrplot(df[, val_cols], labels = c("All", labels), gradient_palette = gradient_palette)
 
       # For each group,
       for (group in grps) {
         # Get indices
         keep_rows <- as.character(df[, rowAnn_col]) == group
-        plot_corrplot(df = df[keep_rows, val_cols], labels = c(group, labels), text_size = text_size, pch_size = pch_size, pal_brew = pal_brew)
+        plot_corrplot(df = df[keep_rows, val_cols], labels = c(group, labels), text_size = text_size, pch_size = pch_size, gradient_palette = gradient_palette)
       }
     }
     dev.off()
@@ -90,14 +87,14 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
 #' @param xlab X axis label.
 #' @param ylab Y axis label.
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
-#' @param corr_method A character vector of 2 that correspond to use and method parameters in \code{\link[stats]{cor}}.
+#' @param corr_method A character vector of 2 that correspond to "use" and "method" parameters in \code{\link[stats]{cor}}. The first defaults to "pairwise.complete.obs" and second is one of "pearson","spearman","kendall".
 #' @param pval_color The color of the significance stars or p-value text.
 #' @param grid.fill.color The color for grid fill.
 #' @param grid.line.color The color for grid line.
-#' @param p_signif How p-values are represented. Either "stars" or "text".
+#' @param pval.label How p-values are represented. Allowed values are "p.signif" (stars) and "p.format" (number).
 #' @param circ_max The maximum size of circle within cells in grid.
 #' @param star_size The size of star labels on correlation plots.
-#' @param pal_brew RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options. Note: Define PAL_BREWER global variable.
+#' @param gradient_palette RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options.
 #' @param font_size The size of text labels on correlation plots. legend title. The size of legend text and plot title is font_size / 1.5. The size of legend text and plot subtitle is font_size / 3.
 #' @param line_size The thickness of grid lines.
 #' @param out_dir The output directory where the plot will be saved when save.to.file is TRUE, default is current working directory.
@@ -108,20 +105,15 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
 #'
 #' @examples
 plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method = c("pairwise.complete.obs", "spearman"), pval_color = "white",
-                            grid.fill.color = "white", grid.line.color = "black", p_signif = "stars", circ_max = NULL, star_size = NULL,
-                            pal_brew = "RdBu", font_size = 15, line_size = 1, out_dir = ".", save.to.file = F) {
+                            grid.fill.color = "white", grid.line.color = "black", pval.label = "p.signif", circ_max = NULL, star_size = NULL,
+                            gradient_palette = "RdBu", font_size = 15, line_size = 1, out_dir = ".", save.to.file = F) {
   # Don't continue if NAs exist
   if (any(is.na(mat))) {
     errorCondition("Cannot make correlation plots with NAs")
   }
 
-  # If brewer palette specified in global constants/variables, make it as default palette
-  if (isTRUE("PAL_BREWER" %in% ls(envir = .GlobalEnv))) {
-    pal_brew <- PAL_BREWER
-  }
-
   # Make color palette gradient
-  pal_grad <- get_col_palette(pal_brew, rev = T) %>% get_col_gradient(50)
+  pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(50)
 
   tryCatch(expr = {
     # Get correlation matrices
@@ -135,7 +127,7 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
     colnames(mat2) <- c("Var1", "Var2", "corr")
 
     # Add stars if applicable
-    if (!isFALSE(p_signif)) {
+    if (!isFALSE(pval.label)) {
       # Add p values
       sig_test <- cor.mtest(mat, method = corr_method[2], exact = F) # package corrplot
       # Get p value matrix from sig_test, melt, and bind "value"/3rd column to melted data frame
@@ -166,12 +158,12 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
       coord_equal(ratio = 1)
 
     # Add stars if applicable
-    if (!isFALSE(p_signif)) {
-      if (p_signif == "stars") {
+    if (!isFALSE(pval.label)) {
+      if (pval.label == "p.signif") {
         p <- p +
           geom_text(aes(label = p_stars), size = star_size, color = pval_color, vjust = 0.8)
       }
-      if (p_signif == "text") {
+      if (pval.label == "p.format") {
         p <- p +
           geom_text(aes(label = p.value), size = star_size, color = pval_color, vjust = 0.5)
       }
@@ -200,7 +192,7 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
       labs(
         title = paste(labels, collapse = "_"),
         subtitle = out_dir,
-        caption = sprintf("%s", ifelse(!isFALSE(p_signif), "p <= 0.001 '****', 0.001 '***', 0.01 '**', 0.05 '*'", "")),
+        caption = sprintf("%s", ifelse(!isFALSE(pval.label), "p <= 0.001 '****', 0.001 '***', 0.01 '**', 0.05 '*'", "")),
         y = ylab,
         x = xlab
       )
@@ -229,21 +221,16 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
 #' @param text_size The size of text labels on correlation plots. Color legend size is text_size/1.5.
 #' @param pch_size The size of star labels.
-#' @param pal_brew RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options. Note: Define PAL_BREWER global variable.
-#' @param corr_method Method for correlation (one of "pearson","spearman","kendall")
+#' @param gradient_palette RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options.
+#' @param corr_method A character vector of 2 that correspond to "use" and "method" parameters in \code{\link[stats]{cor}}. The first defaults to "pairwise.complete.obs" and second is one of "pearson","spearman","kendall".
 #'
 #' @return Plot object.
 #' @export
 #'
 #' @examples
-plot_corrplot <- function(mat, labels = "", text_size = 0.5, pch_size = 0.5, pal_brew = "RdBu", corr_method = c("pairwise.complete.obs", "spearman")) {
-  # If brewer palette specified in global constants/variables, make it as default palette
-  if (isTRUE("PAL_BREWER" %in% ls(envir = .GlobalEnv))) {
-    pal_brew <- PAL_BREWER
-  }
-
+plot_corrplot <- function(mat, labels = "", text_size = 0.5, pch_size = 0.5, gradient_palette = "RdBu", corr_method = c("pairwise.complete.obs", "spearman")) {
   # Make color palette gradient
-  pal_grad <- get_col_palette(pal_brew, rev = T) %>% get_col_gradient(50)
+  pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(50)
 
   tryCatch(expr = {
     # Get correlation matrices and significance tables

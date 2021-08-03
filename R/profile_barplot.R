@@ -5,8 +5,9 @@
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
 #' @param log_ Logical indicating whether to log2-transform values
+#' @param gradient_palette RColorBrewer palette for variable colors if var_colors is NA. See RColorBrewer::display.brewer.all() for all options.
 #' @export
-run_profile_barplot <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", log_ = F) {
+run_profile_barplot <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", log_ = F, gradient_palette = "RdBu") {
   # Get column name of rowAnn if it's an index
   if (is.numeric(rowAnn_col)) {
     rowAnn_col <- colnames(df)[rowAnn_col]
@@ -57,7 +58,7 @@ run_profile_barplot <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", 
 
   # Plot for each bar graph type
   for (pos in c("fill", "stack")) {
-    plot_profile_barplot(df2, legend_title = rowAnn_col, pos = pos, out_dir = out_dir, labels = labels, font_size = 30, save.to.file = F)
+    plot_profile_barplot(df2, legend_title = rowAnn_col, pos = pos, gradient_palette = gradient_palette, out_dir = out_dir, labels = labels, font_size = 30, save.to.file = F)
   }
   dev.off()
 }
@@ -75,7 +76,7 @@ run_profile_barplot <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", 
 #' @param var_colors A vector of colors to manually specify variable colors.
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
-#' @param pal_brew RColorBrewer palette for variable colors if var_colors is NA. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.
+#' @param gradient_palette RColorBrewer palette for variable colors if var_colors is NA. See RColorBrewer::display.brewer.all() for all options.
 #' @param pos How bars should be stacked. Either "fill" (relative ratio, 100% bar) or "stack". See position parameter in \code{\link[ggplot2]{geom_bar}}
 #' @param font_size The size of axis title on plots. The size of plot subtitle and caption is font_size / 2. The size of legend text and x axis text is font_size / 3 and font_size / 1.5.
 #' @param line_size The thickness of axis lines.
@@ -84,15 +85,10 @@ run_profile_barplot <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", 
 #' @return Plot object if save.to.file is FALSE.
 #' @export
 plot_profile_barplot <- function(df2, pos = "stack", var_colors = NA, out_dir = ".", legend_title = "Group",
-                                 labels = "", pal_brew = "RdBu", line_size = 1, font_size = 10, save.to.file = F) {
-  # Make color palette following gradient
-  # If brewer palette specified in global constants/variables, make it as function parameter
-  if ("PAL_BREWER" %in% ls(envir = .GlobalEnv)) {
-    pal_brew <- PAL_BREWER
-  }
-
+                                 labels = "", gradient_palette = "RdBu", line_size = 1, font_size = 10, save.to.file = F) {
+  # Get colors for each variable (feature)
   if (is.na(var_colors)) {
-    var_colors <- get_element_colors(df2$variable, get_col_palette(pal_brew, rev = T))
+    var_colors <- get_element_colors(df2$variable, get_col_palette(gradient_palette, rev = T))
     # Replace the index at the centre that is close to white with gray
     var_colors[ceiling(length(var_colors) / 2)] <- "gray"
   }

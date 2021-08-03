@@ -5,8 +5,9 @@
 #' @param colAnns A character vector of 1-2 column names in ds$colAnn.
 #' @param parameters Group names or parameters in colAnns[1] that required its own barplot
 #' @param out_dir The output directory where the plots will be saved, default is current working directory.
+#' @param gradient_palette RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options.
 #' @export
-run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, parameters = "", out_dir = ".") {
+run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, parameters = "", out_dir = ".", gradient_palette = "RdBu") {
   if (is.numeric(rowAnn1)) {
     rowAnn1 <- colnames(df)[rowAnn1]
   }
@@ -50,7 +51,7 @@ run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, paramet
 #' @param legend_title Title of legend.
 #' @param pal Vector for colors of values.
 #' @param plot_title Title of plot.
-#' @param pal_brew RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.
+#' @param gradient_palette RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options.
 #' @param pos How bars should be stacked. Either "fill" (relative ratio, 100% bar) or "stack". See position parameter in \code{\link[ggplot2]{geom_bar}}
 #' @param font_size The size of axis title on plots. The size of plot subtitle and caption is font_size / 2. The size of legend text and x axis text is font_size / 3 and font_size / 1.5.
 #' @param line_size The thickness of axis lines.
@@ -61,7 +62,7 @@ run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, paramet
 #'
 #' @examples
 plot_discrete_barplot <- function(df2, out_dir = ".", xlab = "", ylab = "", facet_by_var = F, legend_title = "", pal = NA, plot_title = "",
-                                  pal_brew = "RdBu", pos = "stack", font_size = 20, line_size = 2, save.to.file = F) {
+                                  gradient_palette = "RdBu", pos = "stack", font_size = 20, line_size = 2, save.to.file = F) {
   colnames(df2) <- c("ID", "variable", "value")
 
   # Remove Nas and convert value column to character
@@ -69,13 +70,8 @@ plot_discrete_barplot <- function(df2, out_dir = ".", xlab = "", ylab = "", face
   df2$value <- as.factor(as.character(df2$value))
 
   if (is.na(pal)) {
-    # If brewer palette specified in global constants/variables, make it as function parameter
-    if ("PAL_BREWER" %in% ls(envir = .GlobalEnv)) {
-      pal_brew <- PAL_BREWER
-    }
-
     # Make color palette gradient
-    pal <- get_col_palette(pal_brew, rev = T) %>% get_element_colors(levels(df2$value), ., rearr = F)
+    pal <- get_col_palette(gradient_palette, rev = T) %>% get_element_colors(levels(df2$value), ., rearr = F)
   }
 
   tryCatch(
@@ -127,7 +123,7 @@ plot_discrete_barplot <- function(df2, out_dir = ".", xlab = "", ylab = "", face
       if (save.to.file) {
         # Print to file
         filename <- sprintf("%s/%s_discrete_barplot_full.pdf", out_dir, plot_title)
-        ggsave(filename, plot = g, width = length(unique(df2$variable)) * 3 + 2, height = 7.5)
+        ggsave(filename, plot = g, width = length(unique(df2$variable)) * 3 + 2, height = 7.5, limitsize = F)
       } else {
         # Print to image panel
         print(g)
