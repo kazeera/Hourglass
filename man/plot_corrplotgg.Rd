@@ -13,10 +13,10 @@ plot_corrplotgg(
   pval_color = "white",
   grid.fill.color = "white",
   grid.line.color = "black",
-  p_signif = "stars",
+  pval.label = "p.signif",
   circ_max = NULL,
   star_size = NULL,
-  pal_brew = "RdBu",
+  gradient_palette = "RdBu",
   font_size = 15,
   line_size = 1,
   out_dir = ".",
@@ -32,7 +32,7 @@ plot_corrplotgg(
 
 \item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
 
-\item{corr_method}{A character vector of 2 that correspond to use and method parameters in \code{\link[stats]{cor}}.}
+\item{corr_method}{A character vector of 2 that correspond to "use" and "method" parameters in \code{\link[stats]{cor}}. The first defaults to "pairwise.complete.obs" and second is one of "pearson","spearman","kendall".}
 
 \item{pval_color}{The color of the significance stars or p-value text.}
 
@@ -40,13 +40,13 @@ plot_corrplotgg(
 
 \item{grid.line.color}{The color for grid line.}
 
-\item{p_signif}{How p-values are represented. Either "stars" or "text".}
+\item{pval.label}{How p-values are represented. Allowed values are "p.signif" (stars) and "p.format" (number).}
 
 \item{circ_max}{The maximum size of circle within cells in grid.}
 
 \item{star_size}{The size of star labels on correlation plots.}
 
-\item{pal_brew}{RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options. Note: Define PAL_BREWER global variable.}
+\item{gradient_palette}{RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options.}
 
 \item{font_size}{The size of text labels on correlation plots. legend title. The size of legend text and plot title is font_size / 1.5. The size of legend text and plot subtitle is font_size / 3.}
 
@@ -67,6 +67,7 @@ Other plotting:
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

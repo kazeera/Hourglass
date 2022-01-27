@@ -2,9 +2,19 @@
 % Please edit documentation in R/profile_barplot.R
 \name{run_profile_barplot}
 \alias{run_profile_barplot}
-\title{Generates both fill and stacked bar plots and saves to file}
+\title{Functions defined in this file:
+run_profile_barplot
+plot_profile_barplot
+Generates both fill and stacked bar plots and saves to file}
 \usage{
-run_profile_barplot(df, rowAnn_col = 1, out_dir = ".", labels = "", log_ = F)
+run_profile_barplot(
+  df,
+  rowAnn_col = 1,
+  out_dir = ".",
+  labels = "",
+  log_ = F,
+  gradient_palette = "RdBu"
+)
 }
 \arguments{
 \item{df}{A data frame - first column: rowAnnotation column with groups, the rest of the columns are values.}
@@ -16,7 +26,12 @@ run_profile_barplot(df, rowAnn_col = 1, out_dir = ".", labels = "", log_ = F)
 \item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
 
 \item{log_}{Logical indicating whether to log2-transform values}
+
+\item{gradient_palette}{RColorBrewer palette for variable colors if var_colors is NA. See RColorBrewer::display.brewer.all() for all options.}
 }
 \description{
+Functions defined in this file:
+run_profile_barplot
+plot_profile_barplot
 Generates both fill and stacked bar plots and saves to file
 }

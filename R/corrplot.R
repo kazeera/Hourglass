@@ -1,3 +1,8 @@
+#' Functions defined in this file:
+#'   run_corrplot_analysis
+#'   plot_corrplotgg
+#'   plot_corrplot
+
 #' Run correlation plot analysis
 #'
 #' Makes multiple correlation plots in 1 PDF file, each group and all values (total plots >= 2)
@@ -40,7 +45,7 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
   if (any(is.na(df[, val_cols]))) {
     return()
   }
-  
+
   # Specify point sizes
   text_size <- ifelse(n_stains < 20, 0.071 * n_stains, 0.035 * n_stains) # stain label size
   pch_size <- ifelse(n_stains < 20, 0.081 * n_stains, 0.04 * n_stains) # star size
@@ -72,7 +77,7 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
       for (group in grps) {
         # Get indices
         keep_rows <- as.character(df[, rowAnn_col]) == group
-        plot_corrplot(df = df[keep_rows, val_cols], labels = c(group, labels), text_size = text_size, pch_size = pch_size, gradient_palette = gradient_palette)
+        plot_corrplot(mat = df[keep_rows, val_cols], labels = c(group, labels), text_size = text_size, pch_size = pch_size, gradient_palette = gradient_palette)
       }
     }
     dev.off()
@@ -99,11 +104,8 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
 #' @param line_size The thickness of grid lines.
 #' @param out_dir The output directory where the plot will be saved when save.to.file is TRUE, default is current working directory.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
-#'
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-#'
-#' @examples
 plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method = c("pairwise.complete.obs", "spearman"), pval_color = "white",
                             grid.fill.color = "white", grid.line.color = "black", pval.label = "p.signif", circ_max = NULL, star_size = NULL,
                             gradient_palette = "RdBu", font_size = 15, line_size = 1, out_dir = ".", save.to.file = F) {
@@ -223,11 +225,8 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
 #' @param pch_size The size of star labels.
 #' @param gradient_palette RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options.
 #' @param corr_method A character vector of 2 that correspond to "use" and "method" parameters in \code{\link[stats]{cor}}. The first defaults to "pairwise.complete.obs" and second is one of "pearson","spearman","kendall".
-#'
 #' @return Plot object.
 #' @export
-#'
-#' @examples
 plot_corrplot <- function(mat, labels = "", text_size = 0.5, pch_size = 0.5, gradient_palette = "RdBu", corr_method = c("pairwise.complete.obs", "spearman")) {
   # Make color palette gradient
   pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(50)

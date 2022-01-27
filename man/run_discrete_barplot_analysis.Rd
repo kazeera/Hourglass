@@ -2,14 +2,18 @@
 % Please edit documentation in R/discrete_barplot.R
 \name{run_discrete_barplot_analysis}
 \alias{run_discrete_barplot_analysis}
-\title{Makes discrete box plots for each parameter in column annotation}
+\title{Functions defined in this file:
+run_discrete_barplot_analysis
+plot_discrete_barplot
+Makes discrete box plots for each parameter in column annotation}
 \usage{
 run_discrete_barplot_analysis(
   ds,
   rowAnn1 = 2,
   colAnns = NA,
   parameters = "",
-  out_dir = "."
+  out_dir = ".",
+  gradient_palette = "RdBu"
 )
 }
 \arguments{
@@ -17,12 +21,15 @@ run_discrete_barplot_analysis(
 
 \item{rowAnn1}{A column index (numeric) or name in ds$rowAnn indicating which groups to stratify by.}
 
-\item{colAnns}{A character vector of 1-2 column names in ds$colAnn.}
+\item{colAnns}{A character vector of 1-2 column names in ds$colAnn. c(Parameter, Feature/Stain/Gene)}
 
-\item{parameters}{Group names or parameters in colAnns\link{1} that required its own barplot}
+\item{parameters}{Group names or parameters in colAnn1 that required its own barplot}
 
-\item{out_dir}{The output directory where the plots will be saved, default is current working directory.}
+\item{gradient_palette}{RColorBrewer palette name for gradients (e.g. heatmap, correlation plots). See RColorBrewer::display.brewer.all() for all options.}
 }
 \description{
+Functions defined in this file:
+run_discrete_barplot_analysis
+plot_discrete_barplot
 Makes discrete box plots for each parameter in column annotation
 }

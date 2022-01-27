@@ -2,9 +2,17 @@
 % Please edit documentation in R/make_dataset_ob.R
 \name{make_dataset_ob}
 \alias{make_dataset_ob}
-\title{Initialize a dataset object}
+\title{Functions defined in this file:
+make_dataset_ob
+Initialize a dataset object}
 \usage{
-make_dataset_ob(vals, colAnn = NULL, rowAnn = NULL, name = "")
+make_dataset_ob(
+  vals,
+  colAnn = NULL,
+  rowAnn = NULL,
+  name = "",
+  remove_outliers = F
+)
 }
 \arguments{
 \item{vals}{Numeric matrix or data frame of values}
@@ -14,6 +22,8 @@ make_dataset_ob(vals, colAnn = NULL, rowAnn = NULL, name = "")
 \item{rowAnn}{Row annotations. Data frame that specifies the annotations for each row of vals. Each row defines features for a specific row The row names should match the row names of vals.}
 
 \item{name}{Name of dataset that will be used in plots and so on.}
+
+\item{remove_outliers}{TRUE or FALSE. Should we remove outliers in vals? (i.e. for each column, only keep points between quartile(Q)1 and Q3)}
 }
 \value{
 A dataset object (essentially a list with 4 elements: vals, colAnn, rowAnn, name)

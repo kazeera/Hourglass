@@ -9,7 +9,7 @@ plot_corrplot(
   labels = "",
   text_size = 0.5,
   pch_size = 0.5,
-  pal_brew = "RdBu",
+  gradient_palette = "RdBu",
   corr_method = c("pairwise.complete.obs", "spearman")
 )
 }
@@ -22,9 +22,9 @@ plot_corrplot(
 
 \item{pch_size}{The size of star labels.}
 
-\item{pal_brew}{RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options. Note: Define PAL_BREWER global variable.}
+\item{gradient_palette}{RColorBrewer palette. See \code{\link[RColorBrewer]{display.brewer.all}} for all options.}
 
-\item{corr_method}{Method for correlation (one of "pearson","spearman","kendall")}
+\item{corr_method}{A character vector of 2 that correspond to "use" and "method" parameters in \code{\link[stats]{cor}}. The first defaults to "pairwise.complete.obs" and second is one of "pearson","spearman","kendall".}
 }
 \value{
 Plot object.
@@ -37,6 +37,7 @@ Other plotting:
 \code{\link{plot_corrplotgg}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

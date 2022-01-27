@@ -11,7 +11,7 @@ get_paired_df(ds, rowAnn1, pair_id = 1)
 
 \item{rowAnn1}{A column name in df indicating which groups to stratify by}
 
-\item{pair_id}{Name or column index in ds$rowAnn that count as patients or groups to pair by}
+\item{pair_id}{Name or column index in ds$rowAnn that count as patients or groups to pair by.}
 }
 \value{
 A new dataset object averaged for each rowAnn pair_id

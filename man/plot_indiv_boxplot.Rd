@@ -12,18 +12,20 @@ plot_indiv_boxplot(
   font_size = 25,
   show_stats = T,
   line_size = 1.3,
-  color_pal = NA,
+  lvl.colors = NA,
   xlab = "",
   ylab = "value",
   rowAnns = c(NA, NA),
   alpha_dots = 0.8,
   alpha_box = 1,
   point_size = 2,
+  gradient_palette = "Spectral",
   jit_w = 0.1,
   pval.test = "wilcox.test",
   pval.label = "p.signif",
   trim_x = 3,
-  save.to.file = T
+  save.to.file = T,
+  legend_position = "right"
 )
 }
 \arguments{
@@ -41,7 +43,7 @@ plot_indiv_boxplot(
 
 \item{line_size}{The thickness of axis lines.}
 
-\item{color_pal}{A vector of colors to manually specify box colors.}
+\item{lvl.colors}{A vector of colors to manually specify box colors.}
 
 \item{xlab}{X axis label.}
 
@@ -83,6 +85,7 @@ Other plotting:
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},
 \code{\link{plot_overview_boxplot}()},

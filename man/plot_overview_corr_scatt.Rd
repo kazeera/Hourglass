@@ -2,7 +2,10 @@
 % Please edit documentation in R/corrscatt.R
 \name{plot_overview_corr_scatt}
 \alias{plot_overview_corr_scatt}
-\title{Plot overview correlation scatter plot}
+\title{Functions defined in this file:
+plot_overview_corr_scatt
+plot_indiv_corrscatt
+Plot overview correlation scatter plot}
 \usage{
 plot_overview_corr_scatt(
   mat,
@@ -36,6 +39,9 @@ plot_overview_corr_scatt(
 Plot object if save.to.file is FALSE.
 }
 \description{
+Functions defined in this file:
+plot_overview_corr_scatt
+plot_indiv_corrscatt
 Plot overview correlation scatter plot
 }
 \seealso{
@@ -44,6 +50,7 @@ Other plotting:
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

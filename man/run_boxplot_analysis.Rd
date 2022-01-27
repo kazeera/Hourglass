@@ -2,7 +2,11 @@
 % Please edit documentation in R/boxplot.R
 \name{run_boxplot_analysis}
 \alias{run_boxplot_analysis}
-\title{Creates multiple boxplots in a folder in streamlined approach.}
+\title{Functions defined in this file:
+run_boxplot_analysis
+plot_overview_boxplot
+plot_indiv_boxplot
+Creates multiple boxplots in a folder in streamlined approach.}
 \usage{
 run_boxplot_analysis(
   ds,
@@ -19,5 +23,5 @@ run_boxplot_analysis(
 \item{make.overview.boxplot, make.indiv.boxplot}{Logical indicating which types of boxplots to create}
 }
 \description{
-Create both individual boxplots (in 1 PDF file), and overview boxplots in seperate folders for each unique colAnn\link{1} group. The boxes are specified by rowAnns\link{1} and dots are colored by rowAnns\link{2} (optional).
+Create both individual boxplots (in 1 PDF file), and overview boxplots in seperate folders for each unique colAnn1 group. The boxes are specified by rowAnn1 and dots are colored by rowAnn2 (optional).
 }

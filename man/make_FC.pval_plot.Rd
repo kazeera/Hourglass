@@ -10,14 +10,15 @@ make_FC.pval_plot(
   y_lab = "",
   plot_title = "",
   out_dir = ".",
-  p_signif = "stars",
-  pal_brew = "RdBu",
+  pval.label = "p.signif",
+  gradient_palette = "RdBu",
   group_name_sep = "/",
   trim_x = 3,
   pval_size = 8,
   pval_color = "white",
   log2FC = F,
-  apply_scale_colFC = T,
+  scale_FC = "cap_outliers",
+  rescale_to = c(0, 1),
   x_axis_angle = 0,
   save.to.file = F,
   font_size = 10,
@@ -26,13 +27,15 @@ make_FC.pval_plot(
 )
 }
 \arguments{
-\item{df}{A data frame with these exact columns 1) group (ie. group comparisons on x-axis), 2) p.value, 3) Fold.change, 4) Var (y-axis), created using \code{\link{make_p.val.FC_df}}.}
+\item{df}{A data frame with these exact columns 1) group (ie. group comparisons on x-axis), 2) p.value, 3) Fold.change, 4) Var (y-axis), created using \code{\link{make_FC.pval_df}}.}
 
 \item{plot_title}{Title of plot.}
 
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
 
-\item{pal_brew}{RColorBrewer palette for fold-change values. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.}
+\item{pval.label}{How p-values are represented. Allowed values are "p.signif" (stars) and "p.format" (number).}
+
+\item{gradient_palette}{RColorBrewer palette for fold-change values. See RColorBrewer::display.brewer.all() for all options.}
 
 \item{group_name_sep}{A character indicating how the labels for groups should be presented, "/" in low/high}
 
@@ -44,7 +47,9 @@ make_FC.pval_plot(
 
 \item{log2FC}{Logical (TRUE/FALSE). Should log2 transformation be applied to Fold.change column before plotting?}
 
-\item{apply_scale_colFC}{Logical (TRUE/FALSE). Should scale be applied to FC for each group, ie. column-wise?}
+\item{scale_FC}{Either "scale_column", "scale_row", "none", or "cap_outliers" (default). Should scale be applied to FC for each group (column), Var (row)? In "cap_outliers", non-outliers are unscaled, but upper and lower outliers (points outside 1st/3rd quartiles respectively) become upper and lower values of range of non-outliers.}
+
+\item{rescale_to}{A numeric vector of length 2, indicating lower and upper limits of scale. Default is 0 to 1: c(0,1). Only applied if "scale_FC" parameter is not "none".}
 
 \item{x_axis_angle}{Angle of the x-axis label. Default is 0 (horizontal), 90 is vertical.}
 
@@ -59,8 +64,6 @@ make_FC.pval_plot(
 \item{xlab}{X axis label.}
 
 \item{ylab}{Y axis label.}
-
-\item{p.signif}{How p-values should be plotted. Either "stars" or "number".}
 }
 \value{
 Plot object if save.to.file is FALSE.
@@ -77,6 +80,3 @@ neo/non 0.9082967 1.0589647      CD4
 neo/non 0.9691466 0.9896168     CD45
 }
 
-\examples{
-
-}

@@ -11,7 +11,7 @@ plot_profile_barplot(
   out_dir = ".",
   legend_title = "Group",
   labels = "",
-  pal_brew = "RdBu",
+  gradient_palette = "RdBu",
   line_size = 1,
   font_size = 10,
   save.to.file = F
@@ -28,7 +28,7 @@ plot_profile_barplot(
 
 \item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
 
-\item{pal_brew}{RColorBrewer palette for variable colors if var_colors is NA. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.}
+\item{gradient_palette}{RColorBrewer palette for variable colors if var_colors is NA. See RColorBrewer::display.brewer.all() for all options.}
 
 \item{line_size}{The thickness of axis lines.}
 
@@ -57,6 +57,7 @@ Other plotting:
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

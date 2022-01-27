@@ -1,3 +1,9 @@
+#' Functions defined in this file:
+#'   create_folder
+#'   read_file
+#'   get_file
+#'   get_comparison_name
+
 #' Takes in a string and creates a new folder with that name.
 #'
 #' String path can contain multiple folders that do not exist yet, separated by "/".
@@ -31,6 +37,9 @@ create_folder <- function(folder) {
 #' @return The data frame stored in file
 #' @export
 read_file <- function(filename, sep = "\t") {
+  # Replace single/double slashes with forward slash for reading into R
+  filename <- filename %>% gsub("\\\\", "/", .)
+
   # Get part after last period in file name, e.g. "txt" in "____.txt"
   file_type <- gsub(".*\\.", "", filename)
   if (file_type == "txt") {
@@ -54,71 +63,55 @@ get_file <- function(file_list, regex) {
 }
 
 
-#' Read in custom analysis file
-#'
-#' @param file_xl The name of file path to an Excel file for custom analyses
-#' @section Custom analysis file description:
-#'
-#' For custom/handpicked parameters for each strata, keys and values worksheets need to be specified.
-#'
-#' Worksheet Names:
-#' I. "Keys"
-#' Table with 3 columns:
-#' Analysis_Name	Names of custom analyses
-#' Group	The classifications
-#' Group.Numbers	The numbers belonging to each classification
-#'
-#' II. "Values"
-#' Table with atleast 3 columns:
-#' Column 1 must share a name with a column annotation
-#' Optional: next n columns can be additional column annotations e.g. Stroma or Tumor, Group..
-#' For each "Group" in key, 2 columns are needed:
-#'   1) x_y, where x is the group name in keys and y is a column in column annotations
-#'   2) x_Group.Numbers, where x is the group name
-#' @return List of 2 data frames: 1) keys, 2) values
-#' @export
-import_customAn_file <- function(file_xl) {
-  # If file not found
-  if (length(file_xl) == 0) {
-    return(NULL)
-  }
-
-  library(openxlsx)
-  # return a list, where each element is a relevant worksheet
-  list(
-    keys = read.xlsx(file_xl, sheet = "Keys"),
-    values = read.xlsx(file_xl, sheet = "Values")
-  )
-}
-
-#' PDAC-specific - Customize output folder name depending on exclusion criteria and presence of row annotation 2
+#' Customize name of comparison / output folder depending on inclusion/exclusion criteria and presence of row annotation 2
 #'
 #' @param current_dir The name of the output directory
+#' @param filters A string in the form of filters delimited by default ";". Each filter has 3 parts: 1) column name in df, 2) operator either != or ==, 3) value in column to exclude/include
+#' @param delim A string/character to seperate individuals filter by, default is ";"
 #' @param all_out_dirs A character vector of directory names, if the current_dir name exists, the algorithm will append "1", "2", and so on until the dir name is unique.
 #' @param rowAnn2 Name of row annotation 2 if applicable, otherwise NA.
-#' @param EXC_HRD Logical, include "excl HRD" label?
-#' @param EXC_NEO Logical, include "excl neo" label?
 #' @return New name of output folder
+#' @example subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
 #' @export
-get_out_dir <- function(current_dir, all_out_dirs = NULL, rowAnn2 = NA, EXC_HRD = F, EXC_NEO = F) {
-  # Now append labels based on whether HRD/neo cases and color codes are included
-  if (EXC_HRD) {
-    current_dir <- paste(current_dir, "excl HRD")
+get_comparison_name <- function(current, filters, delim = ";", all_out_dirs = NULL, rowAnn2 = NA) {
+  # Retrieve individual filters as elements in a vector
+  filters <- filters %>%
+    gsub("\"", "", x = .) %>% # Remove quotes
+    strsplit(split = delim) %>% # Split by delimeter
+    unlist() # Unlist result
+
+  # Loop through filters
+  for (filt in filters) {
+    # Which operator?
+    operator <- ifelse(grepl("!=", filt), "!=", ifelse(grepl("==", filt), "==", NA))
+
+    # Get first part (column name) and second part of filter (value to keep/exclude)
+    part1 <- get_nth_part(filt, operator, 1)
+    part2 <- get_nth_part(filt, operator, 2)
+
+    # Now depending on equality or inequality, perform correct filtering
+    if (operator == "==") { # inclusion/keep
+      current <- paste(current, part2)
+      # e.g. c(NA, "1", "@3", NA) %in% "1" returns F,T,F,F
+    }
+    if (operator == "!=") { # exclude/remove
+      current <- paste(current, paste("excl", part2, sep = "_"))
+      # e.g. !c(NA, "1", "@3", NA) %in% NA returns F,T,T,F
+    }
   }
-  if (EXC_NEO) {
-    current_dir <- paste(current_dir, "excl neo")
-  }
+
+  # Add color code
   if (!is.na(rowAnn2)) {
     col_label <- sprintf("dots %s", rowAnn2)
-    current_dir <- paste(current_dir, col_label)
+    current <- paste(current, col_label)
   }
   # In case a folder of the same name exists, append a number to the end of it
   i <- 1
-  while (current_dir %in% all_out_dirs) {
-    current_dir <- paste0(current_dir, i)
+  while (current %in% all_out_dirs) {
+    current <- paste0(current, i)
     i <- i + 1
   }
 
   # Return the name of the output folder
-  return(current_dir)
+  return(current)
 }

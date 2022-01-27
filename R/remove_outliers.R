@@ -1,3 +1,9 @@
+#' Functions defined in this file:
+#'   remove_outliers
+#'   remove_outliers2
+#'   remove_outliers_df
+#'   get_outliers
+
 #' Remove outliers outside of 1st and 3rd quartile by making the values NA
 #'
 #' @param x A numeric vector, can contain NA.

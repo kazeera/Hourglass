@@ -1,3 +1,10 @@
+#' Functions defined in this file:
+#'   pval_to_stars
+#'   means_of_groups
+#'   medians_of_groups
+#'   perform_t.test
+#'   perform_wilcox
+
 #' Convert p-values to stars
 #'
 #' Convert p-values to stars according to map legend p <= 0.001'****', 0.001 '***', 0.01 '**', 0.05 '*'
@@ -6,7 +13,7 @@
 #' @examples
 #' runif(10,min = 0, 0.06)
 #' pval_to_stars(c(0.0001, 0.00012, 0.002, 0.049, 0.05, 0.06))
-#' Output: [1] **** ***  **   *    *'
+#' Output: '**** ***  **   *    *'
 #' @return A character vector with stars representing p-values
 pval_to_stars <- function(pvals) {
   symnum(
@@ -23,7 +30,6 @@ pval_to_stars <- function(pvals) {
 #'
 #' @param vals A numeric vector of values
 #' @param groups A character vector specifying the respective group of each value
-#' @example
 #' @return A data frame with 2 columns: 1) group name and 2) median value of group
 #' @export
 means_of_groups <- function(vals, groups) {
@@ -43,7 +49,6 @@ means_of_groups <- function(vals, groups) {
 #'
 #' @param vals A numeric vector of values
 #' @param groups A character vector specifying the respective group of each value
-#' @example
 #' @return A data frame with 2 columns: 1) group name and 2) median value of group
 #' @export
 medians_of_groups <- function(vals, groups) {
@@ -63,7 +68,6 @@ medians_of_groups <- function(vals, groups) {
 #' @param vals A numeric vector of values
 #' @param groups A character vector specifying the respective group of each value
 #' @param ... Additional parameters passed to ?pairwise.t.test
-#' @example
 #' @return A number indicating p-value from statistical test
 #' @export
 perform_t.test <- function(vals, groups, ...) {
@@ -80,7 +84,6 @@ perform_t.test <- function(vals, groups, ...) {
 #' @param vals A numeric vector of values
 #' @param groups A character vector specifying the respective group of each value
 #' @param ... Additional parameters passed to ?pairwise.wilcox.test.
-#' @example
 #' @return A number indicating p-value from statistical test
 #' @export
 perform_wilcox <- function(vals, groups, p.adjust.method = "none", paired = F, ...) {

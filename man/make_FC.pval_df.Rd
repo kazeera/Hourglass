@@ -2,7 +2,11 @@
 % Please edit documentation in R/FC.pval.R
 \name{make_FC.pval_df}
 \alias{make_FC.pval_df}
-\title{Find p-values and fold-change (FC) for each group}
+\title{Functions defined in this file:
+make_FC.pval_df
+make_FC.pval_df_helper
+make_FC.pval_plot
+Find p-values and fold-change (FC) for each group}
 \usage{
 make_FC.pval_df(
   df,
@@ -11,7 +15,7 @@ make_FC.pval_df(
   vs.other = T,
   group_name_sep = "/",
   FC.method = "divide",
-  p.method = "wilcox"
+  p.method = "wilcox.test"
 )
 }
 \arguments{
@@ -27,7 +31,7 @@ make_FC.pval_df(
 
 \item{FC.method}{Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)}
 
-\item{p.method}{Significance test to use, either "t.test" or "wilcox"}
+\item{p.method}{Significance test to use, either "t.test" or "wilcox.test"}
 }
 \value{
 A data frame with p-vals and fold-changes for each group (rowAnn) in each variable (column)

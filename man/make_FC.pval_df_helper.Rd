@@ -11,7 +11,7 @@ make_FC.pval_df_helper(
   rev = F,
   group_name_sep = "/",
   FC.method = "divide",
-  p.method = "wilcox"
+  p.method = "wilcox.test"
 )
 }
 \arguments{
@@ -27,7 +27,7 @@ make_FC.pval_df_helper(
 
 \item{FC.method}{Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)}
 
-\item{p.method}{Significance test to use, either "t.test" or "wilcox"}
+\item{p.method}{Significance test to use, either "t.test" or "wilcox.test"}
 }
 \value{
 A data frame with p-values and fold-changes

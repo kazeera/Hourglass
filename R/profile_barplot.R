@@ -1,3 +1,7 @@
+#' Functions defined in this file:
+#'   run_profile_barplot
+#'   plot_profile_barplot
+
 #' Generates both fill and stacked bar plots and saves to file
 #'
 #' @param df A data frame - first column: rowAnnotation column with groups, the rest of the columns are values.
@@ -86,6 +90,10 @@ run_profile_barplot <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", 
 #' @export
 plot_profile_barplot <- function(df2, pos = "stack", var_colors = NA, out_dir = ".", legend_title = "Group",
                                  labels = "", gradient_palette = "RdBu", line_size = 1, font_size = 10, save.to.file = F) {
+
+  # Make the first column "group"
+  colnames(df2) <- c("group", "ID", "variable", "value")
+
   # Get colors for each variable (feature)
   if (is.na(var_colors)) {
     var_colors <- get_element_colors(df2$variable, get_col_palette(gradient_palette, rev = T))
@@ -93,8 +101,6 @@ plot_profile_barplot <- function(df2, pos = "stack", var_colors = NA, out_dir = 
     var_colors[ceiling(length(var_colors) / 2)] <- "gray"
   }
 
-  # Make the first column "group"
-  colnames(df2) <- c("group", "ID", "variable", "value")
   tryCatch(
     {
       # Initialize ggplot
@@ -136,9 +142,13 @@ plot_profile_barplot <- function(df2, pos = "stack", var_colors = NA, out_dir = 
           legend.key.size = unit(1, "line")
         ) + #+  facet_wrap(~group, scales = "free_x")
         facet_grid(~group, scales = "free_x", space = "free")
-      # facet_grid(~vars(group), scales = "free", space = "free")
+
+      # Convert y-axis to 0-100% and add horizontal line at 50% of y axis
       if (pos == "fill") {
-        g <- g + scale_y_continuous(labels = percent_format()) # scales
+        g <- g + scale_y_continuous(labels = percent_format()) + # scales
+          geom_hline(yintercept = 0.5)
+      } else {
+        g <- g + geom_hline(yintercept = (layer_scales(g)$y$range$range[2]) / 2) # layer_scales returns the y-axis range, [2] is the upper bound (max)
       }
 
       # Save to file

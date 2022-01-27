@@ -2,13 +2,44 @@
 % Please edit documentation in R/paired.R
 \name{run_paired_analysis}
 \alias{run_paired_analysis}
-\title{Makes multiple correlation plots in 1 PDF file}
+\title{Functions defined in this file:
+run_paired_analysis
+get_paired_df
+plot_indiv_paired
+Makes multiple correlation plots in 1 PDF file}
 \usage{
-run_paired_analysis(ds, rowAnns, colAnns = NA, out_dir = ".")
+run_paired_analysis(
+  ds,
+  rowAnns,
+  colAnns = NA,
+  out_dir = ".",
+  var_colors = NULL,
+  pair_id = 1,
+  pval.test = "t.test",
+  pval.label = "p.signif"
+)
 }
 \arguments{
+\item{ds}{A dataset object (a list with vals, rowAnn, colAnn, comparison, name).}
+
+\item{rowAnns}{A character vector of 1-2 column names in ds$rowAnn. c(MainComparison, Subgroup)}
+
+\item{colAnns}{A character vector of 1-2 column names in ds$colAnn. c(Parameter, Feature/Stain/Gene)}
+
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
+
+\item{var_colors}{A named vector with colors as values and annotations/groups as names.}
+
+\item{pair_id}{Name or index of column in ds$rowAnn that count as patients or groups to pair by, i.e. which ID to average over, e.g. patient ID (if there are multiple rows per patient)}
+
+\item{pval.test}{Which two-samples testing should be used? String corresponding to "method" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".}
+
+\item{pval.label}{How to display p-values? String corresponding to "label" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
 }
 \description{
+Functions defined in this file:
+run_paired_analysis
+get_paired_df
+plot_indiv_paired
 Makes multiple correlation plots in 1 PDF file
 }

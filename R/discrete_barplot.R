@@ -1,11 +1,12 @@
+#' Functions defined in this file:
+#'   run_discrete_barplot_analysis
+#'   plot_discrete_barplot
+
 #' Makes discrete box plots for each parameter in column annotation
 #'
-#' @param ds A dataset object (a list with vals, rowAnn, colAnn, comparison, name).
+#' @inheritParams run_comparison
 #' @param rowAnn1 A column index (numeric) or name in ds$rowAnn indicating which groups to stratify by.
-#' @param colAnns A character vector of 1-2 column names in ds$colAnn.
-#' @param parameters Group names or parameters in colAnns[1] that required its own barplot
-#' @param out_dir The output directory where the plots will be saved, default is current working directory.
-#' @param gradient_palette RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options.
+#' @param parameters Group names or parameters in colAnn1 that required its own barplot
 #' @export
 run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, parameters = "", out_dir = ".", gradient_palette = "RdBu") {
   if (is.numeric(rowAnn1)) {
@@ -56,11 +57,8 @@ run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, paramet
 #' @param font_size The size of axis title on plots. The size of plot subtitle and caption is font_size / 2. The size of legend text and x axis text is font_size / 3 and font_size / 1.5.
 #' @param line_size The thickness of axis lines.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
-#'
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-#'
-#' @examples
 plot_discrete_barplot <- function(df2, out_dir = ".", xlab = "", ylab = "", facet_by_var = F, legend_title = "", pal = NA, plot_title = "",
                                   gradient_palette = "RdBu", pos = "stack", font_size = 20, line_size = 2, save.to.file = F) {
   colnames(df2) <- c("ID", "variable", "value")

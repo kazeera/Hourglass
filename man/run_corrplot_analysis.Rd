@@ -2,15 +2,21 @@
 % Please edit documentation in R/corrplot.R
 \name{run_corrplot_analysis}
 \alias{run_corrplot_analysis}
-\title{Run correlation plot analysis}
+\title{Functions defined in this file:
+run_corrplot_analysis
+plot_corrplotgg
+plot_corrplot
+Run correlation plot analysis}
 \usage{
 run_corrplot_analysis(
   df,
   rowAnn_col = 1,
   out_dir = ".",
   labels = "",
-  pal_brew = "RdBu",
-  plot_gg = T
+  gradient_palette = "RdBu",
+  plot_gg = T,
+  corr_method = c("pairwise.complete.obs", "spearman"),
+  pval.label = "p.signif"
 )
 }
 \arguments{
@@ -22,9 +28,13 @@ run_corrplot_analysis(
 
 \item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
 
-\item{pal_brew}{RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.}
+\item{gradient_palette}{RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options.}
 
 \item{plot_gg}{Should we use the function \code{link{plot_corrplotgg}} from this package? Otherwise, it uses \code{link{plot_corrplot}}.}
+
+\item{corr_method}{A character vector of 2 that correspond to "use" and "method" parameters in \code{\link[stats]{cor}}. The first defaults to "pairwise.complete.obs" and second should be one of "pearson","spearman","kendall".}
+
+\item{pval.label}{How to display p-values? Allowed values are "p.signif" (stars) and "p.format" (number).}
 }
 \description{
 Makes multiple correlation plots in 1 PDF file, each group and all values (total plots >= 2)
@@ -35,6 +45,7 @@ Other plotting:
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

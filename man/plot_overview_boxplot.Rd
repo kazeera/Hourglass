@@ -10,7 +10,7 @@ plot_overview_boxplot(
   labels = "",
   log10_y = F,
   lvl.colors = NA,
-  pal_brew = "RdBu",
+  gradient_palette = "Spectral",
   legend.title = "Group",
   xlab = "variable",
   dot_color = "black",
@@ -31,7 +31,7 @@ plot_overview_boxplot(
 
 \item{lvl.colors}{A vector of colors to manually specify levels colors = box colors.}
 
-\item{pal_brew}{RColorBrewer palette for variable colors if lvl.colors is NA. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.}
+\item{gradient_palette}{RColorBrewer palette for variable colors if lvl.colors is NA. See RColorBrewer::display.brewer.all() for all options.}
 
 \item{legend.title}{Title for legend.}
 
@@ -59,6 +59,7 @@ Other plotting:
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

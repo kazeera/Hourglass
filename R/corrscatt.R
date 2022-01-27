@@ -1,3 +1,7 @@
+#' Functions defined in this file:
+#'   plot_overview_corr_scatt
+#'   plot_indiv_corrscatt
+
 #' Plot overview correlation scatter plot
 #'
 #' @family plotting
@@ -63,8 +67,6 @@ plot_overview_corr_scatt <- function(mat, out_dir = ".", labels = "", corr_metho
 #' @section Warning:
 #' This function will take a long time to run depending on the number of variables.
 #' @export
-#'
-#' @examples
 plot_indiv_corrscatt <- function(df, rowAnn_col = 1, cor.method = "spearman", out_dir = ".", labels = "") {
   # Get column name of rowAnn if it's an index
   if (is.numeric(rowAnn_col)) {

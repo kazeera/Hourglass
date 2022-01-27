@@ -1,3 +1,8 @@
+#' Functions defined in this file:
+#'   make_FC.pval_df
+#'   make_FC.pval_df_helper
+#'   make_FC.pval_plot
+
 #' Find p-values and fold-change (FC) for each group
 #'
 #' Find p-values and fold-change (FC) for each group specified in rowAnn_col across many columns of a data frame
@@ -137,7 +142,7 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #'
 #' Plot grid of FC values as fill (with color scale) and p-value as stars/numbers in the centre of each tile.
 #'
-#' @param df A data frame with these exact columns 1) group (ie. group comparisons on x-axis), 2) p.value, 3) Fold.change, 4) Var (y-axis), created using \code{\link{make_p.val.FC_df}}.
+#' @param df A data frame with these exact columns 1) group (ie. group comparisons on x-axis), 2) p.value, 3) Fold.change, 4) Var (y-axis), created using \code{\link{make_FC.pval_df}}.
 #' @section Example of input data frame:
 #' group   p.value       Fold.change      Var
 #' neo/non 0.6747883 1.5617445    CD11B
@@ -162,23 +167,19 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
 #' @param font_size The size of text labels plot. legend title. The size of plot title, axis text, legend text is font_size. The size of plot subtitle is font_size / 1.5.
 #' @param line_size The thickness of grid lines.
 #' @param alphabetical_row Logical; should the y axis be sorted alphabetically or preserve the order of df$Var?
-#'
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-#'
-#' @examples
-#'
 make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_dir = ".", pval.label = "p.signif", gradient_palette = "RdBu",
-                              group_name_sep = "/", trim_x = 3, pval_size = 8, pval_color = "white", log2FC = F, scale_FC = "cap_outliers", rescale_to = c(0,1),
+                              group_name_sep = "/", trim_x = 3, pval_size = 8, pval_color = "white", log2FC = F, scale_FC = "cap_outliers", rescale_to = c(0, 1),
                               x_axis_angle = 0, save.to.file = F, font_size = 10, line_size = 1, alphabetical_row = F) {
   # Error checking
-  if(!scale_FC %in% c("scale_column", "scale_row", "none", "cap_outliers")){
+  if (!scale_FC %in% c("scale_column", "scale_row", "none", "cap_outliers")) {
     errorCondition(message = "Ensure scale_FC parameter in make_FC.pval_plot has value of: 'scale_column', 'scale_row', 'none', or 'cap_outliers'")
     return()
   }
 
   # Apply log transformation
-  if (log2FC){
+  if (log2FC) {
     df$Fold.change <- log2(df$Fold.change)
   }
 
@@ -186,7 +187,7 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
   if (scale_FC == "scale_column" | scale_FC == "scale_row") {
     scale_by <- ifelse(scale_FC == "scale_row", "Var", "group")
     # Apply scale
-    df$Fold.change <- ave(as.numeric(df$Fold.change), df[,scale_by], FUN = function(x) {
+    df$Fold.change <- ave(as.numeric(df$Fold.change), df[, scale_by], FUN = function(x) {
       scales::rescale(x, to = rescale_to)
     })
   }
@@ -200,7 +201,7 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
     # df$Fold.change[unchanged] <- scales::rescale(df$Fold.change[unchanged], to = rescale_to)
     # # Make outliers limit
     df$Fold.change[outliers == "lower"] <- df$Fold.change[unchanged] %>% min(na.rm = T) # rescale_to[1]
-    df$Fold.change[outliers == "upper"] <- df$Fold.change[unchanged] %>% max(na.rm = T)  # rescale_to[2]
+    df$Fold.change[outliers == "upper"] <- df$Fold.change[unchanged] %>% max(na.rm = T) # rescale_to[2]
   }
 
   # Add stars
@@ -239,12 +240,12 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
     other <- ifelse(isFALSE(trim_x), "other", strtrim("other", trim_x)) %>% grepl(e)
     df$group <- factor(df$group, levels = c(as.character(e[!other]), as.character(e[other])))
   }
-  
+
   # Color gradient for heatmap
   pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(100)
 
   # Should rows not be sorted?
-  if(isFALSE(alphabetical_row)) {
+  if (isFALSE(alphabetical_row)) {
     df$Var <- factor(df$Var, levels = unique(df$Var))
   }
   # Plot

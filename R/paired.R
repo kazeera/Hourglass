@@ -1,14 +1,19 @@
+#' Functions defined in this file:
+#'   run_paired_analysis
+#'   get_paired_df
+#'   plot_indiv_paired
+
 #' Makes multiple correlation plots in 1 PDF file
 #'
-#' @inheritParams run_comparison ds,rowAnns,colAnns,global_palette
+#' @inheritParams run_comparison
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
-#' @param pair_id Name or column index in ds$rowAnn that count as patients or groups to pair by, i.e. which ID to average over, e.g. patient ID (if there are multiple rows per patient) 
+#' @param pair_id Name or index of column in ds$rowAnn that count as patients or groups to pair by, i.e. which ID to average over, e.g. patient ID (if there are multiple rows per patient)
 #' @export
-run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", global_palette = NULL, pair_id = 1) {
+run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", var_colors = NULL, pair_id = 1, pval.test = "t.test", pval.label = "p.signif") {
   # Get data frame with individual pairs
   ds_sub <- get_paired_df(ds, rowAnns[1], pair_id)
   # Get color palette for row annotations
-  pal <- get_rowAnn_color_pal(ds_sub, rowAnns[1], global_palette) %>%
+  pal <- get_rowAnn_color_pal(ds_sub, rowAnns[1], var_colors) %>%
     .[["pal"]]
 
   # Get a vector of all the unique variables
@@ -28,8 +33,8 @@ run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", global
           # Subset data frame to only column of interest
           df <- data.frame(
             case = ds_sub$rowAnn[, pair_id],
-            box = ds_sub$rowAnn[, rowAnn1],
-            value = ds_sub$vals[, col_name], 
+            box = ds_sub$rowAnn[, rowAnns[1]],
+            value = ds_sub$vals[, col_name],
             stringsAsFactors = F
           )
           df <- get_duplicated_cases(df, col = "case", rm.NA = "value")
@@ -37,8 +42,8 @@ run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", global
           if (nrow(df) < 2) next
           # Create plot
           plot_indiv_paired(df,
-            labels = c(var1), color_pal = pal,
-            xlab = rowAnns[1], ylab = col_name, rowAnns = rowAnns, save.to.file = F
+                            labels = var1, color_pal = pal, pval.label = pval.label, pval.test = pval.test,
+                            xlab = rowAnns[1], ylab = col_name, rowAnns = rowAnns, save.to.file = F
           )
         },
         finally = {
@@ -49,7 +54,6 @@ run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", global
     dev.off()
   }
 }
-
 
 #' Finds means of pairs of duplicated ids in different groups
 #'
@@ -108,19 +112,15 @@ get_paired_df <- function(ds, rowAnn1, pair_id = 1) {
 #' @param ylab Y axis label.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
 #' @param rowAnns A character vector of 1-2 column names in ds$rowAnn.
-#' @param pval.test String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".
-#' @param pval.label String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).
-#'
+#' @param pval.test 2-sample test to use (paired only for 2 groups). String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".
+#' @param pval.label p-value label. String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-#'
-#' @examples
 plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", log10 = F, font_size = 30, line_size = 1.3, color_pal = NA,
-                              xlab = "variable", ylab = "value", rowAnns = c(NA, NA), pval.test = "wilcox.test",
-                              pval.label = "p.signif", save.to.file = T) {
+                              xlab = "variable", ylab = "value", rowAnns = c(NA, NA), pval.test = "t.test",
+                              pval.label = "p.format", save.to.file = T) {
   # Rename columns
   colnames(df)[1:3] <- c("case", "box", "value")
-
   # Log scale
   if (log10) {
     df$value <- log10(df$value) # a <- a + scale_y_continuous(trans='log10') # log transform
@@ -138,18 +138,21 @@ plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", log10 = F, fo
   # Make list of combinations (order doesn't matter) for p-values
   comb <- combinations(n = length(e), r = 2, v = e, repeats.allowed = F) %>% # gtools package
     split(., seq(nrow(.)))
+
+  # Paired 2 sample test only supported for 2 groups
+  paired <- ifelse(length(e) == 2, T, F)
+
   # Add stats to plot using ggpubr
   tryCatch({
-    a <- a + stat_compare_means(method = pval.test, comparisons = comb, na.rm = T, paired = T, label = pval.label, size = font_size / 5, bracket.size = 1)
+    a <- a + stat_compare_means(method = pval.test, comparisons = comb, na.rm = T, paired = paired, label = pval.label, size = font_size / 5, bracket.size = 1)
   })
-  # a <- a + stat_compare_means(method=pval.test,comparisons = comb, na.rm=T, label=pval.label, size = font_size/5, bracket.size = 1)
 
   # Trim x labels to 3 characters
   a <- a + scale_x_discrete(labels = function(x) strtrim(x, 3))
 
   # Account for PDAC-specific analysis
-  if (all(c("TMA.STROMAL.SUBTYPE", "MAIN.STROMAL.SUBTYPE", "PANC_TISS_ORDER") %in% ls(envir = .GlobalEnv))) {
-    if (get_nth_part(rowAnns[1], "_", 1) %in% c(TMA.STROMAL.SUBTYPE, MAIN.STROMAL.SUBTYPE) | (grepl(PANC.TISSUE, rowAnns[1]) & length(e) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
+  if ("PANC_TISS_ORDER" %in% ls(envir = .GlobalEnv)) {
+    if (isTRUE(any(PANC_TISS_ORDER %in% ele) & length(ele) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
       # Set subtype orders - PDAC
       panc_order <- PANC_TISS_ORDER[PANC_TISS_ORDER %in% e] # PANC_TISS_ORDER <- c("adj_normal", "mature", "intermediate","immature") # in "1.import_data.R"
       a <- a + scale_x_discrete(limits = panc_order, labels = function(x) strtrim(x, 3))

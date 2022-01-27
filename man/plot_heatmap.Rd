@@ -2,7 +2,9 @@
 % Please edit documentation in R/heatmap.R
 \name{plot_heatmap}
 \alias{plot_heatmap}
-\title{Plots a heatmap}
+\title{Functions defined in this file:
+plot_heatmap
+Plots a heatmap}
 \usage{
 plot_heatmap(
   mat,
@@ -27,7 +29,7 @@ plot_heatmap(
   clustering_method = "complete",
   show_colnames = T,
   show_rownames = F,
-  pal_brew = "RdBu",
+  gradient_palette = "RdBu",
   border_color = NA,
   ...
 )
@@ -73,7 +75,7 @@ plot_heatmap(
 
 \item{show_rownames}{Logical indicating whether to show row names on heatmap. See ?pheatmap}
 
-\item{pal_brew}{RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.}
+\item{gradient_palette}{RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options.}
 
 \item{...}{Additional plotting parameters. Parameters passed to pheatmap, see ?pheatmap.}
 }
@@ -85,6 +87,7 @@ Other plotting:
 \code{\link{plot_corrplotgg}()},
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

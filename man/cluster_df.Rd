@@ -2,7 +2,10 @@
 % Please edit documentation in R/cluster.R
 \name{cluster_df}
 \alias{cluster_df}
-\title{Re-orders a matrix by hierarchical clustering}
+\title{Functions defined in this file:
+cluster_df
+cluster_corrmat
+Re-orders a matrix by hierarchical clustering}
 \usage{
 cluster_df(
   df3,
@@ -24,5 +27,8 @@ cluster_df(
 An ordered matrix based on hierarchical clustering
 }
 \description{
+Functions defined in this file:
+cluster_df
+cluster_corrmat
 Re-orders a matrix by hierarchical clustering
 }

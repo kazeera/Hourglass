@@ -1,3 +1,21 @@
+#' Functions defined in this file:
+#'   load_packages
+#'   turn_off_null_devices
+#'   get_nth_part
+#'   df_to_numeric
+#'   get_duplicated_cases
+#'   rename_column
+#'   has_at.least_n.vals
+#'   has_less.than.eq.to_NA.thres
+#'   bin_vars
+#'   trim_each_part
+#'   split_one.by.one
+#'   get_levels
+#'   add_to_rowAnn
+#'   print_unique_elements_count
+#'   as_numeric_factor
+#'   reform_ann_df
+
 #' Install/load packages from library into environment
 #'
 #' Checks whether R packages are installed from CRAN and loads
@@ -16,6 +34,7 @@ load_packages <- function(pkgs) {
   # Load all packages
   lapply(pkgs, require, character.only = TRUE)
 }
+
 
 
 #' Closes all open file connections
@@ -93,6 +112,20 @@ get_duplicated_cases <- function(d, col, rm.NA = NA) {
   d <- d[d[, col] %in% r, ]
 
   return(d)
+}
+
+#' Rename a column in a data frame.
+#' 
+#' @param df A data frame.
+#' @param current_col Column name in df that you wish to rename.
+#' @param new_name New column name.
+#' @return The dataframe with the column renamed.
+#' @export
+rename_column <- function(df, current_col, new_name){
+  if(current_col %in% colnames(df)){
+    colnames(df)[which(colnames(df) == current_col)] <- new_name
+  }
+  return(df)
 }
 
 #' Checks whether a vector has at least a certain number of non NA/Nan/NULL values
@@ -173,7 +206,6 @@ trim_each_part <- function(v, split = ",", trim_x = 3, paste_back = T) {
   unlist(v_list)
 }
 
-
 #' Split string and iteratively return parts pasted to first part
 #'
 #' @param x A character vector.
@@ -202,7 +234,6 @@ split_one.by.one <- function(x, delimiter, un_list = T) {
     l
   }
 }
-
 
 #' Get map of levels in numeric vector
 #'
@@ -250,7 +281,6 @@ get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
   }
 }
 
-
 #' Make a custom row annotation column
 #'
 #' Make new rowAnn column of expression level (low, intermediate, high) of a specific continuos variable in ds$rowAnn or ds$vals
@@ -284,7 +314,6 @@ add_to_rowAnn <- function(ds, col_name) {
     rowAnn = ds$rowAnn
   )
 }
-
 
 #' Prints the number of unique elements in each column
 #'

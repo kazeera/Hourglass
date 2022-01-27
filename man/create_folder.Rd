@@ -2,7 +2,12 @@
 % Please edit documentation in R/utils_files.R
 \name{create_folder}
 \alias{create_folder}
-\title{Takes in a string and creates a new folder with that name.}
+\title{Functions defined in this file:
+create_folder
+read_file
+get_file
+get_comparison_name
+Takes in a string and creates a new folder with that name.}
 \usage{
 create_folder(folder)
 }

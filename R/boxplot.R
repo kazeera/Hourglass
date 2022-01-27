@@ -1,8 +1,13 @@
+#' Functions defined in this file:
+#'   run_boxplot_analysis
+#'   plot_overview_boxplot
+#'   plot_indiv_boxplot
+
 #' Creates multiple boxplots in a folder in streamlined approach.
 #'
-#' Create both individual boxplots (in 1 PDF file), and overview boxplots in seperate folders for each unique colAnn[1] group. The boxes are specified by rowAnns[1] and dots are colored by rowAnns[2] (optional).
+#' Create both individual boxplots (in 1 PDF file), and overview boxplots in seperate folders for each unique colAnn1 group. The boxes are specified by rowAnn1 and dots are colored by rowAnn2 (optional).
 #'
-#' @inheritParams run_comparisons ds,rowAnns,colAnns
+#' @inheritParams run_comparisons
 #' @param out_dir The output directory where the plots will be saved, default is current working directory.
 #' @param make.overview.boxplot,make.indiv.boxplot Logical indicating which types of boxplots to create
 #' @export
@@ -10,34 +15,34 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
   if (is.null(ds$comparison)) {
     ds$comparison <- "Comparison"
   }
-  
+
   # Get color palette for row annotations
   p <- get_rowAnn_color_pal(ds, rowAnns)
   ds <- p$ds
   pal <- p$pal
   rm(p)
-  
+
   # - 1st df: col1 = rowAnn1, cols2:n = values
   # Make the first column the main row annotation/stratification variable
   df <- data.frame(ds$rowAnn[, rowAnns[1]], ds$vals)
   # First rename columns
   colnames(df)[1] <- rowAnns[1]
-  
+
   # - 2nd df: Add an extra column
   if (!is.na(rowAnns[2])) {
     df <- cbind(ds$rowAnn[, rowAnns[2]], df)
     colnames(df)[1] <- rowAnns[2]
   }
-  
+
   # Wide to long data format
   df2 <- melt(df)
-  
+
   # Make column annotation for long df
   colAnn_df <- lapply(df2$variable, function(x) ds$colAnn[x, colAnns]) %>%
     do.call(rbind.data.frame, args = .) %>%
     unclass() %>%
     as.data.frame() # annoying default of this function works to our advantage - all character cols to data frame
-  
+
   # Bind columns
   df2 <- cbind(df2, colAnn_df)
   df2$value <- as.numeric(df2$value) # prevents error where numeric values converted to character
@@ -45,7 +50,7 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
   # CD11B.PCD.Num.Detections     classic       low CD11B.PCD.Num.Detections 2410.5 Num.Detections CD11B
   # CD11B.PCD.Num.Detections1 basal-like       low CD11B.PCD.Num.Detections     NA Num.Detections CD11B
   # CD11B.PCD.Num.Detections2    classic       low CD11B.PCD.Num.Detections 8651.0 Num.Detections CD11B
-  
+
   df2 <- df2[df2$Stain != "AHR",]
   ## Make overview boxplots
   if (make.overview.boxplot) {
@@ -71,12 +76,12 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
       )
     })
   }
-  
+
   ## Make individual boxplots
   if (make.indiv.boxplot) {
     # Create folder name
     sub_out_dir <- create_folder(sprintf("%s/Indiv %s", out_dir, ds$comparison))
-    
+
     # Get a vector of all the unique parameters
     vars1 <- df2[, colAnns[2]] %>%
       as.character() %>%
@@ -84,7 +89,7 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
     vars2 <- df2[, colAnns[1]] %>%
       as.character() %>%
       unique()
-    
+
     for (v1 in vars1) {
       # Get the columns to plot and pdf filename
       pdf_filename <- sprintf("%s/%s_indiv_boxplots.pdf", sub_out_dir, paste(v1, collapse = "_"))
@@ -106,7 +111,7 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
         tryCatch(
           {
             plot_indiv_boxplot(df3,
-                               labels = c(v2, v1), out_dir, color_pal = pal,
+                               labels = c(v2, v1), out_dir, lvl.colors = pal,
                                xlab = "", ylab = v2,
                                rowAnns = rowAnns, save.to.file = F
             )
@@ -130,14 +135,13 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
 #' @param log10_y Logical (TRUE/FALSE) indicating whether to log10-transform y-axis.
 #' @param lvl.colors A vector of colors to manually specify levels colors = box colors.
 #' @param dot_color A string indicating what color to make points, if NA, points will not be shown.
-#' @param gradient_palette RColorBrewer palette for variable colors if lvl.colors is NA. See RColorBrewer::display.brewer.all() for all options. 
+#' @param gradient_palette RColorBrewer palette for variable colors if lvl.colors is NA. See RColorBrewer::display.brewer.all() for all options.
 #' @param legend.title Title for legend.
 #' @param xlab X axis label.
 #' @param ylab Y axis label.
 #' @param font_size The size of axis.title, axis.text, plot.title, legend.text and legend.title. The size of plot.subtitle is font_size / 2.
 #' @param line_size The thickness of axis lines.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
-#'
 #' @return Plot object if save.to.file is FALSE.
 #' @examples
 #' str(ToothGrowth)
@@ -233,10 +237,8 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10_y = F, 
 #' @param pval.label Only applies if show_stats is TRUE. String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).
 #' @param trim_x Number of characters in x-axis labels.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
-#'
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-#'
 #' @examples
 #' # Reorder data frame so "box" column is first and value is second
 #' plot_indiv_boxplot(ToothGrowth[,c("supp", "len")], save.to.file = F)
@@ -300,8 +302,8 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T,
   a <- a + scale_x_discrete(labels = function(x) strtrim(x, trim_x))
 
   # If it belongs to a PDAC-specific analysis, reorder cols
-  if (all(c("TMA.STROMAL.SUBTYPE", "MAIN.STROMAL.SUBTYPE", "PANC_TISS_ORDER") %in% ls(envir = .GlobalEnv))) {
-    if (isTRUE(get_nth_part(rowAnns[1], "_", 1) %in% c(TMA.STROMAL.SUBTYPE, MAIN.STROMAL.SUBTYPE)) | (grepl(PANC.TISSUE, rowAnns[1]) & length(ele) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
+  if ("PANC_TISS_ORDER" %in% ls(envir = .GlobalEnv)) {
+    if (isTRUE(any(PANC_TISS_ORDER %in% ele) & length(ele) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
       # Set subtype orders - PDAC
       panc_order <- PANC_TISS_ORDER[PANC_TISS_ORDER %in% ele] # PANC_TISS_ORDER <- c("adj_normal", "mature", "intermediate","immature") # in "1.import_data.R"
       a <- a + scale_x_discrete(limits = panc_order, labels = function(x) strtrim(x, trim_x))

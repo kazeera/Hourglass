@@ -13,7 +13,7 @@ plot_discrete_barplot(
   legend_title = "",
   pal = NA,
   plot_title = "",
-  pal_brew = "RdBu",
+  gradient_palette = "RdBu",
   pos = "stack",
   font_size = 20,
   line_size = 2,
@@ -37,7 +37,7 @@ plot_discrete_barplot(
 
 \item{plot_title}{Title of plot.}
 
-\item{pal_brew}{RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options. Note: Define PAL_BREWER global variable.}
+\item{gradient_palette}{RColorBrewer palette. See RColorBrewer::display.brewer.all() for all options.}
 
 \item{pos}{How bars should be stacked. Either "fill" (relative ratio, 100\% bar) or "stack". See position parameter in \code{\link[ggplot2]{geom_bar}}}
 
@@ -58,6 +58,7 @@ Other plotting:
 \code{\link{plot_corrplotgg}()},
 \code{\link{plot_corrplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_indiv_paired}()},

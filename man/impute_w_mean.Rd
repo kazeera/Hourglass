@@ -2,7 +2,11 @@
 % Please edit documentation in R/impute_w_mean.R
 \name{impute_w_mean}
 \alias{impute_w_mean}
-\title{Imputes NA/missing values in a vector with random values plus/minus the percent around the mean of the values in vector}
+\title{Functions defined in this file:
+impute_w_mean
+impute_w_mean_df
+impute_ds
+Imputes NA/missing values in a vector with random values plus/minus the percent around the mean of the values in vector}
 \usage{
 impute_w_mean(v, p = 5)
 }
@@ -15,5 +19,9 @@ impute_w_mean(v, p = 5)
 The input vector with NAs imputed.
 }
 \description{
+Functions defined in this file:
+impute_w_mean
+impute_w_mean_df
+impute_ds
 Imputes NA/missing values in a vector with random values plus/minus the percent around the mean of the values in vector
 }

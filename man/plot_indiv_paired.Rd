@@ -15,8 +15,8 @@ plot_indiv_paired(
   xlab = "variable",
   ylab = "value",
   rowAnns = c(NA, NA),
-  pval.test = "wilcox.test",
-  pval.label = "p.signif",
+  pval.test = "t.test",
+  pval.label = "p.format",
   save.to.file = T
 )
 }
@@ -39,9 +39,9 @@ plot_indiv_paired(
 
 \item{rowAnns}{A character vector of 1-2 column names in ds$rowAnn.}
 
-\item{pval.test}{String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".}
+\item{pval.test}{2-sample test to use (paired only for 2 groups). String corresponding to method parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".}
 
-\item{pval.label}{String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
+\item{pval.label}{p-value label. String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
 
 \item{save.to.file}{If TRUE, save plot to file in out_dir. If FALSE, print to panel.}
 }
@@ -57,6 +57,7 @@ Other plotting:
 \code{\link{plot_corrplot}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
+\code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},
 \code{\link{plot_indiv_corrscatt}()},
 \code{\link{plot_overview_boxplot}()},

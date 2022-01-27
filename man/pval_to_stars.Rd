@@ -2,7 +2,13 @@
 % Please edit documentation in R/stats.R
 \name{pval_to_stars}
 \alias{pval_to_stars}
-\title{Convert p-values to stars}
+\title{Functions defined in this file:
+pval_to_stars
+means_of_groups
+medians_of_groups
+perform_t.test
+perform_wilcox
+Convert p-values to stars}
 \usage{
 pval_to_stars(pvals)
 }
@@ -14,4 +20,9 @@ A character vector with stars representing p-values
 }
 \description{
 Convert p-values to stars according to map legend p <= 0.001'\emph{\emph{\strong{', 0.001 '}}', 0.01 '**', 0.05 '}'
+}
+\examples{
+runif(10,min = 0, 0.06)
+pval_to_stars(c(0.0001, 0.00012, 0.002, 0.049, 0.05, 0.06))
+Output: '**** ***  **   *    *'
 }

@@ -1,5 +1,5 @@
 Package: hourglass
-Title: This Package Provides Iterative Visualizations of Annotated Numeric Data
+Title: This Package Provides Visualizations of Annotated Numeric Data
 Version: 0.0.0.9000
 Authors@R: person("Kazeera", "Aliar", , "kazeeraaliar@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "YOUR-ORCID-ID"))
 Description: This package allows creation of a dataset list object (with numeric matrix, row and column annotations)

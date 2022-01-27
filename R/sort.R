@@ -1,3 +1,7 @@
+#' Functions defined in this file:
+#'   sort_dataframe
+#'   sort_dataset
+
 #' Sort a dataframe by the contents of its row (sort columnwise) or columns (sort row-wise)
 #'
 #' @param df A dataframe or matrix
