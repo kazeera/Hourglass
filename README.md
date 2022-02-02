@@ -2,7 +2,6 @@
 
 <!-- badges: start -->
   <!-- badges: end -->
-  # hourglass
   Available as an R package. hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets.
 
 <!-- badges: start -->
