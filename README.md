@@ -3,13 +3,14 @@
 <!-- badges: start -->
   <!-- badges: end -->
   # hourglass
-  Available as an R package. hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets. We constructed and compiled the relevant individual data filtering functions (such as subset retrieval, imputation and outlier removal) and plotting functions (such as boxplot, heatmap, correlation matrix, survival plot visualizations) into the package. It serves as both a screening and exploratory tool to query multiparametric datasets and create publication-ready plots from multiple parallel comparisons of biological groups under identical and fully reproducible analytical conditions. We have implemented multiple analysis levels that support both the easy aggregation of multiple samples per patient as well as the systematic analysis of per-sample differences that allows for resolution of tissue heterogeneity. Though it is tailored to multiparametric data, its generic design allows the application of hourglass for visualization of any type of numerical dataset, including uniparametric omics datasets.  
+  Available as an R package. hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets.
 
 <!-- badges: start -->
   <!-- badges: end -->
   
-  The goal of hourglass is to quickly acquire color vectors (named palettes and colors for heatmaps/correlations/any scaled values) via the RColorBrewer package and colorRampPalette function. 
-See Documentation {link} for more information. 
+   We constructed and compiled the relevant individual data filtering functions (such as subset retrieval, imputation and outlier removal) and plotting functions (such as boxplot, heatmap, correlation matrix, survival plot visualizations). 
+   
+   hourglass serves as both a screening and exploratory tool to query multiparametric datasets and create publication-ready plots from multiple parallel comparisons of biological groups under identical and fully reproducible analytical conditions.   
 
 ## Installation
 You can install the latest version from Github:
