@@ -2,7 +2,7 @@
 
 <!-- badges: start -->
   <!-- badges: end -->
-  Available as an R package. hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets.
+  Available as an R package, hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets.
 
 <!-- badges: start -->
   <!-- badges: end -->
