@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   avg_dataframe
-#'   avg_dataset
-
 #' Average a dataframe with continuous and discrete variables columnwise.
 #'
 #' Average a dataframe with continuous and discrete variables columnwise.

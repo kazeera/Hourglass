@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   run_discrete_barplot_analysis
-#'   plot_discrete_barplot
-
 #' Makes discrete box plots for each parameter in column annotation
 #'
 #' @inheritParams run_comparison

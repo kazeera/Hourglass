@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   run_profile_barplot
-#'   plot_profile_barplot
-
 #' Generates both fill and stacked bar plots and saves to file
 #'
 #' @param df A data frame - first column: rowAnnotation column with groups, the rest of the columns are values.

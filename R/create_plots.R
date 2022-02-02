@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   create_plots
-#'   create_plots_helper
-
 #' Create plots in a folder in streamlined approach
 #'
 #' @inheritParams run_comparison

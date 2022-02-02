@@ -2,11 +2,7 @@
 % Please edit documentation in R/boxplot.R
 \name{run_boxplot_analysis}
 \alias{run_boxplot_analysis}
-\title{Functions defined in this file:
-run_boxplot_analysis
-plot_overview_boxplot
-plot_indiv_boxplot
-Creates multiple boxplots in a folder in streamlined approach.}
+\title{Creates multiple boxplots in a folder in streamlined approach.}
 \usage{
 run_boxplot_analysis(
   ds,

@@ -2,10 +2,7 @@
 % Please edit documentation in R/sort.R
 \name{sort_dataframe}
 \alias{sort_dataframe}
-\title{Functions defined in this file:
-sort_dataframe
-sort_dataset
-Sort a dataframe by the contents of its row (sort columnwise) or columns (sort row-wise)}
+\title{Sort a dataframe by the contents of its row (sort columnwise) or columns (sort row-wise)}
 \usage{
 sort_dataframe(df, row.or.col = "row", by)
 }
@@ -20,8 +17,5 @@ sort_dataframe(df, row.or.col = "row", by)
 A data frame sorted to specified rows/columns order
 }
 \description{
-Functions defined in this file:
-sort_dataframe
-sort_dataset
 Sort a dataframe by the contents of its row (sort columnwise) or columns (sort row-wise)
 }

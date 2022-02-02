@@ -1,9 +1,3 @@
-#' Functions defined in this file:
-#'   subset_dataframe
-#'   subset_dataset
-#'   subset_by_filters
-#'   evaluate_filter
-
 #' Subset data frame to the rows and/or columns specified
 #'
 #' @param df The data frame or matrix to subset

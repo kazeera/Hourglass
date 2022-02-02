@@ -1,8 +1,3 @@
-#' Functions defined in this file:
-#'   make_FC.pval_df
-#'   make_FC.pval_df_helper
-#'   make_FC.pval_plot
-
 #' Find p-values and fold-change (FC) for each group
 #'
 #' Find p-values and fold-change (FC) for each group specified in rowAnn_col across many columns of a data frame

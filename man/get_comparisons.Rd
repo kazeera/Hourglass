@@ -2,11 +2,7 @@
 % Please edit documentation in R/get_objects_run_hourglass.R
 \name{get_comparisons}
 \alias{get_comparisons}
-\title{Functions defined in this file:
-get_comparisons
-get_feat_sets
-get_colors
-Get comparisons to run from input Excel file.}
+\title{Get comparisons to run from input Excel file.}
 \usage{
 get_comparisons(file_xl, sheet = "Comparisons")
 }

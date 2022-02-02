@@ -4,12 +4,12 @@
 \alias{plot_surv_curve}
 \title{Plot survival curve (Kaplan Meier)}
 \usage{
-plot_surv_curve(df1, label = "", out_dir = ".", save.to.file = T)
+plot_surv_curve(df, descr = "survival plot", out_dir = ".", save.to.file = F)
 }
 \arguments{
-\item{df1}{A data frame with 3 columns: time, status (censoring), col (variable to stratify by)}
+\item{df}{A data frame with 3 columns: time, status (censoring), col (variable to stratify by)}
 
-\item{label}{A string label for file names and plot title; could be strata name}
+\item{descr}{A string description label for file names and plot title; could be strata name}
 
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
 

@@ -2,13 +2,7 @@
 % Please edit documentation in R/stats.R
 \name{pval_to_stars}
 \alias{pval_to_stars}
-\title{Functions defined in this file:
-pval_to_stars
-means_of_groups
-medians_of_groups
-perform_t.test
-perform_wilcox
-Convert p-values to stars}
+\title{Convert p-values to stars}
 \usage{
 pval_to_stars(pvals)
 }

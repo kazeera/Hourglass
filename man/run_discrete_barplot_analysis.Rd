@@ -2,10 +2,7 @@
 % Please edit documentation in R/discrete_barplot.R
 \name{run_discrete_barplot_analysis}
 \alias{run_discrete_barplot_analysis}
-\title{Functions defined in this file:
-run_discrete_barplot_analysis
-plot_discrete_barplot
-Makes discrete box plots for each parameter in column annotation}
+\title{Makes discrete box plots for each parameter in column annotation}
 \usage{
 run_discrete_barplot_analysis(
   ds,
@@ -28,8 +25,5 @@ run_discrete_barplot_analysis(
 \item{gradient_palette}{RColorBrewer palette name for gradients (e.g. heatmap, correlation plots). See RColorBrewer::display.brewer.all() for all options.}
 }
 \description{
-Functions defined in this file:
-run_discrete_barplot_analysis
-plot_discrete_barplot
 Makes discrete box plots for each parameter in column annotation
 }

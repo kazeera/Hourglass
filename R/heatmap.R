@@ -1,6 +1,3 @@
-#' Functions defined in this file:
-#'   plot_heatmap
-
 #' Plots a heatmap
 #'
 #' Transforms a numeric data frame/matrix and plots corresponding heatmap using the pheatmap function and saves to file

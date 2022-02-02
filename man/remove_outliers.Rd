@@ -2,12 +2,7 @@
 % Please edit documentation in R/remove_outliers.R
 \name{remove_outliers}
 \alias{remove_outliers}
-\title{Functions defined in this file:
-remove_outliers
-remove_outliers2
-remove_outliers_df
-get_outliers
-Remove outliers outside of 1st and 3rd quartile by making the values NA}
+\title{Remove outliers outside of 1st and 3rd quartile by making the values NA}
 \usage{
 remove_outliers(x)
 }
@@ -18,10 +13,5 @@ remove_outliers(x)
 The numeric vector without outliers (points outside 1st/3rd quartiles)
 }
 \description{
-Functions defined in this file:
-remove_outliers
-remove_outliers2
-remove_outliers_df
-get_outliers
 Remove outliers outside of 1st and 3rd quartile by making the values NA
 }

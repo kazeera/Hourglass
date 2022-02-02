@@ -2,11 +2,7 @@
 % Please edit documentation in R/paired.R
 \name{run_paired_analysis}
 \alias{run_paired_analysis}
-\title{Functions defined in this file:
-run_paired_analysis
-get_paired_df
-plot_indiv_paired
-Makes multiple correlation plots in 1 PDF file}
+\title{Makes multiple correlation plots in 1 PDF file}
 \usage{
 run_paired_analysis(
   ds,
@@ -37,9 +33,5 @@ run_paired_analysis(
 \item{pval.label}{How to display p-values? String corresponding to "label" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
 }
 \description{
-Functions defined in this file:
-run_paired_analysis
-get_paired_df
-plot_indiv_paired
 Makes multiple correlation plots in 1 PDF file
 }

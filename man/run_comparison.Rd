@@ -2,10 +2,7 @@
 % Please edit documentation in R/run_comparisons.R
 \name{run_comparison}
 \alias{run_comparison}
-\title{Functions defined in this file:
-run_comparison
-run_comparison_helper
-Run analysis in streamlined approach}
+\title{Run analysis in streamlined approach}
 \usage{
 run_comparison(
   ds,

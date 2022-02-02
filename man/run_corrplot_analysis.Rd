@@ -2,11 +2,7 @@
 % Please edit documentation in R/corrplot.R
 \name{run_corrplot_analysis}
 \alias{run_corrplot_analysis}
-\title{Functions defined in this file:
-run_corrplot_analysis
-plot_corrplotgg
-plot_corrplot
-Run correlation plot analysis}
+\title{Run correlation plot analysis}
 \usage{
 run_corrplot_analysis(
   df,

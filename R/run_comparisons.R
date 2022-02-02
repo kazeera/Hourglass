@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   run_comparison
-#'   run_comparison_helper
-
 #' Run analysis in streamlined approach
 #'
 #' Create the plots for each comparison. Run the same analysis on dataset object (ds parameter) and transformed values (ds.imp parameter, optional).

@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   run_het_analysis
-#'   plot_het_barplot
-
 #' Runs heterogeneity analysis for custom comparison, look at expression levels within samples of same patient
 #'
 #' @param ds A dataset object (a list with vals, rowAnn, colAnn, comparison, name).

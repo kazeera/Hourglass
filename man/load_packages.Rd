@@ -2,24 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{load_packages}
 \alias{load_packages}
-\title{Functions defined in this file:
-load_packages
-turn_off_null_devices
-get_nth_part
-df_to_numeric
-get_duplicated_cases
-rename_column
-has_at.least_n.vals
-has_less.than.eq.to_NA.thres
-bin_vars
-trim_each_part
-split_one.by.one
-get_levels
-add_to_rowAnn
-print_unique_elements_count
-as_numeric_factor
-reform_ann_df
-Install/load packages from library into environment}
+\title{Install/load packages from library into environment}
 \usage{
 load_packages(pkgs)
 }

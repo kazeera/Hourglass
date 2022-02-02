@@ -2,10 +2,7 @@
 % Please edit documentation in R/create_plots.R
 \name{create_plots}
 \alias{create_plots}
-\title{Functions defined in this file:
-create_plots
-create_plots_helper
-Create plots in a folder in streamlined approach}
+\title{Create plots in a folder in streamlined approach}
 \usage{
 create_plots(
   ds,
@@ -67,8 +64,5 @@ create_plots(
 \item{also.complete}{Logical indicating whether to also make "complete cores" plots as a seperate folder, default FALSE.}
 }
 \description{
-Functions defined in this file:
-create_plots
-create_plots_helper
 Create plots in a folder in streamlined approach
 }

@@ -1,19 +1,3 @@
-#' Functions defined in this file:
-#'   get_col_palette
-#'   get_col_gradient
-#'   get_element_colors
-#'   get_ann_colors
-#'   get_rowAnn_color_pal
-#'   clean_colors
-
-# Example of function use:
-# library(dplyr)
-# get_col_palette("RdBu") %>%
-#   get_col_gradient(n=3) %>%
-#   scales::show_col()
-# Check out library(kazcolors) for more # devtools::install_github("kazeera/kazcolors)
-
-
 #' Get color palette in the form of colorRampPalette functions.
 #'
 #' Get color palette in the form of colorRampPalette color interpolation functions. Use with get_col_gradient() or get_element_colors() from this package.

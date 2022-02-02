@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   cluster_df
-#'   cluster_corrmat
-
 #' Re-orders a matrix by hierarchical clustering
 #'
 #' @param df3 Numeric matrix or data frame

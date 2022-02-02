@@ -1,9 +1,3 @@
-#' Functions defined in this file:
-#'   create_folder
-#'   read_file
-#'   get_file
-#'   get_comparison_name
-
 #' Takes in a string and creates a new folder with that name.
 #'
 #' String path can contain multiple folders that do not exist yet, separated by "/".

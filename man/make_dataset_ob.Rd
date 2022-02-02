@@ -2,9 +2,7 @@
 % Please edit documentation in R/make_dataset_ob.R
 \name{make_dataset_ob}
 \alias{make_dataset_ob}
-\title{Functions defined in this file:
-make_dataset_ob
-Initialize a dataset object}
+\title{Initialize a dataset object}
 \usage{
 make_dataset_ob(
   vals,

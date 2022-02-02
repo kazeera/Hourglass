@@ -2,14 +2,7 @@
 % Please edit documentation in R/colors.R
 \name{get_col_palette}
 \alias{get_col_palette}
-\title{Functions defined in this file:
-get_col_palette
-get_col_gradient
-get_element_colors
-get_ann_colors
-get_rowAnn_color_pal
-clean_colors
-Get color palette in the form of colorRampPalette functions.}
+\title{Get color palette in the form of colorRampPalette functions.}
 \usage{
 get_col_palette(brew_pal = NA, custom = NA, rev = F)
 }

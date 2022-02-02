@@ -1,55 +1,51 @@
 # hourglass
+ Tool for visualization of numeric data with annotations
 
 <!-- badges: start -->
-  <!-- badges: end -->
-  # hourglass
-  Available as an R package. hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets. We constructed and compiled the relevant individual data filtering functions (such as subset retrieval, imputation and outlier removal) and plotting functions (such as boxplot, heatmap, correlation matrix, survival plot visualizations) into the package. It serves as both a screening and exploratory tool to query multiparametric datasets and create publication-ready plots from multiple parallel comparisons of biological groups under identical and fully reproducible analytical conditions. We have implemented multiple analysis levels that support both the easy aggregation of multiple samples per patient as well as the systematic analysis of per-sample differences that allows for resolution of tissue heterogeneity. Though it is tailored to multiparametric data, its generic design allows the application of hourglass for visualization of any type of numerical dataset, including uniparametric omics datasets.  
+<!-- badges: end -->
 
-<!-- badges: start -->
-  <!-- badges: end -->
-  
-  The goal of hourglass is to quickly acquire color vectors (named palettes and colors for heatmaps/correlations/any scaled values) via the RColorBrewer package and colorRampPalette function. 
+The goal of hourglass is to quickly acquire color vectors (named palettes and colors for heatmaps/correlations/any scaled values) via the RColorBrewer package and colorRampPalette function. 
 See Documentation {link} for more information. 
 
 ## Installation
 You can install the latest version from Github:
-``` r
+```{r}
 devtools::install_github("kazeera/hourglass", upgrade_dependencies = FALSE)
 ```
 
 ## How to Use 
 Load package.
-``` r
+```{r}
 library(hourglass)
 ```
 
 There are 4 components:
-  1) comparisons and user options
+1) comparisons and user options
 2) color palette for subgroups
 3) feature sets and respective parameters
 4) optional - dataset object
 
 ### Option 1: Run from hourglass parameters Excel file.
-Download  link for template.
-``` r
+Download {link} for template.
+```{r}
 run_from_excel("path_to_file/file.xlsx")
 ```
 
 
 ### Option 2: Run from individual components. 
-``` r
+```{r}
 run_hourglass(comparisons, var_colors, feat_sets, datasets)
 ```
 
 ### Example of features and functionality.
 #### Data preparation
 Define dataset object - list with 3 tables: 
-  1) "vals" (sample by feature/parameter matrix)
+1) "vals" (sample by feature/parameter matrix)
 2) "rowAnn" (row annotations = sample/patient information)
 3) "colAnn" (column annotations = feature/parameter information)
 
 Load in example dataset object.
-``` r
+```{r}
 # Retrieve built in dataset
 ds <- example_IHC_samples_dataset
 # Name your dataset
@@ -59,17 +55,17 @@ Note: use make_dataset_ob() to create your own.
 
 
 Remove outliers.
-``` r
+```{r}
 ds$vals <- remove_outliers_df(ds$vals)
 ```
 
 Optional: Create new imputed dataset to run in parallel. 
-``` r
+```{r}
 ds.imp <- impute_ds(ds)
 ```
 
 Add IL6 levels to rowAnn. Leverage quantified resultsto create stain-based annotation column.
-``` r
+```{r}
 # Get levels from "IL6_Num.Positive"
 result <- add_to_rowAnn(ds, col_name = "IL6_Num.Positive")
 # Add new rowAnn with new column to ds 
@@ -79,11 +75,11 @@ unique(ds$rowAnn[,"IL6_Num.Positive"]) # [1] "intermed" NA         "high"     "l
 ```
 
 #### Create color palette list for variables/subgroups.
-``` r
+```{r}
 var_colors <-list('Sample_Cancer_Subtype-A'="#9a8aabff",'Sample_Cancer_Subtype-B'="#9446e8ff", 'Sample_Cancer_Subtype-C'="#3b3374ff",
-                  'Sex-F'="#bff2A7ff",'Sex-M'="#f64d47ff",
-                  'Smoker-Yes'="#d6c938ff",'Smoker-No'="#3e8a5bff",
-                  'Custom-low'="#18528cff",'Custom-intermediate'="#ebb7b7ff",'Custom-high'="#911919ff")
+     'Sex-F'="#bff2A7ff",'Sex-M'="#f64d47ff",
+     'Smoker-Yes'="#d6c938ff",'Smoker-No'="#3e8a5bff",
+     'Custom-low'="#18528cff",'Custom-intermediate'="#ebb7b7ff",'Custom-high'="#911919ff")
 var_colors <- clean_colors(color_palette)
 # Show color palette using scales package
 scales::show_col(unlist(var_colors))
@@ -94,7 +90,7 @@ Note: use show_col() from scales package to show palette (vector of color HEX co
 
 ##### Boxplot - Comparing cancer subtypes.
 Make a single boxplot. Notice how the differences are siginificant.
-``` r
+```{r}
 library(gtools)
 library(ggplot2)
 # Prepare 2 column data frame
@@ -106,7 +102,7 @@ plot_indiv_boxplot(df3, labels = "CD20 in Cancer Subtypes", ylab =  "CD20_Pos.Pi
 
 
 Make another boxplot for IL6 which shows no significance.
-``` r
+```{r}
 # Prepare 2 column data frame
 df3 <- data.frame(box = ds$rowAnn$Sample_Cancer_Subtype,
                   value = ds$vals$IL6_Num.Positive)
@@ -116,7 +112,7 @@ plot_indiv_boxplot(df3, labels = "IL6 across Cancer Subtypes", ylab = "IL6_Num.P
 ```
 
 Try again but only look at female patients. The trend is now visible and significant now (p < 0.05).
-``` r
+```{r}
 library(gtools)
 library(ggplot2)
 
@@ -131,7 +127,7 @@ plot_indiv_boxplot(df3, labels = "IL6 in Cancer Subtypes in female", ylab = "IL6
 ```
 
 Note: You may add a second subgroup annotation.
-``` r
+```{r}
 # Make a third column
 df3$dots <- ds_F$rowAnn$Smoker
 # Boxplot 3 - add more colors to color palette "lvl.colors"
@@ -142,7 +138,7 @@ plot_indiv_boxplot(df3, labels = "Comparing IL6 in Sample Cancer Subtypes", lvl.
 
 ##### Survival plot
 Make survival plot to see differences between sexes.
-``` r
+```{r}
 library(survival)
 # Make table with 3 columns
 df1 <- data.frame(time = ds$rowAnn$OS_time,

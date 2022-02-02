@@ -2,11 +2,7 @@
 % Please edit documentation in R/FC.pval.R
 \name{make_FC.pval_df}
 \alias{make_FC.pval_df}
-\title{Functions defined in this file:
-make_FC.pval_df
-make_FC.pval_df_helper
-make_FC.pval_plot
-Find p-values and fold-change (FC) for each group}
+\title{Find p-values and fold-change (FC) for each group}
 \usage{
 make_FC.pval_df(
   df,

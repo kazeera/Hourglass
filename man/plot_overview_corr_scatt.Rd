@@ -2,10 +2,7 @@
 % Please edit documentation in R/corrscatt.R
 \name{plot_overview_corr_scatt}
 \alias{plot_overview_corr_scatt}
-\title{Functions defined in this file:
-plot_overview_corr_scatt
-plot_indiv_corrscatt
-Plot overview correlation scatter plot}
+\title{Plot overview correlation scatter plot}
 \usage{
 plot_overview_corr_scatt(
   mat,
@@ -39,9 +36,6 @@ plot_overview_corr_scatt(
 Plot object if save.to.file is FALSE.
 }
 \description{
-Functions defined in this file:
-plot_overview_corr_scatt
-plot_indiv_corrscatt
 Plot overview correlation scatter plot
 }
 \seealso{

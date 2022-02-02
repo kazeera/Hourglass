@@ -1,8 +1,3 @@
-#' Functions defined in this file:
-#'   run_corrplot_analysis
-#'   plot_corrplotgg
-#'   plot_corrplot
-
 #' Run correlation plot analysis
 #'
 #' Makes multiple correlation plots in 1 PDF file, each group and all values (total plots >= 2)

@@ -1,21 +1,3 @@
-#' Functions defined in this file:
-#'   load_packages
-#'   turn_off_null_devices
-#'   get_nth_part
-#'   df_to_numeric
-#'   get_duplicated_cases
-#'   rename_column
-#'   has_at.least_n.vals
-#'   has_less.than.eq.to_NA.thres
-#'   bin_vars
-#'   trim_each_part
-#'   split_one.by.one
-#'   get_levels
-#'   add_to_rowAnn
-#'   print_unique_elements_count
-#'   as_numeric_factor
-#'   reform_ann_df
-
 #' Install/load packages from library into environment
 #'
 #' Checks whether R packages are installed from CRAN and loads
@@ -115,7 +97,7 @@ get_duplicated_cases <- function(d, col, rm.NA = NA) {
 }
 
 #' Rename a column in a data frame.
-#' 
+#'
 #' @param df A data frame.
 #' @param current_col Column name in df that you wish to rename.
 #' @param new_name New column name.
@@ -252,7 +234,7 @@ split_one.by.one <- function(x, delimiter, un_list = T) {
 #' # [1] 1 1 1 2 2 2 3 3 3
 #' @export
 get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
-  
+
   if (!"LEVELS" %in% ls(envir = .GlobalEnv)) {
     LEVELS <- list(l = "low", i = "intermed", h = "high")
   }
@@ -292,8 +274,8 @@ get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
 add_to_rowAnn <- function(ds, col_name) {
   # Make a new column name in rowAnn for the stain expression (low, high, med)
   rowAnn1 <- col_name
-  
-  # Retrieve the values of the column/continuous variable 
+
+  # Retrieve the values of the column/continuous variable
   if (col_name %in% colnames(ds$vals)) {
     v1 <- ds$vals[, col_name]
   }
@@ -301,10 +283,10 @@ add_to_rowAnn <- function(ds, col_name) {
     v1 <- ds$rowAnn[, col_name]
     rowAnn1 <- paste(rowAnn1, "level")
   }
-  
+
   # Assign each value in this rowAnn to a quantile (n=3)
   v2 <- get_levels(v1, n_quantiles = 3)
-    
+
   # Add new group to row annotations
   ds$rowAnn[, rowAnn1] <- v2
 

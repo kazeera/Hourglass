@@ -2,10 +2,7 @@
 % Please edit documentation in R/average.R
 \name{avg_dataframe}
 \alias{avg_dataframe}
-\title{Functions defined in this file:
-avg_dataframe
-avg_dataset
-Average a dataframe with continuous and discrete variables columnwise.}
+\title{Average a dataframe with continuous and discrete variables columnwise.}
 \usage{
 avg_dataframe(
   df,

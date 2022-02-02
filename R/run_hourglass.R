@@ -1,8 +1,3 @@
-#' Functions defined in this file:
-#'   run_from_excel
-#'   test_hourglass
-#'   run_hourglass
-
 #' Run hourglass from single Excel file input.
 #'
 #' Run hourglass according to user specifications indicated in Excel file input.

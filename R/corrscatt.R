@@ -1,7 +1,3 @@
-#' Functions defined in this file:
-#'   plot_overview_corr_scatt
-#'   plot_indiv_corrscatt
-
 #' Plot overview correlation scatter plot
 #'
 #' @family plotting

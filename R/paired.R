@@ -1,8 +1,3 @@
-#' Functions defined in this file:
-#'   run_paired_analysis
-#'   get_paired_df
-#'   plot_indiv_paired
-
 #' Makes multiple correlation plots in 1 PDF file
 #'
 #' @inheritParams run_comparison

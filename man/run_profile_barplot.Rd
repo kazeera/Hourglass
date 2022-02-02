@@ -2,10 +2,7 @@
 % Please edit documentation in R/profile_barplot.R
 \name{run_profile_barplot}
 \alias{run_profile_barplot}
-\title{Functions defined in this file:
-run_profile_barplot
-plot_profile_barplot
-Generates both fill and stacked bar plots and saves to file}
+\title{Generates both fill and stacked bar plots and saves to file}
 \usage{
 run_profile_barplot(
   df,
@@ -30,8 +27,5 @@ run_profile_barplot(
 \item{gradient_palette}{RColorBrewer palette for variable colors if var_colors is NA. See RColorBrewer::display.brewer.all() for all options.}
 }
 \description{
-Functions defined in this file:
-run_profile_barplot
-plot_profile_barplot
 Generates both fill and stacked bar plots and saves to file
 }

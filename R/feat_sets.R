@@ -1,6 +1,3 @@
-#' Functions defined in this file:
-#'   get_feat_sets_ds
-
 #' Subset dataset for custom analysis
 #'
 #' Get a subset of dataset list object from custom analysis table

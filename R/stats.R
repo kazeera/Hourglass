@@ -1,10 +1,3 @@
-#' Functions defined in this file:
-#'   pval_to_stars
-#'   means_of_groups
-#'   medians_of_groups
-#'   perform_t.test
-#'   perform_wilcox
-
 #' Convert p-values to stars
 #'
 #' Convert p-values to stars according to map legend p <= 0.001'****', 0.001 '***', 0.01 '**', 0.05 '*'

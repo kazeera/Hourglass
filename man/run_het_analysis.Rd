@@ -2,10 +2,7 @@
 % Please edit documentation in R/het_barplot.R
 \name{run_het_analysis}
 \alias{run_het_analysis}
-\title{Functions defined in this file:
-run_het_analysis
-plot_het_barplot
-Runs heterogeneity analysis for custom comparison, look at expression levels within samples of same patient}
+\title{Runs heterogeneity analysis for custom comparison, look at expression levels within samples of same patient}
 \usage{
 run_het_analysis(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = NULL)
 }
@@ -21,8 +18,5 @@ run_het_analysis(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = NULL)
 \item{var_colors}{A named vector with colors as values and annotations/groups as names.}
 }
 \description{
-Functions defined in this file:
-run_het_analysis
-plot_het_barplot
 Runs heterogeneity analysis for custom comparison, look at expression levels within samples of same patient
 }

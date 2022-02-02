@@ -2,23 +2,30 @@
 % Please edit documentation in R/survival.R
 \name{run_surv_analysis}
 \alias{run_surv_analysis}
-\title{Functions defined in this file:
-run_surv_analysis
-plot_surv_curve
-Plot survival curves (Kaplan Meier)}
+\title{Plot survival curves iteratively (Kaplan Meier).}
 \usage{
-run_surv_analysis(df2, label = "", out_dir = ".")
+run_surv_analysis(
+  comparisons,
+  patients,
+  surv_time_column = "",
+  surv_status_column = "",
+  out_dir = ".",
+  surv_folder = "Survival"
+)
 }
 \arguments{
-\item{df2}{A data frame with 3 columns: time, status (censoring), col (variable to stratify by)}
+\item{comparisons}{A data frame containing comparisons to run compatible with run_hourglass function (i.e. column names are options, rows are each comparison to run). See ?get_comparisons for more info.}
 
-\item{label}{A string label for file names and plot title; could be strata name}
+\item{patients}{The dataset object for patients.}
 
-\item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
+\item{surv_time_column}{The column name in patients$rowAnn for overall survival time or disease free survival time.}
+
+\item{surv_status_column}{The column name in patients$rowAnn indicating event or censoring status (dead=0, alive=1).}
+
+\item{out_dir}{The output directory where the plots will be saved in a new folder called "Survival", default is current working directory.}
+
+\item{surv_folder}{The subdirectory in out_dir where the survival plots will be saved, default is "Survival".}
 }
 \description{
-Functions defined in this file:
-run_surv_analysis
-plot_surv_curve
-Plot survival curves (Kaplan Meier)
+Plot survival curves iteratively (Kaplan Meier).
 }

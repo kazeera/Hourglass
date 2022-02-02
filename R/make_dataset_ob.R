@@ -1,6 +1,3 @@
-#' Functions defined in this file:
-#'   make_dataset_ob
-
 #' Initialize a dataset object
 #'
 #' Make a dataset object by specifying 3 main components: 1) values matrix (required), 2) column annotations, 3) row annotations

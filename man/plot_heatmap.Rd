@@ -2,9 +2,7 @@
 % Please edit documentation in R/heatmap.R
 \name{plot_heatmap}
 \alias{plot_heatmap}
-\title{Functions defined in this file:
-plot_heatmap
-Plots a heatmap}
+\title{Plots a heatmap}
 \usage{
 plot_heatmap(
   mat,

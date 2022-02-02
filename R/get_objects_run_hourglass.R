@@ -1,8 +1,3 @@
-#' Functions defined in this file:
-#'   get_comparisons
-#'   get_feat_sets
-#'   get_colors
-
 #' Get comparisons to run from input Excel file.
 #'
 #' Get comparisons to run data frame for run_hourglass function from input Excel file.

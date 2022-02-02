@@ -2,12 +2,7 @@
 % Please edit documentation in R/subset.R
 \name{subset_dataframe}
 \alias{subset_dataframe}
-\title{Functions defined in this file:
-subset_dataframe
-subset_dataset
-subset_by_filters
-evaluate_filter
-Subset data frame to the rows and/or columns specified}
+\title{Subset data frame to the rows and/or columns specified}
 \usage{
 subset_dataframe(df, rows_to_keep = NULL, cols_to_keep = NULL)
 }
@@ -22,10 +17,5 @@ subset_dataframe(df, rows_to_keep = NULL, cols_to_keep = NULL)
 A data frame subsetted to specified rows/columns.
 }
 \description{
-Functions defined in this file:
-subset_dataframe
-subset_dataset
-subset_by_filters
-evaluate_filter
 Subset data frame to the rows and/or columns specified
 }

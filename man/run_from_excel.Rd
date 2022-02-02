@@ -2,11 +2,7 @@
 % Please edit documentation in R/run_hourglass.R
 \name{run_from_excel}
 \alias{run_from_excel}
-\title{Functions defined in this file:
-run_from_excel
-test_hourglass
-run_hourglass
-Run hourglass from single Excel file input.}
+\title{Run hourglass from single Excel file input.}
 \usage{
 run_from_excel(xl_file)
 }

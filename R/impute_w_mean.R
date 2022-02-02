@@ -1,8 +1,3 @@
-#' Functions defined in this file:
-#'   impute_w_mean
-#'   impute_w_mean_df
-#'   impute_ds
-
 #' Imputes NA/missing values in a vector with random values plus/minus the percent around the mean of the values in vector
 #'
 #' @param v A numeric vector containing NAs
