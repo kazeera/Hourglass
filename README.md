@@ -14,7 +14,7 @@ See Documentation {link} for more information.
 ## Installation
 You can install the latest version from Github:
 ``` r
-devtools::install_github("kazeera/hourglass", upgrade_dependencies = FALSE)
+devtools::install_github("kazeera/hourglass")
 ```
 
 ## How to Use 

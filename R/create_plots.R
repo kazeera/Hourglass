@@ -294,15 +294,6 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
 
     # Make annotation column
     ann_col <- NA
-    # tryCatch(
-    #   {
-    #     ann_col <- reform_ann_df(ds$colAnn, colAnns)
-    #     rownames(ann_col) <- colnames(ds$vals) <- make.unique(colnames(ds$vals))
-    #   },
-    #   error = function(err) {
-    #     print(sprintf("%s", err))
-    #   }
-    # )
 
     # Heatmap 1 - sorted, unclustered
     tryCatch(
@@ -324,44 +315,5 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
         print(sprintf("%s", err))
       }
     )
-
-    # Make "unclustered" heatmap    # cluster_within rowAnn1
-    # if (isTRUE(clust_row)) {
-    #   # Cluster rows
-    #   dend_row <- cluster_within_group(t(ds$vals), factor(ds$rowAnn[, rowAnns[1]]))
-    #   hclust_row <- as.hclust(dend_row)
-    #
-    #   # Cluster columns
-    #   hclust_col <- clust_row
-    #   tryCatch(
-    #     {
-    #       dend_col <- cluster_within_group(ds$vals, factor(ds$colAnn[, colAnns[1]]))
-    #       hclust_col <- as.hclust(dend_col)
-    #     },
-    #     error = function(err) {
-    #       print(sprintf("%s", err))
-    #     }
-    #   )
-    #
-    #   tryCatch(
-    #     { # Get the new df and ann_row
-    #       plot_heatmap(
-    #         mat = ds$vals,
-    #         ann_col = reform_ann_df(ds$colAnn, colAnns),
-    #         ann_row = reform_ann_df(ds$rowAnn, rowAnns),
-    #         ann_colors = ann_colors,
-    #         plot_title = sprintf("%s rows", nrow(ds$vals)),
-    #         out_dir = out_dir,
-    #         labels = c(labels, "2"),
-    #         clust_row = hclust_row,
-    #         clust_col = hclust_col,
-    #         gradient_palette = gradient_palette
-    #       )
-    #     },
-    #     error = function(err) {
-    #       print(sprintf("%s", err))
-    #     }
-    #   )
-    # }
   }
 }

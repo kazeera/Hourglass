@@ -25,7 +25,6 @@ Imports:
     psych,
     plyr,
     dplyr,
-    ComplexHeatmap,
     gtools,
     survival,
     survminer
