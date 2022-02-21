@@ -34,9 +34,9 @@ get_comparisons <- function(file_xl, sheet = "Comparisons") {
 #' @param file_xl The name of file path to an Excel file for custom analyses.
 #' @param sets_sheet The name of the worksheet in file_xl containing FeatureSets.
 #' @param params_sheet The name of the worksheet in file_xl containing matching FeatureParameters.
-#' @return feat_sets list object with 2 elements - data frames: 1) keys, 2) values. See documentation for more info.
+#' @return feat_sets object = list with 2 elements - data frames: 1) sets, 2) params (for "feature parameters") See documentation for more info.
 #' @export
-get_feat_sets <- function(file_xl, sets_sheet = "Keys", params_sheet = "Values") {
+get_feat_sets <- function(file_xl, sets_sheet = "FeatureSets", params_sheet = "FeatureParameters") {
   # If file not found
   if (length(file_xl) == 0) {
     return(NULL)
@@ -44,11 +44,10 @@ get_feat_sets <- function(file_xl, sets_sheet = "Keys", params_sheet = "Values")
 
   # return a list, where each element is a relevant worksheet
   list(
-    keys = read.xlsx(file_xl, sheet = sets_sheet),
-    values = read.xlsx(file_xl, sheet = params_sheet)
+    sets = read.xlsx(file_xl, sheet = sets_sheet), #keys
+    params = read.xlsx(file_xl, sheet = params_sheet) #values
   )
 }
-
 
 #' Get color palette from input Excel file.
 #'

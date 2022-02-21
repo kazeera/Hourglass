@@ -14,8 +14,14 @@ run_from_excel <- function(xl_file) {
   # Read in custom analysis
   feat_sets <- get_feat_sets(xl_file, "FeatureSets", "FeatureParameters")
 
+  # Get output folder # check if it contains a slash
+  # if yes = strip out everything after the last forward slash (ie. get the path to xlsx file name)
+  #          e.g. sub("/[^/]+$", "", "folder1/folder2/folder3/file.xlsx") becomes "folder1/folder2/folder3"
+  # if no = make home directory ie. "."
+  out_dir <- ifelse(grepl("/", xl_file), sub("/[^/]+$", "", xl_file), ".")
+
   # Run hourglass
-  run_hourglass(comparisons, var_colors, feat_sets)
+  run_hourglass(comparisons, var_colors, feat_sets, out_dir = out_dir)
 }
 
 #' Test hourglass R package from py interface.
@@ -40,9 +46,10 @@ test_hourglass <- function(out_dir = ".", filename = "test_iris") {
 #' @param var_colors List of colors, where elements are hex codes and element names are rowAnn variables. e.g. list("Tumour"="#2f4f4Fff", "Stroma"="#d2691eff") See ?get_colors for more info.
 #' @param feat_sets Custom analysis also known as feature sets. A list of 2 data frames for plotting specific rows and columns. See ?get_feat_sets for more info.
 #' @param datasets Optional. List of 2 elements 1) sample, 2) patient, which are the dataset objects for BySample and ByPatient analysis respectively.
+#' @param out_dir Output directory/folder path. Default is current working directory.
 #' @param keep_column_colAnn Optional. Column name in colAnn of which columns to keep in vals, important for QC plots
 #' @export
-run_hourglass <- function(comparisons, var_colors, feat_sets, datasets = NULL, keep_column_colAnn = "Keep.In.Analysis") {
+run_hourglass <- function(comparisons, var_colors, feat_sets, datasets = NULL, out_dir = ".", keep_column_colAnn = "Keep.In.Analysis") {
 
   # Do we need to run a ByPatient analysis?
   run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$paired_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
@@ -128,7 +135,7 @@ run_hourglass <- function(comparisons, var_colors, feat_sets, datasets = NULL, k
         ds,
         rowAnns = c(rowAnn1, rowAnn2),
         colAnns = c(run$param_column, run$feature_column),
-        output_folder = ds$name,
+        output_folder = create_folder(paste(out_dir, ds$name, sep="/")),
         ds.imp = ds.imp,
         feat_sets = feat_sets,
         var_colors = var_colors,
@@ -183,7 +190,7 @@ run_hourglass <- function(comparisons, var_colors, feat_sets, datasets = NULL, k
             ds = ds2,
             rowAnns = c(rowAnn1, rowAnn2),
             colAnns = c(run$param_column, run$feature_column),
-            output_folder = ds2$name,
+            output_folder = create_folder(paste(out_dir, ds2$name, sep="/")),
             ds.imp = ds2.imp,
             feat_sets = feat_sets,
             var_colors = var_colors,

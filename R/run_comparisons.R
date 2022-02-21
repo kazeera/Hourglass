@@ -31,35 +31,35 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
     # run_var_analysis(ds, rowAnn1 = rowAnns[1], pID = paired_analysis_column, out_dir = output_folder, var_colors = var_colors)
     # Run paired boxplots
     run_paired_analysis(ds, rowAnns, colAnns,
-      out_dir = create_folder(paste(output_folder, ds$comparison, "Paired", sep = "/")),
-      var_colors, paired_analysis_column, pval.test, pval.label
+                        out_dir = create_folder(paste(output_folder, ds$comparison, "Paired", sep = "/")),
+                        var_colors, paired_analysis_column, pval.test, pval.label
     )
   }
 
   # Make all plots
   run_comparison_helper(ds, rowAnns, colAnns,
-    out_dir = create_folder(paste(output_folder, ds$comparison, sep = "/")),
-    feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
-    paired_analysis_column, make.QC.param, make.QC.feature,
-    make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
-    make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot
+                        out_dir = create_folder(paste(output_folder, ds$comparison, sep = "/")),
+                        feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
+                        paired_analysis_column, make.QC.param, make.QC.feature,
+                        make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
+                        make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot
   )
 
   # Make discrete barplots, e.g. Het.Score
   run_discrete_barplot_analysis(ds, rowAnns[1], colAnns,
-    parameters = discrete_stacked_params,
-    out_dir = create_folder(paste(output_folder, ds$comparison, sep = "/")),
-    gradient_palette = gradient_palette
+                                parameters = discrete_stacked_params,
+                                out_dir = create_folder(paste(output_folder, ds$comparison, sep = "/")),
+                                gradient_palette = gradient_palette
   )
 
   # Imputed
   if (isFALSE(is.null(ds.imp))) {
     run_comparison_helper(ds.imp, rowAnns, colAnns,
-      out_dir = create_folder(paste(ds.imp$name, ds.imp$comparison, sep = "/")),
-      feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
-      paired_analysis_column, make.QC.param, make.QC.feature,
-      make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
-      make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot
+                          out_dir = create_folder(paste(ds.imp$name, ds.imp$comparison, sep = "/")),
+                          feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
+                          paired_analysis_column, make.QC.param, make.QC.feature,
+                          make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
+                          make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot
     )
   }
 }
@@ -98,9 +98,9 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
       colnames(ds_sub$vals) <- ds_sub$colAnn[, colAnns[2]]
       # Create plots # just boxplots
       create_plots(ds_sub, rowAnns, colAnns, out_dir2,
-        labels = param1, var_colors, gradient_palette,
-        corr_method, pval.test, pval.label,
-        make.indiv.boxplot, make.overview.boxplot
+                   labels = param1, var_colors, gradient_palette,
+                   corr_method, pval.test, pval.label,
+                   make.indiv.boxplot, make.overview.boxplot
       )
       # Turn off null devices
       turn_off_null_devices()
@@ -138,27 +138,37 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
   if (!is.null(feat_sets)) {
     # Create a directory in "custom" folder if colAnns = NA
     out_dir2 <- ifelse(all(is.na(colAnns)), out_dir, create_folder(sprintf("%s/Custom", out_dir)))
+    # colAnns = c(run$param_column, run$feature_column
 
-    # ca = custom analysis
+    # Make plots for each feature set
     for (i in 1:nrow(feat_sets$keys)) {
-      tryCatch(
-        {
-          # Subset dataset
-          res <- get_feat_sets_ds(ds, feat_sets, i) # TODO new_colAnns is no more, remake function :D
-          colnames(res$ds$vals) <- get_nth_part(colnames(res$ds$vals), "\\.", 1) # TODO do this part in get_feat_sets_ds() last line
-          # Create plots # make all plots
-          create_plots(res$ds, rowAnns, res$colAnns, create_folder(sprintf("%s/%s", out_dir2, res$feat_sets_name)), res$feat_sets_name, var_colors, gradient_palette,
-            corr_method, pval.test, pval.label,
-            make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
-            make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot,
-            also.complete = T
-          )
-        },
-        error = function(err) {
-          print(sprintf("%s", err))
-          return()
-        }
-      )
+      # Specify whether run parameters include Alternative analysis
+      if(isTRUE(feat_sets$sets$Alternative[i])) {
+        run_params <- c("Standard", "Alternative")
+      } else {
+        run_params <- c("Standard")
+      }
+      # Run each feature set analysis for alternative (optional) and standard parameters
+      for(std.or.alt in run_params){
+        tryCatch(
+          {
+            # Subset dataset
+            res <- subset_feat_sets_ds(ds, feat_sets, i, colAnns, std.or.alt)
+            colnames(res$ds$vals) <- get_nth_part(colnames(res$ds$vals), "\\.", 1) # TODO do this part in subset_feat_sets_ds() last line
+            # Create plots # make all plots
+            create_plots(res$ds, rowAnns, res$colAnns, create_folder(sprintf("%s/%s", out_dir2, res$feat_sets_name)), res$feat_sets_name, var_colors, gradient_palette,
+                         corr_method, pval.test, pval.label,
+                         make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
+                         make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot,
+                         also.complete = T
+            )
+          },
+          error = function(err) {
+            print(sprintf("%s", err))
+            return()
+          }
+        )
+      }
     }
   }
   turn_off_null_devices()
