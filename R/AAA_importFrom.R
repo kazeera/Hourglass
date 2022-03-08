@@ -2,7 +2,6 @@
 #' @importFrom graphics box title
 #' @importFrom stats IQR aggregate as.hclust ave complete.cases cor df dist filter hclust median na.omit pairwise.t.test  pairwise.wilcox.test quantile reorder runif sd symnum
 #' @importFrom utils install.packages installed.packages  read.csv read.delim
-#' @importFrom ComplexHeatmap cluster_within_group
 #' @importFrom corrplot corrplot cor.mtest
 #' @importFrom ggplot2 aes element_blank element_line stat_summary element_text facet_grid geom_bar geom_boxplot geom_hline geom_jitter geom_line geom_point geom_text geom_tile ggplot ggsave ggtitle labs layer_scales scale_color_gradientn scale_color_manual scale_fill_gradientn scale_fill_manual scale_size scale_x_discrete scale_y_continuous scale_y_discrete position_dodge position_jitterdodge theme coord_equal unit
 #' @importFrom ggpubr ggscatter stat_compare_means
@@ -30,7 +29,6 @@
 # importFrom("utils", "install.packages", "installed.packages",
 #            "read.csv", "read.delim")
 # # Dependencies
-# importFrom("ComplexHeatmap", "cluster_within_group")
 # importFrom("corrplot", "corrplot", "cor.mtest")
 # importFrom("ggplot2", "aes", "element_blank", "element_line", "stat_summary",
 #            "element_text","facet_grid","geom_bar","geom_boxplot","geom_hline","geom_jitter","geom_line","geom_point",
