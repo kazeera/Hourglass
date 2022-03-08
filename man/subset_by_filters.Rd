@@ -19,3 +19,6 @@ logical vector of length = nrow(df) indicating rows to keep with respect to incl
 \description{
 Subsets a dataframe rows based on filters
 }
+\details{
+subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
+}

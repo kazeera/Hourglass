@@ -22,16 +22,14 @@ Get color palette in the form of colorRampPalette color interpolation functions.
 \details{
 Only one of the parameters (brew_pal or custom) must be specified (not NA), otherwise function will use custom only.
 }
-\examples{
-# Make a color palette of red to blue (RColorBrewer)
-# The two lines of code below are equivalent
+\note{
+Make a color palette of red to blue (RColorBrewer)The two lines of code below are equivalent
+
 get_col_palette(brew_pal = "RdBu")
 colorRampPalette(RColorBrewer::brewer.pal(9, "RdBu"))
 #' # Reverse the palette (i.e. blue to red)
-get_col_palette(brew_pal = "RdBu", rev = T)
+get_col_palette(brew_pal = "RdBu", rev = T)Make a custom color palette of forestgreen to darkorchid4 (RColorBrewer)The two lines of code below are equivalent
 
-# Make a custom color palette of forestgreen to darkorchid4 (RColorBrewer)
-# The two lines of code below are equivalent
 get_col_palette(custom = c("forestgreen", "darkorchid4"))
 colorRampPalette(c("forestgreen", "darkorchid4"))
 }

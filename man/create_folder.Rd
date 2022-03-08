@@ -16,6 +16,3 @@ The input parameter "folder" that indicates the path of the new folder.
 String path can contain multiple folders that do not exist yet, separated by "/".
 It returns the new path name, in case it needs to be assigned to a variable.
 }
-\examples{
-create_folder("Sub1/Sub2")
-}

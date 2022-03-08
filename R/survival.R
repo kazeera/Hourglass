@@ -202,7 +202,7 @@ plot_surv_curve <- function(df, descr="survival plot", out_dir = ".", save.to.fi
                     ## legends and labels
                     legend.title = descr,
                     legend.labs = labs,    # change legend labels
-                    xlab = "Days", # customize X axis label
+                    xlab = "Time", # customize X axis label
                     title = paste0("KM curve, ", out_dir), # plot title
                     # linetype = "col", # Change line type by groups
                     surv.median.line = "hv", # Specify median survival

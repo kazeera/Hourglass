@@ -29,3 +29,6 @@ New name of output folder
 \description{
 Customize name of comparison / output folder depending on inclusion/exclusion criteria and presence of row annotation 2
 }
+\details{
+subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
+}

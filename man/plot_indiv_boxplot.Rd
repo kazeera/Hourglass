@@ -73,12 +73,6 @@ Plot object if save.to.file is FALSE.
 \description{
 Creates single box plot.
 }
-\examples{
-# Reorder data frame so "box" column is first and value is second
-plot_indiv_boxplot(ToothGrowth[,c("supp", "len")], save.to.file = F)
-# color code dots is third column
-plot_indiv_boxplot(ToothGrowth[,c("supp", "len", "dose")], save.to.file = F)
-}
 \seealso{
 Other plotting: 
 \code{\link{plot_corrplotgg}()},

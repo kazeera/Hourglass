@@ -14,6 +14,12 @@ run_boxplot_analysis(
 )
 }
 \arguments{
+\item{ds}{A dataset object (a list with vals, rowAnn, colAnn, comparison, name).}
+
+\item{rowAnns}{A character vector of 1-2 column names in ds$rowAnn. c(MainComparison, Subgroup)}
+
+\item{colAnns}{A character vector of 1-2 column names in ds$colAnn. c(Parameter, Feature/Stain/Gene)}
+
 \item{out_dir}{The output directory where the plots will be saved, default is current working directory.}
 
 \item{make.overview.boxplot, make.indiv.boxplot}{Logical indicating which types of boxplots to create}

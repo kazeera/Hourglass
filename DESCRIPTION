@@ -1,9 +1,10 @@
-Package: hourglass
+Package: Hourglass
 Title: This Package Provides Visualizations of Annotated Numeric Data
 Version: 0.0.0.9000
 Authors@R: person("Kazeera", "Aliar", , "kazeeraaliar@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This package allows creation of a dataset list object (with numeric matrix, row and column annotations)
-    and iteratively creates plots into directories for each comparison specified. Plot functions can also be used seperately, similar to ggpubr.
+Description: This package can be used to systematically interrogate multiparametric datasets in an automated manner. It allows users to 
+    filter and subset large datasets and compare groups in an automated manner. It iteratively creates plots into directories for each 
+    comparison specified. Plot functions can also be used seperately.
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
 Encoding: UTF-8
@@ -13,6 +14,7 @@ RoxygenNote: 7.1.1
 Depends:
     R (>= 3.5.0)
 Imports:
+    ComplexHeatmap,
     ggplot2,
     ggpubr,
     ggsignif,
@@ -22,6 +24,7 @@ Imports:
     scales,
     corrplot,
     viridis,
+    openxlsx,
     psych,
     plyr,
     dplyr,

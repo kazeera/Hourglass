@@ -19,8 +19,8 @@ A character vector of colors with the same length as v. The names of this vector
 \description{
 Get colors for a named vector based on a color ramp palette.
 }
-\examples{
-x <- LETTERS[1:6]
+\details{
+x <- LETTERS\link{1:6}
 get_element_colors(x, get_col_palette("RdBu"))
 get_element_colors(x, colorRampPalette(RColorBrewer::brewer.pal(9, "RdBu")))
 }

@@ -50,7 +50,7 @@ subset_dataset <- function(ds, rows_to_keep = NULL, cols_to_keep = NULL) {
 #' @param filters A string in the form of filters delimited by default ";". Each filter has 3 parts: 1) column name in df, 2) operator either != or ==, 3) value in column to exclude/include
 #' @param delim A string/character to seperate individuals filter by, default is ";"
 #' @return logical vector of length = nrow(df) indicating rows to keep with respect to inclusion/exclusion criteria
-#' @example subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
+#' @details subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
 #' @export
 subset_by_filters <- function(df, filters, delim = ";") {
   # Retrieve individual filters as elements in a vector
@@ -74,7 +74,7 @@ subset_by_filters <- function(df, filters, delim = ";") {
 #'
 #' @param df A dataframe
 #' @param filters A string with 3 parts: 1) column name in df, 2) operator either != or ==, 3) value in column to exclude/include
-#' @example evaluate_filter(df, "Smoker==Yes") # positively select for smokers
+#' @details evaluate_filter(df, "Smoker==Yes") # positively select for smokers
 #' @export
 evaluate_filter <- function(df, filt) {
   # Which operator?

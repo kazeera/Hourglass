@@ -17,9 +17,9 @@ A character vector, names of colors (hex).
 \description{
 Get color gradient for a colorRampPalette with n number of colors.
 }
-\examples{
-x <- LETTERS[1:6]
-# The three lines of code below are equivalent
+\note{
+x <- LETTERS\link{1:6}The three lines of code below are equivalent
+
 get_col_gradient(get_col_palette("RdBu"), 100)
 get_col_palette("RdBu")(100)
 colorRampPalette(RColorBrewer::brewer.pal(9, "RdBu"))(100)

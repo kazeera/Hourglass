@@ -14,3 +14,6 @@ evaluate_filter(df, filt)
 \description{
 Subsets a dataframe based on filters
 }
+\details{
+evaluate_filter(df, "Smoker==Yes") # positively select for smokers
+}

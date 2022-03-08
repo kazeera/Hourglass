@@ -2,7 +2,7 @@
 #'
 #' Create both individual boxplots (in 1 PDF file), and overview boxplots in seperate folders for each unique colAnn1 group. The boxes are specified by rowAnn1 and dots are colored by rowAnn2 (optional).
 #'
-#' @inheritParams run_comparisons
+#' @inheritParams run_comparison
 #' @param out_dir The output directory where the plots will be saved, default is current working directory.
 #' @param make.overview.boxplot,make.indiv.boxplot Logical indicating which types of boxplots to create
 #' @export
@@ -138,11 +138,6 @@ run_boxplot_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", make.
 #' @param line_size The thickness of axis lines.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
 #' @return Plot object if save.to.file is FALSE.
-#' @examples
-#' str(ToothGrowth)
-#' # Add an extra column for variables on x axis
-#' df <- cbind(ToothGrowth, var = rep(paste("Chicken", 1:5), 6))
-#' plot_overview_boxplot(df[,c("var", supp", "len")], save.to.file = F)
 #' @export
 plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10_y = F, lvl.colors = NA, gradient_palette = "Spectral", legend.title = "Group", xlab = "variable",
                                   dot_color = "black", ylab = "value", font_size = 15, line_size = 1.3, save.to.file = T) {
@@ -234,11 +229,6 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10_y = F, 
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-#' @examples
-#' # Reorder data frame so "box" column is first and value is second
-#' plot_indiv_boxplot(ToothGrowth[,c("supp", "len")], save.to.file = F)
-#' # color code dots is third column
-#' plot_indiv_boxplot(ToothGrowth[,c("supp", "len", "dose")], save.to.file = F)
 plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T, font_size = 25, show_stats = T, line_size = 1.3, lvl.colors = NA, xlab = "", ylab = "value", rowAnns = c(NA, NA), alpha_dots = 0.8, alpha_box = 1, point_size = 2, gradient_palette = "Spectral", jit_w = 0.1, pval.test = "wilcox.test", pval.label = "p.signif", trim_x = 3, save.to.file = T, legend_position = "right") {
   #' @param df 2-3 columns. 1) Box or level, 2) Value 3) Dots (color)
   #' @param pval.label p-values on box plots, either "p.signif" (stars), "p.format" (numeric), etc.

@@ -1,26 +1,26 @@
-# hourglass
+# Hourglass
 
 <!-- badges: start -->
   <!-- badges: end -->
-  Available as an R package, hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets.
+  Available as an R package, Hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets.
 
 <!-- badges: start -->
   <!-- badges: end -->
   
    We constructed and compiled the relevant individual data filtering functions (such as subset retrieval, imputation and outlier removal) and plotting functions (such as boxplot, heatmap, correlation matrix, survival plot visualizations). 
    
-   hourglass serves as both a screening and exploratory tool to query multiparametric datasets and create publication-ready plots from multiple parallel comparisons of biological groups under identical and fully reproducible analytical conditions.   
+   Hourglass serves as both a screening and exploratory tool to query multiparametric datasets and create publication-ready plots from multiple parallel comparisons of biological groups under identical and fully reproducible analytical conditions.   
 
 ## Installation
 You can install the latest version from Github:
 ``` r
-devtools::install_github("kazeera/hourglass")
+devtools::install_github("kazeera/Hourglass")
 ```
 
 ## How to Use 
 Load package.
 ``` r
-library(hourglass)
+library(Hourglass)
 ```
 
 There are 4 components:
@@ -29,7 +29,7 @@ There are 4 components:
 3) feature sets and respective parameters
 4) optional - dataset object
 
-### Option 1: Run from hourglass parameters Excel file.
+### Option 1: Run from Hourglass parameters Excel file.
 Download  link for template.
 ``` r
 run_from_excel("path_to_file/file.xlsx")
@@ -38,7 +38,7 @@ run_from_excel("path_to_file/file.xlsx")
 
 ### Option 2: Run from individual components. 
 ``` r
-run_hourglass(comparisons, var_colors, feat_sets, datasets)
+run_Hourglass(comparisons, var_colors, feat_sets, datasets)
 ```
 
 ### Example of features and functionality.

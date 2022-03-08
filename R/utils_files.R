@@ -4,8 +4,6 @@
 #' It returns the new path name, in case it needs to be assigned to a variable.
 #' @param folder Path (string) of the new directory to be created.
 #' @return The input parameter "folder" that indicates the path of the new folder.
-#' @examples
-#' create_folder("Sub1/Sub2")
 #' @export
 create_folder <- function(folder) {
   # Get a vector of all parent folders
@@ -65,7 +63,7 @@ get_file <- function(file_list, regex) {
 #' @param all_out_dirs A character vector of directory names, if the current_dir name exists, the algorithm will append "1", "2", and so on until the dir name is unique.
 #' @param rowAnn2 Name of row annotation 2 if applicable, otherwise NA.
 #' @return New name of output folder
-#' @example subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
+#' @details subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
 #' @export
 get_comparison_name <- function(current, filters, delim = ";", all_out_dirs = NULL, rowAnn2 = NA) {
   # Retrieve individual filters as elements in a vector

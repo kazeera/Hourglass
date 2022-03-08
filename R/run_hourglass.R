@@ -21,7 +21,7 @@ run_from_excel <- function(xl_file) {
   out_dir <- ifelse(grepl("/", xl_file), sub("/[^/]+$", "", xl_file), ".")
 
   # Run hourglass
-  run_hourglass(comparisons, var_colors, feat_sets, out_dir = out_dir)
+  run_Hourglass(comparisons, var_colors, feat_sets, out_dir = out_dir)
 }
 
 #' Test hourglass R package from py interface.
@@ -31,7 +31,7 @@ run_from_excel <- function(xl_file) {
 #' @param out_dir The output directory for a file.
 #' @param filename The name of the output csv file (minus the .csv extension).
 #' @export
-test_hourglass <- function(out_dir = ".", filename = "test_iris") {
+run_Hourglass <- function(out_dir = ".", filename = "test_iris") {
   print(paste("Out_dir:", out_dir))
   print(paste("Getwd:", getwd()))
   # Save a note in current directory that prints name of excel file
@@ -49,7 +49,7 @@ test_hourglass <- function(out_dir = ".", filename = "test_iris") {
 #' @param out_dir Output directory/folder path. Default is current working directory.
 #' @param keep_column_colAnn Optional. Column name in colAnn of which columns to keep in vals, important for QC plots
 #' @export
-run_hourglass <- function(comparisons, var_colors, feat_sets, datasets = NULL, out_dir = ".", keep_column_colAnn = "Keep.In.Analysis") {
+run_Hourglass <- function(comparisons, var_colors, feat_sets, datasets = NULL, out_dir = ".", keep_column_colAnn = "Keep.In.Analysis") {
 
   # Do we need to run a ByPatient analysis?
   run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$paired_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
