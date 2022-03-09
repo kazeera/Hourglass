@@ -31,7 +31,7 @@ run_from_excel <- function(xl_file) {
 #' @param out_dir The output directory for a file.
 #' @param filename The name of the output csv file (minus the .csv extension).
 #' @export
-run_Hourglass <- function(out_dir = ".", filename = "test_iris") {
+test_Hourglass <- function(out_dir = ".", filename = "test_iris") {
   print(paste("Out_dir:", out_dir))
   print(paste("Getwd:", getwd()))
   # Save a note in current directory that prints name of excel file
