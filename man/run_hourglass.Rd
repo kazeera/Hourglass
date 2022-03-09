@@ -2,17 +2,8 @@
 % Please edit documentation in R/run_Hourglass.R
 \name{run_Hourglass}
 \alias{run_Hourglass}
-\title{Test hourglass R package from py interface.}
+\title{Run hourglass.}
 \usage{
-run_Hourglass(
-  comparisons,
-  var_colors,
-  feat_sets,
-  datasets = NULL,
-  out_dir = ".",
-  keep_column_colAnn = "Keep.In.Analysis"
-)
-
 run_Hourglass(
   comparisons,
   var_colors,
@@ -34,11 +25,7 @@ run_Hourglass(
 \item{out_dir}{Output directory/folder path. Default is current working directory.}
 
 \item{keep_column_colAnn}{Optional. Column name in colAnn of which columns to keep in vals, important for QC plots}
-
-\item{filename}{The name of the output csv file (minus the .csv extension).}
 }
 \description{
-Used to test hourglass from py interface by saving the in-built iris dataset to a csv file in specified output directory.
-
 Run hourglass according to user specifications. See documentation for format of input parameters.
 }
