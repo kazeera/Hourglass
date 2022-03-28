@@ -30,7 +30,7 @@ avg_dataframe <- function(df, group_by = 1, rows_to_keep = NULL, cols_to_keep = 
 
   # Get non-duplicated rows from non-numeric cols (values should be the same for each Case_ID)
   x <- df[, group_by] %>% duplicated()
-  df2 <- df[!x, !num_cols, drop=F]
+  df2 <- df[!x, !num_cols]
 
   # Merge the numeric and non numeric columns
   avg_df <- merge(x = df2, y = df1, all = T, by = group_by)
@@ -69,11 +69,11 @@ avg_dataset <- function(ds, group_by = 2, new_name = "Averaged", rows_to_keep = 
   rowAnn <- avg_dataframe(ds$rowAnn, group_by, rows_to_keep)
 
   # Make values data frame by appending group ID as first column
-  vals <- data.frame(first = ds$rowAnn[, group_by], ds$vals)
+  vals <- data.frame(first = ds$rowAnn[, group_by], vals)
   colnames(vals)[1] <- group_by
 
   # Average vals across group ID
-  vals <- avg_dataframe(vals, group_by, sort_cols = T)
+  vals <- avg_dataframe(vals, group_by, rows_to_keep, cols_to_keep, sort_cols = T)
   rownames(vals) <- vals[, 1]
   vals <- vals[, -1]
 

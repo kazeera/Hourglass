@@ -147,7 +147,7 @@ plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", log10 = F, fo
 
   # Account for PDAC-specific analysis
   if ("PANC_TISS_ORDER" %in% ls(envir = .GlobalEnv)) {
-    if (isTRUE(any(PANC_TISS_ORDER %in% e) & length(e) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
+    if (isTRUE(any(PANC_TISS_ORDER %in% ele) & length(ele) > 2)) { # if elements are just "adj_normal" and "PDAC" it'll mess up the order
       # Set subtype orders - PDAC
       panc_order <- PANC_TISS_ORDER[PANC_TISS_ORDER %in% e] # PANC_TISS_ORDER <- c("adj_normal", "mature", "intermediate","immature") # in "1.import_data.R"
       a <- a + scale_x_discrete(limits = panc_order, labels = function(x) strtrim(x, 3))

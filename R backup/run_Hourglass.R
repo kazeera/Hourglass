@@ -1,31 +1,32 @@
-#' Run Hourglass from single Excel file input.
+#' Run hourglass from single Excel file input.
 #'
-#' Run Hourglass according to user specifications indicated in Excel file input.
+#' Run hourglass according to user specifications indicated in Excel file input.
 #'
 #' @param xl_file The path to an Excel file with 4 worksheets: Colors, Comparisons, FeatureSets, FeatureParameters. See documentation for more information.
 #' @export
-run_from_excel <- function(xl_file){
-  # Read in color palette 
+run_from_excel <- function(xl_file) {
+  # Read in color palette
   var_colors <- get_colors(xl_file, sheet = "Colors")
-  
+
   # Read in all comparisons (includes data file paths and advanced options)
   comparisons <- get_comparisons(xl_file, sheet = "Comparisons")
-  
+
   # Read in custom analysis
   feat_sets <- get_feat_sets(xl_file, "FeatureSets", "FeatureParameters")
-  
-  # Go to where excel fle is located # remove everything after last forward slash (escape character)
-  main_folder <- ifelse(grepl("\\/",xl_file), sub("\\/[^\\/]+$", "",xl_file), ".")
-  main_folder <- create_folder(paste0(main_folder, "/Hourglass Output")) 
-  
-  # Run Hourglass
-  run_Hourglass(comparisons, var_colors, feat_sets, main_folder)
+
+  # Get output folder # check if it contains a slash
+  # if yes = strip out everything after the last forward slash (ie. get the path to xlsx file name)
+  #          e.g. sub("/[^/]+$", "", "folder1/folder2/folder3/file.xlsx") becomes "folder1/folder2/folder3"
+  # if no = make home directory ie. "."
+  out_dir <- ifelse(grepl("/", xl_file), sub("/[^/]+$", "", xl_file), ".")
+
+  # Run hourglass
+  run_Hourglass(comparisons, var_colors, feat_sets, out_dir = out_dir)
 }
 
-
-#' Test Hourglass R package from py interface.
+#' Test hourglass R package from py interface.
 #'
-#' Used to test Hourglass from py interface by saving the in-built iris dataset to a csv file in specified output directory.
+#' Used to test hourglass from py interface by saving the in-built iris dataset to a csv file in specified output directory.
 #'
 #' @param out_dir The output directory for a file.
 #' @param filename The name of the output csv file (minus the .csv extension).
@@ -37,19 +38,19 @@ test_Hourglass <- function(out_dir = ".", filename = "test_iris") {
   write.csv(iris, file=sprintf("%s/%s.csv", out_dir, filename))
 }
 
-#' Run Hourglass.
+#' Run hourglass.
 #'
-#' Run Hourglass according to user specifications. See documentation for format of input parameters.
+#' Run hourglass according to user specifications. See documentation for format of input parameters.
 #'
 #' @param comparisons   A data frame containing comparisons to run compatible with run_hourglass function (i.e. column names are options, rows are each comparison to run). See ?get_comparisons for more info.
 #' @param var_colors List of colors, where elements are hex codes and element names are rowAnn variables. e.g. list("Tumour"="#2f4f4Fff", "Stroma"="#d2691eff") See ?get_colors for more info.
-#' @param feat_sets A list of 2 data frames for plotting specific rows and columns. See ?get_feat_sets for more info.
-#' @param main_folder The output directory for Hourglass analysis, default is working directory.
+#' @param feat_sets Custom analysis also known as feature sets. A list of 2 data frames for plotting specific rows and columns. See ?get_feat_sets for more info.
 #' @param datasets Optional. List of 2 elements 1) sample, 2) patient, which are the dataset objects for BySample and ByPatient analysis respectively.
+#' @param out_dir Output directory/folder path. Default is current working directory.
 #' @param keep_column_colAnn Optional. Column name in colAnn of which columns to keep in vals, important for QC plots
 #' @export
-run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".", datasets = NULL, keep_column_colAnn = "Keep.In.Analysis"){
-  
+run_Hourglass <- function(comparisons, var_colors, feat_sets, datasets = NULL, out_dir = ".", keep_column_colAnn = "Keep.In.Analysis") {
+
   # Do we need to run a ByPatient analysis?
   run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$paired_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
 
@@ -60,12 +61,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
   patients <- dss[["patients"]]
   patients_imp <- dss[["patients_imp"]]
   rm(dss)
-  
-  # Create main output
-  if(any(comparisons$ByPatient & comparisons$do_survival_analysis)){
-    surv_folder <- create_folder(paste0(main_folder, "/ByPatient/Survival"))  
-  }
-  
+
   # For each row in the comparisons excel file df, get run criteria from excel file
   for (i in 1:nrow(comparisons)) {
     # Current comparison
@@ -139,7 +135,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         ds,
         rowAnns = c(rowAnn1, rowAnn2),
         colAnns = c(run$param_column, run$feature_column),
-        output_folder = create_folder(paste(main_folder, ds$name, sep="/")),
+        output_folder = create_folder(paste(out_dir, ds$name, sep="/")),
         ds.imp = ds.imp,
         feat_sets = feat_sets,
         var_colors = var_colors,
@@ -160,20 +156,14 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         make.FC.pval.plot = run$pval_FC_heatmap,
         make.barplot = run$barplot_profile,
       )
-      
-      # Survival analysis
-      if(isTRUE(run$do_survival_analysis) & isTRUE(run$ByPatient) ){
-        run_surv_analysis(ds, rowAnn1, run, surv_folder) 
-      }
-      
-      
+
       # Check whether user wants to divide cohort
       sub_analyses <- strsplit(run$WithinGroup, ";") %>%
         unlist() %>%
         trimws()
       if (length(sub_analyses) == 0 | isTRUE(is.na(sub_analyses))) next
 
-      # For each within group analysis, divide cohort and run Hourglass within groups
+      # For each within group analysis, divide cohort and run hourglass within groups
       for (rowAnn_col in sub_analyses) {
         if (!rowAnn_col %in% colnames(ds$rowAnn)) next
         # Get unique groups
@@ -183,7 +173,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
           na.omit() %>%
           as.character()
 
-        # Run Hourglass within cohorts
+        # Run hourglass within cohorts
         for (group in groups) {
           # Positively select group
           ds2 <- subset_dataset(ds, rows_to_keep = ds$rowAnn[, rowAnn_col] == group)
@@ -200,7 +190,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
             ds = ds2,
             rowAnns = c(rowAnn1, rowAnn2),
             colAnns = c(run$param_column, run$feature_column),
-            output_folder = create_folder(paste(main_folder, ds2$name, sep="/")),
+            output_folder = create_folder(paste(out_dir, ds2$name, sep="/")),
             ds.imp = ds2.imp,
             feat_sets = feat_sets,
             var_colors = var_colors,

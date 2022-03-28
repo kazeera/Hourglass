@@ -19,28 +19,28 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
     ID = rownames(ds$vals), # core ID
     variable = ds$rowAnn[, pID], # patient ID
     value = ds$vals[, rowAnn1]
-  )
-  
+  ) # IL6 expression
+
   # Count the number of samples belonging to each patient in each group e.g. 2 samples from patient 12341 is in "low"
   df2 <- aggregate(value ~ group + variable, data = df, FUN = length)
   #   group variable value
   # 1 intermed  1_21043     1
   # 2      low  1_21043     1
   # 3     high  1_33581     1
-  
-  # # Plot all patients
-  # plot_het_barplot(df2, labels = c(rowAnn1, "all samples"), e = e, save.to.file = F)
-  
+
+  # Initiate file
+  pdf(file = sprintf("%s/%s_samples.pdf", out_dir, rowAnn1))
+
+  # Plot all patients
+  plot_het_barplot(df2, labels = c(rowAnn1, "all samples"), var_colors = var_colors, save.to.file = F)
+
   # Remove patients with just 1 sample
   x <- plyr::count(df2$variable) %>% data.frame()
   df2 <- df2[df2$variable %in% x$x[x$freq != 1], ]
-  
-  # Initiate file
-  pdf(file = sprintf("%s/%s_samples.pdf", out_dir, rowAnn1))
+
   # Plot patients with >1 sample
-  plot_het_barplot(df2, labels = c(rowAnn1),  pos = "stack", var_colors = var_colors, save.to.file = F)
-  # Plot patients with >1 sample
-  plot_het_barplot(df2, labels = c(rowAnn1),  pos = "fill", var_colors = var_colors, save.to.file = F)
+  plot_het_barplot(df2, labels = c(rowAnn1, pID, "with 1 sample removed"), var_colors = var_colors, save.to.file = F)
+
   # Save file
   dev.off()
 }
@@ -61,20 +61,25 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
 #' @param font_size The size of axis title on plots. The size of plot subtitle and caption is font_size / 2. The size of legend text and x axis text is font_size / 3 and font_size / 1.5.
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
+#'
 #' @return Plot object if save.to.file is FALSE.
 #' @export
 plot_het_barplot <- function(df2, labels = "", pos = "stack", var_colors = NULL, font_size = 20, out_dir = ".", save.to.file = T) {
+
   # Initialize ggplot
-  g <- ggplot(df2, aes(x = reorder(variable, -value), y = value, fill = group))
-  
+  if (pos == "stack") {
+    g <- ggplot(df2, aes(x = reorder(variable, -value), y = value, fill = group))
+  } else {
+    g <- ggplot(df2, aes(x = variable, y = value, fill = group))
+  }
   # Add geom layers
   g <- g +
     geom_bar(stat = "identity", position = pos, width = .8, na.rm = T) + # bars
     labs(
-      title = paste(labels, collapse = " "),
+      title = paste(labels, collapse = "_"),
       # subtitle = "Levels across patients",
-      x = "Patient ID (with more than one sample)",
-      y = ifelse(pos == "stack", "Number of samples", "")
+      x = "Patient ID",
+      y = "Number of samples"
     ) +
     scale_y_continuous(breaks = scales::pretty_breaks()) + # integers on y axis
     # Customize theme
@@ -87,31 +92,31 @@ plot_het_barplot <- function(df2, labels = "", pos = "stack", var_colors = NULL,
       strip.text.x = element_text(size = font_size),
       # Axes labels
       axis.text = element_text(colour = "black"),
-      axis.text.x = element_text(angle = 90, size = font_size/5, hjust = 1, margin = margin(t = 7, r = 0, b = 0, l = 0)), # increase space between x axis title and labels
-      axis.text.y = element_text(size = font_size/1.5, margin = margin(t = 0, r = 7, b = 0, l = 0)),
+      axis.text.x = element_text(angle = 45, size = font_size / 3, hjust = 1, margin = margin(t = 7, r = 0, b = 0, l = 0)), # increase space between x axis title and labels
+      axis.text.y = element_text(size = font_size, margin = margin(t = 0, r = 7, b = 0, l = 0)),
       # axes tick labels
       axis.title = element_text(colour = "black", size = font_size, face = "bold"), # axes title labels
-      axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0), size = font_size/2.5), # increase space between x axis title and labels
-      axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), size = font_size/2.5),
+      axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0)), # increase space between x axis title and labels
+      axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0)),
       # legend
       legend.text = element_text(colour = "black", size = font_size / 3, face = "bold"),
       legend.title = element_blank(), # element_text(colour = "black", size = 7, face = "bold"),
       # legend.position="bottom",
       legend.key.size = unit(1, "line")
     )
-  
+
   if (!is.null(var_colors)) {
     # Colours for bars
     var_colors <- var_colors[unique(df2$group)] %>% unlist()
     # Add to graph
     g <- g + scale_fill_manual(values = var_colors)
   }
-  
+
   # Convert y-axis to 0-100%
   if (pos == "fill") {
     g <- g + scale_y_continuous(labels = percent_format()) # scales
   }
-  
+
   # Save to file
   if (save.to.file) {
     # # Graphing params

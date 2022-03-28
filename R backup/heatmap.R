@@ -27,7 +27,7 @@
 #' @param ... Additional plotting parameters. Parameters passed to pheatmap, see ?pheatmap.
 #' @export
 plot_heatmap <- function(mat, ann_row = NA, ann_col = NA, ann_colors = NA, plot_title = "", out_dir = ".", labels = "",
-                         clust_row = F, clust_col = F, fontsize_col = 7, log10 = F, z_score = F, man_scale = T, man_scale_range = c(-2, 2), scale_func = F, col.or.row = 2, pheatmap_scale = "none",
+                         clust_row = F, clust_col = F, fontsize_col = 10, log10 = F, z_score = F, man_scale = T, man_scale_range = c(-2, 2), scale_func = F, col.or.row = 2, pheatmap_scale = "none",
                          clustering_distance_rows = "euclidean", clustering_distance_cols = "euclidean", clustering_method = "complete",
                          show_colnames = T, show_rownames = F, gradient_palette = "RdBu", border_color = NA, ...) {
   # Perform log10
