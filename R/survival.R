@@ -16,7 +16,7 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".") {
     df_original <- df
     
     # Create output directory 
-    out_dir <- create_folder(paste(surv_folder, ds$name, ds$comparison, sep="/"))#, get_out_dir(rowAnn1, EXC_HRD = run$EXC_HRD, EXC_NEO = run$EXC_NEO), sep="/"))
+    out_dir <- create_folder(paste(surv_folder, ds$comparison, sep="/"))
     label <- rowAnn1
     
     # Save to file
@@ -50,49 +50,49 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".") {
   
   # Check whether user wants to divide cohort
   sub_analyses <- strsplit(run$WithinGroup, ";") %>% unlist %>% trimws
-  if(length(sub_analyses) == 0 | isTRUE(is.na(sub_analyses))) next
-  
-  # For each within group analysis, divide cohort and run hourglass within groups
-  for(rowAnn_col in sub_analyses){
-    if(!rowAnn_col %in% colnames(ds$rowAnn)) next
-    # Get unique groups 
-    # e.g. If rowAnn_column is "Sex" with unique values NA, "F", "M", groups returns "F" and "M"
-    groups <- ds$rowAnn[,rowAnn_col] %>% unique %>% na.omit %>% as.character
-    
-    # Run hourglass within cohorts
-    for (group in groups){
-      # Positively select group
-      df <- subset_dataframe(df_original, rows_to_keep = ds$rowAnn[,rowAnn_col] == group)
+  if(length(sub_analyses) != 0 & isFALSE(is.na(sub_analyses))){
+    # For each within group analysis, divide cohort and run hourglass within groups
+    for(rowAnn_col in sub_analyses){
+      if(!rowAnn_col %in% colnames(ds$rowAnn)) next
+      # Get unique groups 
+      # e.g. If rowAnn_column is "Sex" with unique values NA, "F", "M", groups returns "F" and "M"
+      groups <- ds$rowAnn[,rowAnn_col] %>% unique %>% na.omit %>% as.character
       
-      tryCatch({
-        # Make survival plots
-        # out_dir <- create_folder(paste(out_dir_orig, gsub("-like", "", group)))
-        label <- paste(rowAnn1, group)
+      # Run hourglass within cohorts
+      for (group in groups){
+        # Positively select group
+        df <- subset_dataframe(df_original, rows_to_keep = ds$rowAnn[,rowAnn_col] == group)
         
-        # Save to file
-        filename <- sprintf("%s/%s_survplot.pdf", out_dir_orig, label)
-        pdf(filename)
-        plot_surv_curve(df, label, out_dir)
-        
-        # If it's a custom analysis (ie groups split into low, int, high), perform binning of 3 groups
-        if (all(unique(df$col[!is.na(df$col)]) %in% unlist(LEVELS))) {
+        tryCatch({
+          # Make survival plots
+          # out_dir <- create_folder(paste(out_dir_orig, gsub("-like", "", group)))
+          label <- paste(rowAnn1, group)
           
-          # First bin first and second quartile
-          col_lvls <- df$col
-          df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$l) # "intermed" will become "low"
-          plot_surv_curve(df, descr = paste(label, "(low+int vs high)"), out_dir)
+          # Save to file
+          filename <- sprintf("%s/%s_survplot.pdf", out_dir_orig, label)
+          pdf(filename)
+          plot_surv_curve(df, label, out_dir)
           
-          # Next bin second and third quartile
-          df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$h) # "intermed" will become "high"
-          plot_surv_curve(df, descr = paste(label, "(low vs int+high)"), out_dir)
-          
-          # Now remove int
-          col_lvls[col_lvls == LEVELS$i] <- NA # "intermed" will become NA
-          df$col <- col_lvls
-          plot_surv_curve(df, descr = paste(label, "(no int)"), out_dir)
-        }
-      })
-      dev.off()
+          # If it's a custom analysis (ie groups split into low, int, high), perform binning of 3 groups
+          if (all(unique(df$col[!is.na(df$col)]) %in% unlist(LEVELS))) {
+            
+            # First bin first and second quartile
+            col_lvls <- df$col
+            df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$l) # "intermed" will become "low"
+            plot_surv_curve(df, descr = paste(label, "(low+int vs high)"), out_dir)
+            
+            # Next bin second and third quartile
+            df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$h) # "intermed" will become "high"
+            plot_surv_curve(df, descr = paste(label, "(low vs int+high)"), out_dir)
+            
+            # Now remove int
+            col_lvls[col_lvls == LEVELS$i] <- NA # "intermed" will become NA
+            df$col <- col_lvls
+            plot_surv_curve(df, descr = paste(label, "(no int)"), out_dir)
+          }
+        })
+        dev.off()
+      }
     }
   }
 }

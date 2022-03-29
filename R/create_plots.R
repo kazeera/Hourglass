@@ -277,20 +277,19 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
     )
 
     # Order rows
-    row_order <- sort_dataframe(ds$rowAnn, "row", rowAnns[1]) %>%
-      rownames()
+    row_order <- sort_dataframe(ds$rowAnn, "row", rowAnns[1]) %>% rownames()
     ds <- sort_dataset(ds, row_order = row_order)
-    #  Order columns
-    tryCatch(
-      {
-        col_order <- sort_dataframe(ds$colAnn, "column", colAnns[1]) %>%
-          rownames()
-        ds <- sort_dataset(ds, col_order = col_order)
-      },
-      error = function(err) {
-        print(sprintf("%s", err))
-      }
-    )
+    # #  Order columns
+    # tryCatch(
+    #   {
+    #     col_order <- sort_dataframe(ds$colAnn, "column", colAnns[1]) %>%
+    #       rownames()
+    #     ds <- sort_dataset(ds, col_order = col_order)
+    #   },
+    #   error = function(err) {
+    #     print(sprintf("%s", err))
+    #   }
+    # )
 
     # Make annotation column
     ann_col <- NA

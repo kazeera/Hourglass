@@ -31,14 +31,14 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
     # run_var_analysis(ds, rowAnn1 = rowAnns[1], pID = paired_analysis_column, out_dir = output_folder, var_colors = var_colors)
     # Run paired boxplots
     run_paired_analysis(ds, rowAnns, colAnns,
-                        out_dir = create_folder(paste(output_folder, ds$comparison, "Paired", sep = "/")),
+                        out_dir = create_folder(paste(output_folder, ds$name, ds$comparison, "Paired", sep = "/")),
                         var_colors, paired_analysis_column, pval.test, pval.label
     )
   }
 
   # Make all plots
   run_comparison_helper(ds, rowAnns, colAnns,
-                        out_dir = create_folder(paste(output_folder, ds$comparison, sep = "/")),
+                        out_dir = create_folder(paste(output_folder, ds$name, ds$comparison, sep = "/")),
                         feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
                         paired_analysis_column, make.QC.param, make.QC.feature,
                         make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
@@ -48,14 +48,14 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
   # Make discrete barplots, e.g. Het.Score
   run_discrete_barplot_analysis(ds, rowAnns[1], colAnns,
                                 parameters = discrete_stacked_params,
-                                out_dir = create_folder(paste(output_folder, ds$comparison, sep = "/")),
+                                out_dir = create_folder(paste(output_folder, ds$name, ds$comparison, sep = "/")),
                                 gradient_palette = gradient_palette
   )
 
   # Imputed
   if (isFALSE(is.null(ds.imp))) {
     run_comparison_helper(ds.imp, rowAnns, colAnns,
-                          out_dir = create_folder(paste(ds.imp$name, ds.imp$comparison, sep = "/")),
+                          out_dir = create_folder(paste(output_folder, ds.imp$name, ds.imp$comparison, sep = "/")),
                           feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
                           paired_analysis_column, make.QC.param, make.QC.feature,
                           make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
@@ -137,11 +137,11 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
   # Analysis 3: Make biologically relevant heatmaps by combining stains from handpicked parameters #defined in main.script
   if (!is.null(feat_sets)) {
     # Create a directory in "custom" folder if colAnns = NA
-    out_dir2 <- ifelse(all(is.na(colAnns)), out_dir, create_folder(sprintf("%s/Custom", out_dir)))
+    out_dir2 <- ifelse(all(is.na(colAnns)), out_dir, create_folder(sprintf("%s/Feature Sets", out_dir)))
     # colAnns = c(run$param_column, run$feature_column
 
     # Make plots for each feature set
-    for (i in 1:nrow(feat_sets$keys)) {
+    for (i in 1:nrow(feat_sets$sets)) {
       # Specify whether run parameters include Alternative analysis
       if(isTRUE(feat_sets$sets$Alternative[i])) {
         run_params <- c("Standard", "Alternative")

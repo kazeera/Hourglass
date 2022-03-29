@@ -5,7 +5,7 @@
 #' @param by The name of the column/row to sort by.
 #' @return A data frame sorted to specified rows/columns order
 #' @export
-sort_dataframe <- function(df, row.or.col = "row", by) {
+sort_dataframe <- function(df, row.or.col = "row", by = 1) {
   if (row.or.col == "row") {
     df <- df[order(df[, by]), ]
   } else if (row.or.col == "column") {

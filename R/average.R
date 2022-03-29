@@ -74,7 +74,9 @@ avg_dataset <- function(ds, group_by = 2, new_name = "Averaged", rows_to_keep = 
 
   # Average vals across group ID
   vals <- avg_dataframe(vals, group_by, sort_cols = T)
-  rownames(vals) <- vals[, 1]
+  
+  # Row names
+  rownames(vals) <- rownames(rowAnn) <- vals[, 1]
   vals <- vals[, -1]
 
   # Make column annotations

@@ -9,6 +9,10 @@
 #' @return A list object specifying: ds, colAnns, feat_sets_name (name of custom analysis)
 #' @export
 subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standard", feat_sets_order = T) {
+  
+  # Parameter column
+  param_col <- paste(std.or.alt, "Parameter", sep="_")
+  
   # Name of analysis
   feat_sets_name <- feat_sets$sets[i, 1]
   if(std.or.alt == "Alternative")
@@ -36,9 +40,6 @@ subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standar
   dup <- duplicated(feat_sets$params[, c(param_col, "Feature")])
   # Find logical vector of rows to keep
   rows_feat <- !dup & feat_sets$params$Feature %in%  unlist(strsplit(indiv_feats, split = ","))
-
-  # Parameter column
-  param_col <- paste(std.or.alt, "Parameter", sep="_")
 
   # Subset to columns in column annotation of interest
   cols_to_keep <- interaction(ds$colAnn[, c(colAnns[2], colAnns[1])]) %in%

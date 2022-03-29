@@ -139,7 +139,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         ds,
         rowAnns = c(rowAnn1, rowAnn2),
         colAnns = c(run$param_column, run$feature_column),
-        output_folder = create_folder(paste(main_folder, ds$name, sep="/")),
+        output_folder = main_folder,
         ds.imp = ds.imp,
         feat_sets = feat_sets,
         var_colors = var_colors,
@@ -162,10 +162,9 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
       )
       
       # Survival analysis
-      if(isTRUE(run$do_survival_analysis) & isTRUE(run$ByPatient) ){
-        run_surv_analysis(ds, rowAnn1, run, surv_folder) 
+      if(isTRUE(run$do_survival_analysis) & sample.or.patient == "ByPatient"){
+        run_surv_analysis(ds, rowAnn1, run, surv_folder)
       }
-      
       
       # Check whether user wants to divide cohort
       sub_analyses <- strsplit(run$WithinGroup, ";") %>%
@@ -200,7 +199,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
             ds = ds2,
             rowAnns = c(rowAnn1, rowAnn2),
             colAnns = c(run$param_column, run$feature_column),
-            output_folder = create_folder(paste(main_folder, ds2$name, sep="/")),
+            output_folder = main_folder,
             ds.imp = ds2.imp,
             feat_sets = feat_sets,
             var_colors = var_colors,
