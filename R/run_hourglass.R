@@ -5,19 +5,19 @@
 #' @param xl_file The path to an Excel file with 4 worksheets: Colors, Comparisons, FeatureSets, FeatureParameters. See documentation for more information.
 #' @export
 run_from_excel <- function(xl_file){
-  # Read in color palette 
+  # Read in color palette
   var_colors <- get_colors(xl_file, sheet = "Colors")
-  
+
   # Read in all comparisons (includes data file paths and advanced options)
   comparisons <- get_comparisons(xl_file, sheet = "Comparisons")
-  
+
   # Read in custom analysis
   feat_sets <- get_feat_sets(xl_file, "FeatureSets", "FeatureParameters")
-  
+
   # Go to where excel fle is located # remove everything after last forward slash (escape character)
   main_folder <- ifelse(grepl("\\/",xl_file), sub("\\/[^\\/]+$", "",xl_file), ".")
-  main_folder <- create_folder(paste0(main_folder, "/Hourglass Output")) 
-  
+  main_folder <- create_folder(paste0(main_folder, "/Hourglass Output"))
+
   # Run Hourglass
   run_Hourglass(comparisons, var_colors, feat_sets, main_folder)
 }
@@ -49,7 +49,7 @@ test_Hourglass <- function(out_dir = ".", filename = "test_iris") {
 #' @param keep_column_colAnn Optional. Column name in colAnn of which columns to keep in vals, important for QC plots
 #' @export
 run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".", datasets = NULL, keep_column_colAnn = "Keep.In.Analysis"){
-  
+
   # Do we need to run a ByPatient analysis?
   run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$paired_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
 
@@ -60,12 +60,12 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
   patients <- dss[["patients"]]
   patients_imp <- dss[["patients_imp"]]
   rm(dss)
-  
+
   # Create main output
   if(any(comparisons$ByPatient & comparisons$do_survival_analysis)){
-    surv_folder <- create_folder(paste0(main_folder, "/ByPatient/Survival"))  
+    surv_folder <- create_folder(paste0(main_folder, "/ByPatient/Survival"))
   }
-  
+
   # For each row in the comparisons excel file df, get run criteria from excel file
   for (i in 1:nrow(comparisons)) {
     # Current comparison
@@ -160,12 +160,12 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         make.FC.pval.plot = run$pval_FC_heatmap,
         make.barplot = run$barplot_profile,
       )
-      
+
       # Survival analysis
       if(isTRUE(run$do_survival_analysis) & sample.or.patient == "ByPatient"){
         run_surv_analysis(ds, rowAnn1, run, surv_folder)
       }
-      
+
       # Check whether user wants to divide cohort
       sub_analyses <- strsplit(run$WithinGroup, ";") %>%
         unlist() %>%

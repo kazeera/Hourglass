@@ -8,7 +8,7 @@ run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, paramet
   if (is.numeric(rowAnn1)) {
     rowAnn1 <- colnames(df)[rowAnn1]
   }
-  if (is.na(colAnns)) {
+  if (any(is.na(colAnns))) {
     return()
   }
   for (parameter in parameters) {

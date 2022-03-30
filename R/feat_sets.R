@@ -9,17 +9,17 @@
 #' @return A list object specifying: ds, colAnns, feat_sets_name (name of custom analysis)
 #' @export
 subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standard", feat_sets_order = T) {
-  
+
   # Parameter column
   param_col <- paste(std.or.alt, "Parameter", sep="_")
-  
+
   # Name of analysis
   feat_sets_name <- feat_sets$sets[i, 1]
   if(std.or.alt == "Alternative")
     feat_sets_name <- paste0(feat_sets_name, "_alt")
   # Find list of features ---
   # This line splits the features into a vector: eg. "1,2,3,4" turns into "1" "2" "3" "4"
-  all <- feats <- strsplit(feat_sets$sets[i, 2], split = ",") %>% unlist()
+  all <- feats <- strsplit(feat_sets$sets[i, 2], split = ",") %>% unlist %>% trimws
   # Independent features (not part of a group)
   indiv_feats <- paste(all[! all %in% feat_sets$sets$GroupName], collapse=",")
   # Find features of each group recursively
@@ -28,7 +28,7 @@ subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standar
     # Match group names to features
     feats <- suppressMessages(plyr::mapvalues(feats[true], from=feat_sets$sets$GroupName, to=feat_sets$sets$GroupList))
     # Split strings by commas
-    feats <- strsplit(feats, split = ",") %>% unlist()
+    feats <- strsplit(feats, split = ",") %>% unlist %>% trimws
   }
   # Combine independent features and features from groups
   if(any(all %in% feat_sets$sets$GroupName)){

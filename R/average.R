@@ -10,6 +10,9 @@
 #' @return A data frame averaged column by column.
 #' @export
 avg_dataframe <- function(df, group_by = 1, rows_to_keep = NULL, cols_to_keep = NULL, sort_cols = FALSE) {
+  # Make group column a character
+  df[,group_by] <-  as.character(df[,group_by])
+
   # Subset data
   df <- subset_dataframe(df, rows_to_keep, cols_to_keep)
 
@@ -27,6 +30,8 @@ avg_dataframe <- function(df, group_by = 1, rows_to_keep = NULL, cols_to_keep = 
   # Get an average across group IDs
   df1 <- aggregate(df[, num_cols], by = list(df[, group_by]), mean, na.rm = TRUE)
   df1 <- rename_column(df1, "Group.1", group_by)
+  # Remove duplicated columns (ie. if Patient ID came up twice)
+  df1 <- df1[,!duplicated(colnames(df1))]
 
   # Get non-duplicated rows from non-numeric cols (values should be the same for each Case_ID)
   x <- df[, group_by] %>% duplicated()
@@ -74,7 +79,7 @@ avg_dataset <- function(ds, group_by = 2, new_name = "Averaged", rows_to_keep = 
 
   # Average vals across group ID
   vals <- avg_dataframe(vals, group_by, sort_cols = T)
-  
+
   # Row names
   rownames(vals) <- rownames(rowAnn) <- vals[, 1]
   vals <- vals[, -1]

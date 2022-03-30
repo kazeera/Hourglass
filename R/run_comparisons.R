@@ -155,6 +155,11 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
             # Subset dataset
             res <- subset_feat_sets_ds(ds, feat_sets, i, colAnns, std.or.alt)
             colnames(res$ds$vals) <- get_nth_part(colnames(res$ds$vals), "\\.", 1) # TODO do this part in subset_feat_sets_ds() last line
+
+            # If there are no stains or rows to plot, return incomplete
+            if (any(dim(res$ds$vals) < 3)) {
+              next
+            }
             # Create plots # make all plots
             create_plots(res$ds, rowAnns, res$colAnns, create_folder(sprintf("%s/%s", out_dir2, res$feat_sets_name)), res$feat_sets_name, var_colors, gradient_palette,
                          corr_method, pval.test, pval.label,
