@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_Hourglass.R
 \name{run_from_excel}
 \alias{run_from_excel}
-\title{Run hourglass from single Excel file input.}
+\title{Run Hourglass from single Excel file input.}
 \usage{
 run_from_excel(xl_file)
 }
@@ -10,5 +10,5 @@ run_from_excel(xl_file)
 \item{xl_file}{The path to an Excel file with 4 worksheets: Colors, Comparisons, FeatureSets, FeatureParameters. See documentation for more information.}
 }
 \description{
-Run hourglass according to user specifications indicated in Excel file input.
+Run Hourglass according to user specifications indicated in Excel file input.
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_Hourglass.R
 \name{test_Hourglass}
 \alias{test_Hourglass}
-\title{Test hourglass R package from py interface.}
+\title{Test Hourglass R package from py interface.}
 \usage{
 test_Hourglass(out_dir = ".", filename = "test_iris")
 }
@@ -12,5 +12,5 @@ test_Hourglass(out_dir = ".", filename = "test_iris")
 \item{filename}{The name of the output csv file (minus the .csv extension).}
 }
 \description{
-Used to test hourglass from py interface by saving the in-built iris dataset to a csv file in specified output directory.
+Used to test Hourglass from py interface by saving the in-built iris dataset to a csv file in specified output directory.
 }

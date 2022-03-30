@@ -2,14 +2,14 @@
 % Please edit documentation in R/run_Hourglass.R
 \name{run_Hourglass}
 \alias{run_Hourglass}
-\title{Run hourglass.}
+\title{Run Hourglass.}
 \usage{
 run_Hourglass(
   comparisons,
   var_colors,
   feat_sets,
+  main_folder = ".",
   datasets = NULL,
-  out_dir = ".",
   keep_column_colAnn = "Keep.In.Analysis"
 )
 }
@@ -18,14 +18,14 @@ run_Hourglass(
 
 \item{var_colors}{List of colors, where elements are hex codes and element names are rowAnn variables. e.g. list("Tumour"="#2f4f4Fff", "Stroma"="#d2691eff") See ?get_colors for more info.}
 
-\item{feat_sets}{Custom analysis also known as feature sets. A list of 2 data frames for plotting specific rows and columns. See ?get_feat_sets for more info.}
+\item{feat_sets}{A list of 2 data frames for plotting specific rows and columns. See ?get_feat_sets for more info.}
+
+\item{main_folder}{The output directory for Hourglass analysis, default is working directory.}
 
 \item{datasets}{Optional. List of 2 elements 1) sample, 2) patient, which are the dataset objects for BySample and ByPatient analysis respectively.}
-
-\item{out_dir}{Output directory/folder path. Default is current working directory.}
 
 \item{keep_column_colAnn}{Optional. Column name in colAnn of which columns to keep in vals, important for QC plots}
 }
 \description{
-Run hourglass according to user specifications. See documentation for format of input parameters.
+Run Hourglass according to user specifications. See documentation for format of input parameters.
 }

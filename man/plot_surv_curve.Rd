@@ -2,19 +2,19 @@
 % Please edit documentation in R/survival.R
 \name{plot_surv_curve}
 \alias{plot_surv_curve}
-\title{Plot survival curve (Kaplan Meier)}
+\title{Plot individual survival curve (Kaplan Meier)}
 \usage{
-plot_surv_curve(df, descr = "survival plot", out_dir = ".", save.to.file = F)
+plot_surv_curve(df, descr = "", out_dir = ".", save.to.file = F)
 }
 \arguments{
 \item{df}{A data frame with 3 columns: time, status (censoring), col (variable to stratify by)}
 
-\item{descr}{A string description label for file names and plot title; could be strata name}
+\item{descr}{A string description/label for file names and plot title; could be strata name}
 
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
 
 \item{save.to.file}{A logical indicating whether to save to out_dir (T) or print to panel (F)}
 }
 \description{
-Plot survival curve (Kaplan Meier)
+Plot individual survival curve (Kaplan Meier)
 }

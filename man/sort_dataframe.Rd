@@ -4,7 +4,7 @@
 \alias{sort_dataframe}
 \title{Sort a dataframe by the contents of its row (sort columnwise) or columns (sort row-wise)}
 \usage{
-sort_dataframe(df, row.or.col = "row", by)
+sort_dataframe(df, row.or.col = "row", by = 1)
 }
 \arguments{
 \item{df}{A dataframe or matrix}
