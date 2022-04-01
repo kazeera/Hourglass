@@ -17,29 +17,32 @@ subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standar
   feat_sets_name <- feat_sets$sets[i, 1]
   if(std.or.alt == "Alternative")
     feat_sets_name <- paste0(feat_sets_name, "_alt")
+  
   # Find list of features ---
   # This line splits the features into a vector: eg. "1,2,3,4" turns into "1" "2" "3" "4"
-  all <- feats <- strsplit(feat_sets$sets[i, 2], split = ",") %>% unlist %>% trimws
+  feats <- strsplit(feat_sets$sets[i, 2], split = ",") %>% unlist %>% trimws
   # Independent features (not part of a group)
-  indiv_feats <- paste(all[! all %in% feat_sets$sets$GroupName], collapse=",")
+  indiv_feats <- paste(feats[! feats %in% feat_sets$sets$GroupName], collapse=",")
   # Find features of each group recursively
   while(any(feats %in% feat_sets$sets$GroupName)){
     true <- feats %in% feat_sets$sets$GroupName
     # Match group names to features
     feats <- suppressMessages(plyr::mapvalues(feats[true], from=feat_sets$sets$GroupName, to=feat_sets$sets$GroupList))
     # Split strings by commas
-    feats <- strsplit(feats, split = ",") %>% unlist %>% trimws
+    feats <- strsplit(feats, split = ",") %>% unlist()
+    # Add independent features
+    if(any(!feats %in% feat_sets$sets$GroupName)){
+      indiv_feats <- paste(paste(feats[!feats %in% feat_sets$sets$GroupName], collapse=","), indiv_feats, sep=",")
+    }
   }
-  # Combine independent features and features from groups
-  if(any(all %in% feat_sets$sets$GroupName)){
-    indiv_feats <- paste(paste(feats, collapse=","), indiv_feats, sep=",")
-  }
-
+  # Convert to a vector
+  indiv_feats <- strsplit(indiv_feats, split = ",") %>% unlist %>% trimws
+                        
   # Check whether any colann1/"Feature" combo is duplicated, e.g. TIMP1-Pos.Pix.Perc shows up in more than one place
   # Prevents error: duplication leads to incorrect dimensions for colAnn
   dup <- duplicated(feat_sets$params[, c(param_col, "Feature")])
   # Find logical vector of rows to keep
-  rows_feat <- !dup & feat_sets$params$Feature %in%  unlist(strsplit(indiv_feats, split = ","))
+  rows_feat <- !dup & feat_sets$params$Feature %in% indiv_feats
 
   # Subset to columns in column annotation of interest
   cols_to_keep <- interaction(ds$colAnn[, c(colAnns[2], colAnns[1])]) %in%
