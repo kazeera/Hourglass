@@ -38,7 +38,7 @@ run_comparison_helper(
 
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
 
-\item{feat_sets}{A list of 2 data frames for plotting specific rows and columns.}
+\item{feat_sets}{A list of 2 data frames for feature sets and parameters.}
 
 \item{var_colors}{A named vector with colors as values and annotations/groups as names.}
 

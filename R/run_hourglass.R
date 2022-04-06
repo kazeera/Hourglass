@@ -16,7 +16,7 @@ run_from_excel <- function(xl_file){
 
   # Go to where excel fle is located # remove everything after last forward slash (escape character)
   main_folder <- ifelse(grepl("\\/",xl_file), sub("\\/[^\\/]+$", "",xl_file), ".")
-  main_folder <- create_folder(paste0(main_folder, "/Hourglass Output"))
+  main_folder <- create_folder(paste0(main_folder, "/", format(Sys.Date(), "%y%m%d"), " Hourglass"))
 
   # Run Hourglass
   run_Hourglass(comparisons, var_colors, feat_sets, main_folder)
@@ -113,11 +113,11 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         # Define variable
         col_name <- ifelse(!is.na(run$CustomComparison), run$CustomComparison, run$MainComparison)
         # ds 1: Raw data
-        new <- add_to_rowAnn(ds, col_name)
+        new <- add_to_rowAnn(ds, col_name, run$n_custom_quantiles)
         rowAnn1 <- new$rowAnn1
         ds$rowAnn <- new$rowAnn
         # ds 2: Imputed
-        new <- add_to_rowAnn(ds.imp, col_name)
+        new <- add_to_rowAnn(ds.imp, col_name, run$n_custom_quantiles)
         ds.imp$rowAnn <- new$rowAnn
       }
 

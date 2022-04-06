@@ -16,7 +16,7 @@ subset_feat_sets_ds(
 \arguments{
 \item{ds}{A dataset object (a list with vals, rowAnn, colAnn, comparison, name).}
 
-\item{feat_sets}{A list of 2 data frames for plotting specific rows and columns.}
+\item{feat_sets}{A list of 2 data frames for feature sets and parameters.}
 
 \item{i}{Row number in feat_sets$sets.}
 

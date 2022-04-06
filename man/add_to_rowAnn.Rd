@@ -4,16 +4,18 @@
 \alias{add_to_rowAnn}
 \title{Make a custom row annotation column}
 \usage{
-add_to_rowAnn(ds, col_name)
+add_to_rowAnn(ds, col_name, n_quantiles = 3)
 }
 \arguments{
 \item{ds}{A dataset object (a list with vals, rowAnn, colAnn, comparison, name).}
 
 \item{col_name}{A column name of a continuous numeric variable in either ds$rowAnn or ds$vals.}
+
+\item{n_quantiles}{Number of quantiles/levels to separate custom column by. Default 3.}
 }
 \value{
 A list of 2 elements named: 1) rowAnn1 = new row annotation column name, 2) rowAnn = new ds$rowAnn with the rowAnn1 column
 }
 \description{
-Make new rowAnn column of expression level (low, intermediate, high) of a specific continuos variable in ds$rowAnn or ds$vals
+Make new rowAnn column of expression level (low, int, high) of a specific continuos variable in ds$rowAnn or ds$vals
 }

@@ -9,7 +9,7 @@ get_levels(v, n_quantiles = 3, add = NA, return_num = F)
 \arguments{
 \item{v}{A numeric vector}
 
-\item{n_quantiles}{Number of quantiles/levels to separate v by.}
+\item{n_quantiles}{Number of quantiles/levels to separate v by. Default 3. Minimum 2.}
 
 \item{add}{A string to add to the beginning of each levels in the result, e.g If add is "gene", the result will be "gene.low", "gene.int", gene.high"}
 

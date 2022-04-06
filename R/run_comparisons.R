@@ -8,7 +8,7 @@
 #' @param output_folder The main output folder for all custom analysis plots and boxplots for by.parameter and by.feature analysis
 #' @param run A one row data frame or list object with logicals for what to run, names: make.boxplots, make.paired.boxplots, make.heatmaps, make.surv.curve
 #' @param ds.imp A dataset object similar to ds with imputed or another transformation values.
-#' @param feat_sets A list of 2 data frames for plotting specific rows and columns.
+#' @param feat_sets A list of 2 data frames for feature sets and parameters.
 #' @param var_colors A named vector with colors as values and annotations/groups as names.
 #' @param gradient_palette RColorBrewer palette name for gradients (e.g. heatmap, correlation plots). See RColorBrewer::display.brewer.all() for all options.
 #' @param corr_method Method for correlation (one of "pearson","spearman","kendall").
@@ -136,7 +136,7 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
 
   # Analysis 3: Make biologically relevant heatmaps by combining stains from handpicked parameters #defined in main.script
   if (!is.null(feat_sets)) {
-    # Create a directory in "custom" folder if colAnns = NA
+    # Create a directory in "Feature Sets" folder if colAnns = NA
     out_dir2 <- ifelse(all(is.na(colAnns)), out_dir, create_folder(sprintf("%s/Feature Sets", out_dir)))
     # colAnns = c(run$param_column, run$feature_column
 

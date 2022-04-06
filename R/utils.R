@@ -222,7 +222,7 @@ split_one.by.one <- function(x, delimiter, un_list = T) {
 #' Maps the values in a numeric vector as quantiles, default is low, intermediate, and high,
 #'
 #' @param v A numeric vector
-#' @param n_quantiles Number of quantiles/levels to separate v by.
+#' @param n_quantiles Number of quantiles/levels to separate v by. Default 3. Minimum 2.
 #' @param return_num Logical indicating whether to return the number of quantile or not
 #' @param add A string to add to the beginning of each levels in the result, e.g If add is "gene", the result will be "gene.low", "gene.int", gene.high"
 #' @param levels A list of 3 elements (l, i, h) representing quantiles, default is 1 = low, 2 = intermediate, 3 = high. If n_quantiles > 3, the "middle" levels will be "int", "int.plus", "int.plus.plus" and so on. Note: If "LEVELS" is defined in global environment, this variable will be used.
@@ -236,11 +236,10 @@ split_one.by.one <- function(x, delimiter, un_list = T) {
 get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
 
   if (!"LEVELS" %in% ls(envir = .GlobalEnv)) {
-    LEVELS <- list(l = "low", i = "intermed", h = "high")
+    LEVELS <- list(l = "low", i = "int", h = "high")
   }
-
-  # Assign quantile to vector # e.g. if n_quantiles = 4, we will assign each value in v to which quartile it belongs in (1 to 4)
-  w <- as.integer(cut(v, quantile(v, probs = 0:n_quantiles / n_quantiles, na.rm = T, include.lowest = TRUE)))
+  # Assign quantile to vector # e.g. if n_quantiles = 3, we will assign each value in v to which quartile it belongs in (1 to 4)
+  w <- as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE))
 
   # If the quantile number is just needed, return
   if (return_num) {
@@ -248,30 +247,49 @@ get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
   } else {
     # usually n_quantiles is 3, so we only have 3 levels (hi, med, low), but if n_quantiles > 3 then there are more intermediates
     # Account for intermediate - labelled as intermediate, intermediate.1, intermediate.2, etc. depending on n_quantiles
-    int_values <- 2:(n_quantiles - 1)
-    int_labels <- make.unique(rep(LEVELS$i, times = length(int_values)), sep = "plus")
-
-    # Map values (integers to labels)
-    y <- mapvalues(w, c(1, int_values, n_quantiles), c(LEVELS$l, int_labels, LEVELS$h)) # plyr converts all to characters except NAs
-
+    if (n_quantiles > 2){
+      # Get intermediate levels (numeric), e.g. 1,2
+      int_values <- 2:(n_quantiles - 1)
+      # Get intermediate levels (string), e.g. "int_1","int_2"
+      int_labels <- make.unique.2(rep(LEVELS$i, times = length(int_values)), sep = "_")
+      # If there is only 1 level, it's just "int"
+      if (length(int_values) == 1) {
+        int_labels <- "int"
+      }
+      # Replace numbers with string labels
+      y <- mapvalues(w, c(1, int_values, n_quantiles), c(LEVELS$l, int_labels, LEVELS$h))
+    } else {
+      # Just "low", "high"
+      y <- mapvalues(w, c(1, n_quantiles), c(LEVELS$l, LEVELS$h))
+    }
     # Add the "add" label to beginning, eg. "low" becomes "TIMP1.low"; NAs stay as NAs
     if (!is.na(add)) {
       y[!is.na(y)] <- paste(add, y[!is.na(y)], sep = ".")
     }
-
     return(y)
   }
 }
 
+#' R make.unique starting in 1
+#'
+#' R make.unique starting in 1. Example: x,x.1,x.2,x.3 becomes x.1,x.2,x.3,x.4.
+#'
+#' @param x A numeric vector
+#' @param sep Delimeter between value and number
+make.unique.2 <- function(x, sep='.'){
+  ave(x, x, FUN=function(a){if(length(a) > 1){paste(a, 1:length(a), sep=sep)} else {a}})
+}
+
 #' Make a custom row annotation column
 #'
-#' Make new rowAnn column of expression level (low, intermediate, high) of a specific continuos variable in ds$rowAnn or ds$vals
+#' Make new rowAnn column of expression level (low, int, high) of a specific continuos variable in ds$rowAnn or ds$vals
 #'
 #' @param ds A dataset object (a list with vals, rowAnn, colAnn, comparison, name).
 #' @param col_name A column name of a continuous numeric variable in either ds$rowAnn or ds$vals.
+#' @param n_quantiles Number of quantiles/levels to separate custom column by. Default 3.
 #' @return A list of 2 elements named: 1) rowAnn1 = new row annotation column name, 2) rowAnn = new ds$rowAnn with the rowAnn1 column
 #' @export
-add_to_rowAnn <- function(ds, col_name) {
+add_to_rowAnn <- function(ds, col_name, n_quantiles = 3) {
   # Make a new column name in rowAnn for the stain expression (low, high, med)
   rowAnn1 <- col_name
 
@@ -285,7 +303,7 @@ add_to_rowAnn <- function(ds, col_name) {
   }
 
   # Assign each value in this rowAnn to a quantile (n=3)
-  v2 <- get_levels(v1, n_quantiles = 3)
+  v2 <- get_levels(v1, n_quantiles = n_quantiles)
 
   # Add new group to row annotations
   ds$rowAnn[, rowAnn1] <- v2

@@ -43,7 +43,7 @@ run_comparison(
 
 \item{ds.imp}{A dataset object similar to ds with imputed or another transformation values.}
 
-\item{feat_sets}{A list of 2 data frames for plotting specific rows and columns.}
+\item{feat_sets}{A list of 2 data frames for feature sets and parameters.}
 
 \item{var_colors}{A named vector with colors as values and annotations/groups as names.}
 
