@@ -34,7 +34,7 @@
 #            "element_text","facet_grid","geom_bar","geom_boxplot","geom_hline","geom_jitter","geom_line","geom_point",
 #            "geom_text","geom_tile","ggplot","ggsave","ggtitle","labs","layer_scales","scale_color_gradientn","scale_color_manual",
 #            "scale_fill_gradientn","scale_fill_manual","scale_size","scale_x_discrete","scale_y_continuous","scale_y_discrete",
-#            "position_dodge","position_jitterdodge","theme","coord_equal","unit")
+#            "position_dodge","position_jitterdodge","theme","coord_equal","unit","margin")
 # importFrom("ggpubr", "ggscatter", "stat_compare_means")
 # importFrom("ggsignif", "geom_signif") # not needed
 # importFrom("dplyr", "%>%")
