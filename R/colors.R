@@ -6,7 +6,6 @@
 #' @param custom  Na or character vector with colors specifying palette order. e.g. c("red", "white", "blue"). Any hex codes or R colors (see colors()) can be used.
 #' @param rev logical; should the brew_pal color palette order be reversed?
 #' @details Only one of the parameters (brew_pal or custom) must be specified (not NA), otherwise function will use custom only.
-#' @note
 #' # Make a color palette of red to blue (RColorBrewer)
 #' # The two lines of code below are equivalent
 #' get_col_palette(brew_pal = "RdBu")
@@ -54,7 +53,7 @@ get_col_palette <- function(brew_pal = NA, custom = NA, rev = F) {
 #'
 #' @param colRamp colorRampPalette functions object containing colors for palette. Use function get_col_palette() to create.
 #' @param n numeric. Number of colors in gradient
-#' @note
+#' @details
 #' x <- LETTERS[1:6]
 #' # The three lines of code below are equivalent
 #' get_col_gradient(get_col_palette("RdBu"), 100)

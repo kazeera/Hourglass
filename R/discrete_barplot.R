@@ -20,7 +20,7 @@ run_discrete_barplot_analysis <- function(ds, rowAnn1 = 2, colAnns = NA, paramet
     pal <- pal$pal
     keep_rows <- ds$rowAnn[, rowAnn1] %in% names(pal)
 
-    if (sum(keep_cols) < 1 | sum(keep_rows) < 2) {
+    if ((sum(keep_cols,na.rm = T) < 1) | (sum(keep_rows,na.rm = T) < 2)) {
       next
     }
     # Make data frame where first column is row annotations

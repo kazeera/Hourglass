@@ -88,11 +88,11 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
   if (p.method == "wilcox.test") {
     df4 <- perform_wilcox(df3[, val_col], df3[, rowAnn_col]) %>%
       melt() %>%
-      filter(!is.na(value))
+      filter(., !is.na(value))
   } else {
     df4 <- perform_t.test(df3[, val_col], df3[, rowAnn_col]) %>%
       melt() %>%
-      filter(!is.na(value))
+      filter(., !is.na(value))
   }
 
   # If there are no values return

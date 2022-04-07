@@ -6,18 +6,18 @@
 #' @export
 run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", var_colors = NULL, pair_id = 1, pval.test = "t.test", pval.label = "p.signif") {
   # Get data frame with individual pairs
-  ds_sub <- get_paired_df(ds, rowAnns[1], pair_id)
+  ds_sub <- get_paired_ds(ds, rowAnns[1], pair_id)
   # Get color palette for row annotations
   pal <- get_rowAnn_color_pal(ds_sub, rowAnns[1], var_colors) %>%
     .[["pal"]]
 
   # Get a vector of all the unique variables
-  all_vars1 <- ds$colAnn[, colAnns[2]] %>% unique()
+  all_vars1 <- ds_sub$colAnn[, colAnns[2]] %>% unique()
 
   for (var1 in all_vars1) {
     # Get the columns to plot and pdf filename
     pdf_filename <- sprintf("%s/%s_paired.pdf", out_dir, var1)
-    col_names <- rownames(ds$colAnn)[ds$colAnn[, colAnns[2]] == var1]
+    col_names <- rownames(ds_sub$colAnn)[ds_sub$colAnn[, colAnns[2]] == var1]
 
     # Create pdf file of all plots
     pdf(pdf_filename, onefile = TRUE)
@@ -59,26 +59,26 @@ run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", var_co
 #' @param rowAnn1 A column name in df indicating which groups to stratify by
 #' @return A new dataset object averaged for each rowAnn pair_id
 #' @export
-get_paired_df <- function(ds, rowAnn1, pair_id = 1) {
+get_paired_ds <- function(ds, rowAnn1, pair_id = 1) {
   # Get name of column to pair by
   pair_id <- ifelse(is.numeric(pair_id), colnames(ds$rowAnn)[pair_id], pair_id)
 
   # Merge df with row annotations
-  rowAnns <- c(pair_id, rowAnn1)
-  df <- cbind(ds$rowAnn[, rowAnns], ds$vals)
+  df_rA <- data.frame(pair_id = as.character(ds$rowAnn[,pair_id]), rowAnn1 = as.character(ds$rowAnn[,rowAnn1]))
+  df <- cbind(df_rA, ds$vals)
   # Remove rows with missing annotations
-  df <- subset(df, !is.na(df[, rowAnn1]))
+  df <- subset(df, !is.na(df[, "rowAnn1"]))
 
   # Get means of rows base on pair_id duplicates, and different groups in scaffold column, remove NA values
-  avg_df <- df[, !colnames(df) %in% rowAnns] %>%
+  avg_df <- df[, !colnames(df) %in% colnames(df_rA)] %>%
     aggregate(
-      by = list(df[, pair_id], df[, rowAnn1]),
+      by = list(df[, "pair_id"], df[, "rowAnn1"]),
       mean, na.rm = TRUE
     )
   avg_df2 <- get_duplicated_cases(avg_df, col = "Group.1")
 
   # Rename columns
-  colnames(avg_df)[1:2] <- rowAnns
+  colnames(avg_df)[1:2] <- c(pair_id, rowAnn1)
 
   # Print
   print(sprintf("Subset data only to 2+ cores that belong to same patient.
@@ -89,7 +89,7 @@ get_paired_df <- function(ds, rowAnn1, pair_id = 1) {
   list(
     vals = avg_df[, -c(1:2)],
     colAnn = ds$colAnn,
-    rowAnn = avg_df[, rowAnns]
+    rowAnn = avg_df[, c(pair_id, rowAnn1)]
   )
 }
 

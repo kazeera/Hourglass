@@ -84,7 +84,7 @@ get_datasets <- function(comparisons, datasets = NULL) {
       vals = read_file(comparisons$filepath_matrix[1]),
       rowAnn = read_file(comparisons$filepath_rowAnn[1]),
       colAnn = read_file(comparisons$filepath_colAnn[1]),
-      name = comparisons$dataset_name[1]
+      name = "BySample" #comparisons$dataset_name[1]
     )
 
     # Average dataset to make ByPatient

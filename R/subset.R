@@ -53,14 +53,19 @@ subset_dataset <- function(ds, rows_to_keep = NULL, cols_to_keep = NULL) {
 #' @details subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
 #' @export
 subset_by_filters <- function(df, filters, delim = ";") {
+  # Initialize a vector of rows to keep
+  keep <- rep(TRUE, nrow(df))
+
+  # Return if NA
+  if(is.na(filters)){
+    return(keep)
+  }
+
   # Retrieve individual filters as elements in a vector
   filters <- filters %>%
     gsub("\"", "", x = .) %>% # Remove quotes
     strsplit(split = delim) %>% # Split by delimeter
     unlist() # Unlist result
-
-  # Initialize a vector of rows to keep
-  keep <- rep(TRUE, nrow(df))
 
   # Loop through filters
   for (filt in filters) {

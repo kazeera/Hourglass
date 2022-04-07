@@ -19,18 +19,6 @@ run_profile_barplot <- function(df, rowAnn_col = 1, out_dir = ".", labels = "", 
   # Columns with values
   val_cols <- !colnames(df) %in% rowAnn_col
 
-  # Cluster and reorder rows based on dendogram
-  tryCatch(
-    {
-      dend_row <- cluster_within_group(t(df[, val_cols]), factor(df[, rowAnn_col]))
-      hclust_row <- as.hclust(dend_row)
-      df <- df[hclust_row$order, ]
-    },
-    error = function(err) {
-      print(sprintf("%s", err))
-    }
-  )
-
   # Add a new row with ID
   # Factor so rows are preservd
   df$ID <- df[, val_cols] %>%

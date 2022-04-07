@@ -66,6 +66,11 @@ get_file <- function(file_list, regex) {
 #' @details subset_by_filters(df, "Smoker==Yes;Cancer.subtype!=NA") # positively select for smokers and remove NA from Cancer.subtype column
 #' @export
 get_comparison_name <- function(current, filters, delim = ";", all_out_dirs = NULL, rowAnn2 = NA) {
+  # Return current if no filters
+  if(filters == "" | is.na(filters)){
+    return(current)
+  }
+
   # Retrieve individual filters as elements in a vector
   filters <- filters %>%
     gsub("\"", "", x = .) %>% # Remove quotes

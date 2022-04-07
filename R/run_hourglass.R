@@ -113,17 +113,21 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         # Define variable
         col_name <- ifelse(!is.na(run$CustomComparison), run$CustomComparison, run$MainComparison)
         # ds 1: Raw data
-        new <- add_to_rowAnn(ds, col_name, run$n_custom_quantiles)
+        new <- add_to_rowAnn(ds, col_name, as.integer(run$n_custom_quantiles))
         rowAnn1 <- new$rowAnn1
         ds$rowAnn <- new$rowAnn
         # ds 2: Imputed
-        new <- add_to_rowAnn(ds.imp, col_name, run$n_custom_quantiles)
-        ds.imp$rowAnn <- new$rowAnn
+        if(isFALSE(is.null(ds.imp))){
+          new <- add_to_rowAnn(ds.imp, col_name, as.integer(run$n_custom_quantiles))
+          ds.imp$rowAnn <- new$rowAnn
+        }
       }
 
       # Remove NAs in MainComparison
       ds <- subset_dataset(ds, rows_to_keep = !is.na(ds$rowAnn[, rowAnn1]))
-      ds.imp <- subset_dataset(ds.imp, rows_to_keep = !is.na(ds$rowAnn[, rowAnn1]))
+      if(isFALSE(is.null(ds.imp))){
+        ds.imp <- subset_dataset(ds.imp, rows_to_keep = !is.na(ds$rowAnn[, rowAnn1]))
+      }
 
       # Make comparison label which will be the main out directory
       if (is.null(ds$comparison)) {
