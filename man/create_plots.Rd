@@ -33,6 +33,8 @@ create_plots(
 
 \item{colAnns}{A character vector of 1-2 column names in ds$colAnn. c(Parameter, Feature/Stain/Gene)}
 
+\item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
+
 \item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
 
 \item{var_colors}{A named vector with colors as values and annotations/groups as names.}

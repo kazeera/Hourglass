@@ -163,6 +163,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         make.overview.corrscatt = run$corrscatt_overview,
         make.FC.pval.plot = run$pval_FC_heatmap,
         make.barplot = run$barplot_profile,
+        save_table = run$save_table
       )
 
       # Survival analysis
@@ -223,6 +224,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
             make.overview.corrscatt = run$corrscatt_overview,
             make.FC.pval.plot = run$pval_FC_heatmap,
             make.barplot = run$barplot_profile,
+            save_table = run$save_table
           )
         }
       }

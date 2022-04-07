@@ -148,7 +148,7 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
     p <- ggplot(mat2, aes(x = Var2, y = Var1)) +
       geom_tile(fill = grid.fill.color, color = grid.line.color) + # ,width = circ_max, height = circ_max) + #grid
       geom_point(aes(colour = corr, size = corr)) + # circles
-      scale_size(guide = F, range = c(1, circ_max)) +
+      scale_size(guide = "none", range = c(1, circ_max)) + #guide = FALSE was deprecated
       scale_color_gradientn(colors = pal_grad, name = corr_method[2], guide = "colourbar", limits = c(-1, 1)) +
       scale_x_discrete(expand = c(0, 0)) + # remove space between grid and axes
       scale_y_discrete(expand = c(0, 0)) +

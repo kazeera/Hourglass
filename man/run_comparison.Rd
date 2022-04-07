@@ -29,7 +29,8 @@ run_comparison(
   make.overview.corrscatt = F,
   make.indiv.corrscatt = F,
   make.barplot = F,
-  make.FC.pval.plot = F
+  make.FC.pval.plot = F,
+  save_table = F
 )
 }
 \arguments{
@@ -62,6 +63,8 @@ run_comparison(
 \item{make.QC.param, make.QC.feature, make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot, make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 
 \item{discrete_stacked_params}{parameter names to search for in colAnn1 to make discrete stacked barplots, e.g. "Het.Score"}
+
+\item{save_table}{Print MainComparison + ID data to csv file.}
 
 \item{run}{A one row data frame or list object with logicals for what to run, names: make.boxplots, make.paired.boxplots, make.heatmaps, make.surv.curve}
 }

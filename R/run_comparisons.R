@@ -18,12 +18,13 @@
 #' @param make.QC.param,make.QC.feature,make.het.plot,make.indiv.boxplot,make.overview.boxplot,make.heatmap,make.corrplot,make.overview.corrscatt,make.indiv.corrscatt,make.barplot,make.FC.pval.plot Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.
 #' @param paired_analysis_column column name in ds$rowAnn to create paired analysis plots for, e.g. PatientID if ds is data for all cores
 #' @param discrete_stacked_params parameter names to search for in colAnn1 to make discrete stacked barplots, e.g. "Het.Score"
+#' @param save_table Print MainComparison + ID data to csv file.
 #' @export
 run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.imp = NULL, feat_sets = NULL, var_colors = NULL, gradient_palette = "RdBu",
                            corr_method = "pearson", pval.test = "t.test", pval.label = "p.signif",
                            FC.method = "divide", paired_analysis_column = NA, make.QC.param = F, make.QC.feature = F, discrete_stacked_params = NULL,
                            make.het.plot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
-                           make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F) {
+                           make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F, save_table = F) {
 
   # Paired analysis
   if (is.character(paired_analysis_column)) {
@@ -42,7 +43,7 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
                         feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
                         paired_analysis_column, make.QC.param, make.QC.feature,
                         make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
-                        make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot
+                        make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot, save_table
   )
 
   # Make discrete barplots, e.g. Het.Score
@@ -59,7 +60,7 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
                           feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
                           paired_analysis_column, make.QC.param, make.QC.feature,
                           make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
-                          make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot
+                          make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot, save_table
     )
   }
 }
@@ -73,7 +74,10 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
                                   corr_method = "pearson", pval.test = "wilcox.test", pval.label = "p.signif",
                                   paired_analysis_column = NA, make.QC.param = F, make.QC.feature = F,
                                   make.het.plot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
-                                  make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F) {
+                                  make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F, save_table = F) {
+  if (isTRUE(save_table)){
+    save_table(ds, rowAnns, out_dir)
+  }
 
   # Run heterogeneity of rowAnn1 in samples belonging to one patient
   if (is.character(paired_analysis_column) & isTRUE(make.het.plot)) {

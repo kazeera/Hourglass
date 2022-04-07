@@ -26,7 +26,8 @@ run_comparison_helper(
   make.overview.corrscatt = F,
   make.indiv.corrscatt = F,
   make.barplot = F,
-  make.FC.pval.plot = F
+  make.FC.pval.plot = F,
+  save_table = F
 )
 }
 \arguments{
@@ -73,6 +74,8 @@ run_comparison_helper(
 \item{make.barplot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 
 \item{make.FC.pval.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
+
+\item{save_table}{Print MainComparison + ID data to csv file.}
 }
 \description{
 Runs main analysis for all parameter combos specified in colAnns and creates plots.

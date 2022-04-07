@@ -1,6 +1,6 @@
 #' Create plots in a folder in streamlined approach
 #'
-#' @inheritParams run_comparison
+#' @inheritParams run_comparison_helper
 #' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
 #' @param also.complete Logical indicating whether to also make "complete cores" plots as a seperate folder, default FALSE.
 #' @export
