@@ -299,7 +299,7 @@ add_to_rowAnn <- function(ds, col_name, n_quantiles = 3) {
   }
   if (col_name %in% colnames(ds$rowAnn)) {
     v1 <- ds$rowAnn[, col_name]
-    rowAnn1 <- paste(rowAnn1, "level")
+    rowAnn1 <- paste0(rowAnn1, ".level")
   }
 
   # Assign each value in this rowAnn to a quantile (n=3)
