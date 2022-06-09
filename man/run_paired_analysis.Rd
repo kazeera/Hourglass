@@ -2,7 +2,7 @@
 % Please edit documentation in R/paired.R
 \name{run_paired_analysis}
 \alias{run_paired_analysis}
-\title{Makes multiple correlation plots in 1 PDF file}
+\title{Makes plots to look at subgroup differences within the same patient}
 \usage{
 run_paired_analysis(
   ds,
@@ -33,5 +33,5 @@ run_paired_analysis(
 \item{pval.label}{How to display p-values? String corresponding to "label" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
 }
 \description{
-Makes multiple correlation plots in 1 PDF file
+Makes plots to look at subgroup differences within the same patient
 }

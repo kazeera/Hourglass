@@ -18,6 +18,7 @@ run_comparison(
   pval.label = "p.signif",
   FC.method = "divide",
   paired_analysis_column = NA,
+  do_paired_analysis = F,
   make.QC.param = F,
   make.QC.feature = F,
   discrete_stacked_params = NULL,
@@ -59,6 +60,8 @@ run_comparison(
 \item{FC.method}{Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)}
 
 \item{paired_analysis_column}{column name in ds$rowAnn to create paired analysis plots for, e.g. PatientID if ds is data for all cores}
+
+\item{do_paired_analysis}{makes plots to look at subgroup differences within the same patient. Will only run if paired_analysis_column is specified.}
 
 \item{make.QC.param, make.QC.feature, make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot, make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 

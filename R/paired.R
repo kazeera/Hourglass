@@ -1,4 +1,4 @@
-#' Makes multiple correlation plots in 1 PDF file
+#' Makes plots to look at subgroup differences within the same patient
 #'
 #' @inheritParams run_comparison
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
