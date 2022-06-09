@@ -274,7 +274,7 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
       # legend
       legend.text = element_text(colour = "black", size = font_size, face = "bold"),
       legend.title = element_text(colour = "black", size = font_size, face = "bold"),
-      legend.position = "bottom", legend.box = "vertical"
+      # legend.position = "bottom", legend.box = "vertical"
     )
 
   # Add stars if applicable
