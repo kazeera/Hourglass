@@ -1,4 +1,4 @@
-# Hourglass
+# Hourglass (R Package)
 
 <!-- badges: start -->
   <!-- badges: end -->
