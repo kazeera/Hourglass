@@ -55,6 +55,9 @@ plot_heatmap <- function(mat, ann_row = NA, ann_col = NA, ann_colors = NA, plot_
     }
   }
 
+  # Reduce font size of features
+  if(ncol(mat) > 30)
+    fontsize_col <- 5
   ## Colors
   # Gradient for heatmap
   pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(100)
