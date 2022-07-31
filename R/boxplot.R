@@ -249,11 +249,12 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = T,
   a <- ggplot(df, aes(box, value)) +
     geom_boxplot(aes(fill = box), width = 0.8, lwd = 1, color = "black", na.rm = T, outlier.color = NA) + # , alpha = alpha_box) +
     scale_fill_manual(values = lvl.colors)
-
+  
+  # Make list of unique elements
+  ele <- unique(as.character(df$box))
+  
+  # Show statistics based on user specifications
   if(isTRUE(show_stats)){
-
-    # Make list of unique elements
-    ele <- unique(as.character(df$box))
     # Make list of combinations (order doesn't matter) for p-values
     comb <- combinations(n = length(ele), r = 2, v = ele, repeats.allowed = F) %>% # gtools
       split(., seq(nrow(.)))

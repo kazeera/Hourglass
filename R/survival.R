@@ -158,7 +158,7 @@ plot_surv_curve <- function(df, descr = "", out_dir = ".", save.to.file = F) {
                         ## legends and labels
                         legend.title = descr,
                         legend.labs = labs,    # change legend labels
-                        xlab = "Days", # customize X axis label
+                        xlab = "Time", # customize X axis label
                         title = paste0("Kaplan-Meier, ", out_dir), # plot title
                         # linetype = "col", # Change line type by groups
                         surv.median.line = "hv", # Specify median survival

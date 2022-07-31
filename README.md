@@ -44,7 +44,7 @@ run_Hourglass(comparisons, var_colors, feat_sets, datasets)
 ### Example of features and functionality.
 #### Data preparation
 Define dataset object - list with 3 tables: 
-  1) "vals" (sample by feature/parameter matrix)
+1) "vals" (sample by feature/parameter matrix)
 2) "rowAnn" (row annotations = sample/patient information)
 3) "colAnn" (column annotations = feature/parameter information)
 

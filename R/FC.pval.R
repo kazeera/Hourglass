@@ -8,7 +8,7 @@
 #' @param group_name_sep A character indicating how the labels for groups should be presented, "/" in low/high
 #' @param vs.other logical, indicating whether to compare all groups to other, eg. high vs (low+intermed)
 #' @param FC.method Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)
-#' @param p.method Significance test to use, either "t.test" or "wilcox.test"
+#' @param p.method Significance test to use, either "t.test" or "wilcox"/"wilcox.test"
 #' @return A data frame with p-vals and fold-changes for each group (rowAnn) in each variable (column)
 #' @export
 make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_name_sep = "/", FC.method = "divide", p.method = "wilcox.test") {
@@ -16,7 +16,7 @@ make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_nam
     if (is.numeric(rowAnn_col)) {
       rowAnn_col <- colnames(df)[rowAnn_col]
     }
-
+      
     # Get all variables stored in column names
     all_vars <- colnames(df)[!colnames(df) %in% rowAnn_col]
 
@@ -49,7 +49,7 @@ make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_nam
           y <- x
           y[x != group] <- "other"
           df3[, rowAnn_col] <- y
-          df4 <- rbind(df4, make_FC.pval_df_helper(df3, rowAnn_col = rowAnn_col, val_col = v, rev = rev, group_name_sep = group_name_sep))
+          df4 <- rbind(df4, make_FC.pval_df_helper(df3, rowAnn_col = rowAnn_col, val_col = v, rev = rev, group_name_sep = group_name_sep, FC.method = FC.method, p.method = p.method))
         }
       }
       return(df4)
@@ -69,13 +69,13 @@ make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_nam
 
 #' Find p-values and fold-change (FC) for each group
 #'
-#' @param df3 A data frame with 2 columns: 1) row annotations (rowAnn), 2) numeric values
+#' @param p_df3 A data frame with 2 columns: 1) row annotations (rowAnn), 2) numeric values
 #' @param rowAnn_col Column in df3 with the groups
 #' @param val_col Column in df3 with the numeric values
 #' @param rev Logical indicating whether to reverse the order of the default FC (default is TRUE), ex. low-hig --> hig-low
 #' @param group_name_sep A character indicating how the labels for groups should be presented, "/" in low/high
 #' @param FC.method Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)
-#' @param p.method Significance test to use, either "t.test" or "wilcox.test"
+#' @param p.method Significance test to use, either "t.test" or "wilcox"/wilcox.test"
 #' @return A data frame with p-values and fold-changes
 #' @section Output data frame:
 #'          group    p.value Fold.change
@@ -83,29 +83,29 @@ make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_nam
 #' 2      low/high 0.02586801   0.5496807
 #' 3  low/intermed 0.65911963   2.4801647
 #' @export
-make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, group_name_sep = "/", FC.method = "divide", p.method = "wilcox.test") {
+make_FC.pval_df_helper <- function(p_df3, rowAnn_col = 1, val_col = 2, rev = F, group_name_sep = "/", FC.method = "divide", p.method = "wilcox.test") {
   # Get p values
-  if (p.method == "wilcox.test") {
-    df4 <- perform_wilcox(df3[, val_col], df3[, rowAnn_col]) %>%
+  if (isTRUE(grepl("wilcox", p.method))) {
+    p_df4 <- perform_wilcox(p_df3[, val_col], p_df3[, rowAnn_col]) %>%
       melt
-    df4 <- df4[!is.na(df4$value), ]
+    p_df4 <- p_df4[!is.na(p_df4$value), ]
   } else {
-    df4 <- perform_t.test(df3[, val_col], df3[, rowAnn_col]) %>%
+    p_df4 <- perform_t.test(p_df3[, val_col], p_df3[, rowAnn_col]) %>%
       melt
-    df4 <- df4[!is.na(df4$value), ]
+    p_df4 <- p_df4[!is.na(p_df4$value), ]
   }
 
   # If there are no values return
-  if (nrow(df4) == 0) {
+  if (nrow(p_df4) == 0) {
     return()
   }
   # Reverse order of factors
   if (rev) {
-    df4[, c("Var1", "Var2")] <- df4[, c("Var2", "Var1")]
+    p_df4[, c("Var1", "Var2")] <- p_df4[, c("Var2", "Var1")]
   }
 
   # Get median of each group
-  df5 <- medians_of_groups(df3[, val_col], df3[, rowAnn_col])
+  df5 <- medians_of_groups(p_df3[, val_col], p_df3[, rowAnn_col])
 
   # Rename rows
   rownames(df5) <- df5[, 1]
@@ -115,19 +115,19 @@ make_FC.pval_df_helper <- function(df3, rowAnn_col = 1, val_col = 2, rev = F, gr
   # intermed intermed 1.264453e-05
   # low           low 1.343557e-05
 
-  # Calculate quotient (FC) of medians depending on permutations of groups specified in df4
-  l <- lapply(1:nrow(df4), function(i) {
+  # Calculate quotient (FC) of medians depending on permutations of groups specified in p_df4
+  l <- lapply(1:nrow(p_df4), function(i) {
     if (FC.method == "divide") {
-      df5[as.character(df4$Var1[i]), 2] / df5[as.character(df4$Var2[i]), 2]
+      df5[as.character(p_df4$Var1[i]), 2] / df5[as.character(p_df4$Var2[i]), 2]
     } else {
-      df5[as.character(df4$Var1[i]), 2] - df5[as.character(df4$Var2[i]), 2]
+      df5[as.character(p_df4$Var1[i]), 2] - df5[as.character(p_df4$Var2[i]), 2]
     }
   })
 
   # Return data frame of combining FC and pvalue info for this iteration
   data.frame(
-    group = factor(paste(df4$Var1, df4$Var2, sep = group_name_sep)), # paste(substring(df4$Var1,1,3), substring(df4$Var2,1,3), sep="-"),
-    p.value = df4$value,
+    group = factor(paste(p_df4$Var1, p_df4$Var2, sep = group_name_sep)), # paste(substring(p_df4$Var1,1,3), substring(p_df4$Var2,1,3), sep="-"),
+    p.value = p_df4$value,
     Fold.change = do.call(rbind.data.frame, l) %>% unlist() %>% unname()
   )
 }
