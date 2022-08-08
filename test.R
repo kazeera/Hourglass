@@ -1,5 +1,9 @@
-xl_file <- "../../Example2.xlsx"
+devtools::document() #EVERY TIME U UPDATE
 
+
+xl_file <- "../../Example1.xlsx"
+library(Hourglass)
+run_from_excel(xl_file)
 i=1
 datasets = NULL
 keep_column_colAnn = "Keep.In.Analysis"

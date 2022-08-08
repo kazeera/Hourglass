@@ -20,7 +20,6 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
     variable = ds$rowAnn[, pID], # patient ID
     value = ds$vals[, rowAnn1]
   )
-  
   # Count the number of samples belonging to each patient in each group e.g. 2 samples from patient 12341 is in "low"
   df2 <- aggregate(value ~ group + variable, data = df, FUN = length)
   #   group variable value
@@ -29,18 +28,22 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
   # 3     high  1_33581     1
   
   # # Plot all patients
-  # plot_het_barplot(df2, labels = c(rowAnn1, "all samples"), e = e, save.to.file = F)
+  # plot_het_barplot(df2, labels = "all samples", e = e, save.to.file = F)
   
   # Remove patients with just 1 sample
   x <- plyr::count(df2$variable) %>% data.frame()
   df2 <- df2[df2$variable %in% x$x[x$freq != 1], ]
   
+  # Make subtitle for plots
+  num <- length(x$x[x$freq != 1]); den <- length(!is.na(unique(df$variable))) #numerator and denominator
+  subtitle <- sprintf("%s out of %s patients (%s%%) exhibit regional heterogeneity:", num, den, round(num*100/den,digits = 1))
+  
   # Initiate file
   pdf(file = sprintf("%s/%s_samples.pdf", out_dir, rowAnn1))
   # Plot patients with >1 sample
-  plot_het_barplot(df2, labels = c(rowAnn1),  pos = "stack", var_colors = var_colors, save.to.file = F)
+  plot_het_barplot(df2, title=rowAnn1, subtitle=subtitle, pos="stack", var_colors=var_colors, save.to.file=F)
   # Plot patients with >1 sample
-  plot_het_barplot(df2, labels = c(rowAnn1),  pos = "fill", var_colors = var_colors, save.to.file = F)
+  plot_het_barplot(df2, title=rowAnn1, subtitle=subtitle, pos="fill", var_colors=var_colors, save.to.file=F)
   # Save file
   dev.off()
 }
@@ -55,7 +58,8 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
 #' 2       low 1_36312      CD3  700.2100
 #' 3       low 1_37265      CD3  931.1133
 #' 4       low 1_39924      CD3 1503.2325
-#' @param labels A character vector of at least length 1 that will be collapsed for file name/plot titles.
+#' @param title Plot title and part of file name.
+#' @param subtitle Plot subtitle.
 #' @param pos How bars should be stacked. Either "fill" (relative ratio, 100% bar) or "stack". See position parameter in \code{\link[ggplot2]{geom_bar}}
 #' @param var_colors A named vector with colors as values and annotations/groups as names.
 #' @param font_size The size of axis title on plots. The size of plot subtitle and caption is font_size / 2. The size of legend text and x axis text is font_size / 3 and font_size / 1.5.
@@ -63,7 +67,7 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
 #' @param save.to.file If TRUE, save plot to file in out_dir. If FALSE, print to panel.
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-plot_het_barplot <- function(df2, labels = "", pos = "stack", var_colors = NULL, font_size = 20, out_dir = ".", save.to.file = T) {
+plot_het_barplot <- function(df2, title = "", subtitle = "", pos = "stack", var_colors = NULL, font_size = 20, out_dir = ".", save.to.file = T) {
   # Initialize ggplot
   g <- ggplot(df2, aes(x = reorder(variable, -value), y = value, fill = group))
   
@@ -71,12 +75,12 @@ plot_het_barplot <- function(df2, labels = "", pos = "stack", var_colors = NULL,
   g <- g +
     geom_bar(stat = "identity", position = pos, width = .8, na.rm = T) + # bars
     labs(
-      title = paste(labels, collapse = " "),
-      # subtitle = "Levels across patients",
-      x = "Patient ID (with more than one sample)",
+      title = title,
+      subtitle = subtitle,
+      x = "Patient ID",
       y = ifelse(pos == "stack", "Number of samples", "")
     ) +
-    scale_y_continuous(breaks = scales::pretty_breaks()) + # integers on y axis
+    scale_y_continuous(expand = c(0,0), breaks = scales::pretty_breaks()) + # integers on y axis
     # Customize theme
     theme(
       panel.background = element_blank(), # remove background color and lines
@@ -90,7 +94,7 @@ plot_het_barplot <- function(df2, labels = "", pos = "stack", var_colors = NULL,
       axis.text.x = element_text(angle = 90, size = font_size/5, hjust = 1, margin = margin(t = 7, r = 0, b = 0, l = 0)), # increase space between x axis title and labels
       axis.text.y = element_text(size = font_size/1.5, margin = margin(t = 0, r = 7, b = 0, l = 0)),
       # axes tick labels
-      axis.title = element_text(colour = "black", size = font_size, face = "bold"), # axes title labels
+      axis.title = element_text(colour = "black", face = "bold"), # axes title labels
       axis.title.x = element_text(margin = margin(t = 10, r = 0, b = 0, l = 0), size = font_size/2.5), # increase space between x axis title and labels
       axis.title.y = element_text(margin = margin(t = 0, r = 10, b = 0, l = 0), size = font_size/2.5),
       # legend
@@ -109,7 +113,9 @@ plot_het_barplot <- function(df2, labels = "", pos = "stack", var_colors = NULL,
   
   # Convert y-axis to 0-100%
   if (pos == "fill") {
-    g <- g + scale_y_continuous(labels = percent_format()) # scales
+    suppressWarnings(
+    g <- g + scale_y_continuous(expand = c(0,0), labels = percent_format()) # scales
+    )
   }
   
   # Save to file
@@ -118,7 +124,7 @@ plot_het_barplot <- function(df2, labels = "", pos = "stack", var_colors = NULL,
     # file_h <- ifelse(nrow(df2) < 20, 5, 7.5) # file height
     # file_w <- (length(unique(df2$ID)) + 7) / 4 + 2 # file width
     # Print to file
-    filename <- sprintf("%s/%s_bar_profile_%s.pdf", out_dir, paste(labels, collapse = "_"), pos)
+    filename <- sprintf("%s/%s_bar_profile_%s.pdf", out_dir, title, pos)
     ggsave(filename, g) # , width = file_w, height = file_h, units = "cm", limitsize = F)
   } else {
     # Print to image panel
