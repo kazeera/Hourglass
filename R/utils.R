@@ -239,7 +239,11 @@ get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
     LEVELS <- list(l = "low", i = "int", h = "high")
   }
   # Assign quantile to vector # e.g. if n_quantiles = 3, we will assign each value in v to which quartile it belongs in (1 to 4)
-  w <- as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE))
+  w <- try(as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE)))
+  if (class(w) == "try-error") {
+    w <- as.integer(cut(v, quantile(v, probs = 0:n_quantiles / n_quantiles, na.rm = T, include.lowest = TRUE)))
+  }
+  # w <- as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE))
 
   # If the quantile number is just needed, return
   if (return_num) {
