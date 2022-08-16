@@ -5,10 +5,6 @@ install.packages("devtools")
 devtools::install_github("kazeera/Hourglass")
 library(Hourglass)
 
-# Save start time to a variable
-start_time <- Sys.time()
-todays_date <- format(Sys.Date(), "%Y%m%d")
-
 
 run_from_excel("Example_IHC_sample_UserOptions.xlsx")
 
