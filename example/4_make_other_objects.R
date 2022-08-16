@@ -1,9 +1,8 @@
 # Continue from 3
 library(openxlsx)
 
-# Equivalent
-load("ExampleData2/example_IHC_samples_dataset.rdata")
-ds <- Hourglass::example_IHC_samples_dataset
+# # Equivalent
+# load("ExampleData2/example_IHC_samples_dataset.rdata")
 
 # Make a new list for other tables
 example_IHC_samples_run <- list()
