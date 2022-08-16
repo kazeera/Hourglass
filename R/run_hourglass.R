@@ -49,6 +49,9 @@ test_Hourglass <- function(out_dir = ".", filename = "test_iris") {
 #' @param keep_column_colAnn Optional. Column name in colAnn of which columns to keep in vals, important for QC plots
 #' @export
 run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".", datasets = NULL, keep_column_colAnn = "Keep.In.Analysis"){
+  # Save start time to a variable
+  start_time <- Sys.time()
+  print(sprintf("Run started on %s.", format(start_time, "%a %b %d %X %Y")))
 
   # Do we need to run a ByPatient analysis?
   run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$paired_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
@@ -236,4 +239,9 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
       })
     }
   }
+
+  # Print time difference
+  end_time <- Sys.time()
+  print(sprintf("Run completed on %s.", format(end_time, "%a %b %d %X %Y")))
+  print(end_time - start_time)
 }

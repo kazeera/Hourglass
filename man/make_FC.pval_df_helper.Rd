@@ -5,7 +5,7 @@
 \title{Find p-values and fold-change (FC) for each group}
 \usage{
 make_FC.pval_df_helper(
-  df3,
+  p_df3,
   rowAnn_col = 1,
   val_col = 2,
   rev = F,
@@ -15,7 +15,7 @@ make_FC.pval_df_helper(
 )
 }
 \arguments{
-\item{df3}{A data frame with 2 columns: 1) row annotations (rowAnn), 2) numeric values}
+\item{p_df3}{A data frame with 2 columns: 1) row annotations (rowAnn), 2) numeric values}
 
 \item{rowAnn_col}{Column in df3 with the groups}
 
@@ -27,7 +27,7 @@ make_FC.pval_df_helper(
 
 \item{FC.method}{Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)}
 
-\item{p.method}{Significance test to use, either "t.test" or "wilcox.test"}
+\item{p.method}{Significance test to use, either "t.test" or "wilcox"/wilcox.test"}
 }
 \value{
 A data frame with p-values and fold-changes

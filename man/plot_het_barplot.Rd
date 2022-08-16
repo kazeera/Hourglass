@@ -6,7 +6,8 @@
 \usage{
 plot_het_barplot(
   df2,
-  labels = "",
+  title = "",
+  subtitle = "",
   pos = "stack",
   var_colors = NULL,
   font_size = 20,
@@ -17,7 +18,9 @@ plot_het_barplot(
 \arguments{
 \item{df2}{A long format data frame with 4 columns: 1) group (group of bars on x), 2) ID (individual bars on x), 3) variable (samples within each bar), 4) value.}
 
-\item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
+\item{title}{Plot title and part of file name.}
+
+\item{subtitle}{Plot subtitle.}
 
 \item{pos}{How bars should be stacked. Either "fill" (relative ratio, 100\% bar) or "stack". See position parameter in \code{\link[ggplot2]{geom_bar}}}
 

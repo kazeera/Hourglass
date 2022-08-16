@@ -27,7 +27,7 @@ make_FC.pval_df(
 
 \item{FC.method}{Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)}
 
-\item{p.method}{Significance test to use, either "t.test" or "wilcox.test"}
+\item{p.method}{Significance test to use, either "t.test" or "wilcox"/"wilcox.test"}
 }
 \value{
 A data frame with p-vals and fold-changes for each group (rowAnn) in each variable (column)
