@@ -1,12 +1,12 @@
 # Install devtools
-install.packages("devtools")
-
-# Install Hourglass package from Github and load
-devtools::install_github("kazeera/Hourglass")
+# install.packages("devtools")
+#
+# # Install Hourglass package from Github and load
+# devtools::install_github("kazeera/Hourglass")
 library(Hourglass)
 
 
-run_from_excel("Example_IHC_sample_UserOptions.xlsx")
+run_from_excel("Example_IHC_sample_UserOptions - Copy.xlsx")
 
 # Print time difference to run log
 end_time <- Sys.time()
