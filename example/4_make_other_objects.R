@@ -1,8 +1,22 @@
 # Continue from 3
 library(openxlsx)
 
-# # Equivalent
-# load("ExampleData2/example_IHC_samples_dataset.rdata")
+# Reformat - make in Format: Stain.Parameter
+load("ExampleData2/example_IHC_samples_dataset.RData")
+ds <- example_IHC_samples_dataset
+colnames(ds$vals)
+ds$colAnn$Parameter <- gsub("\\.", "_", ds$colAnn$Parameter)
+rownames(ds$colAnn) <- colnames(ds$vals) <- paste(ds$colAnn$Feature, ds$colAnn$Parameter, sep=".")
+example_IHC_samples_dataset <- ds
+
+# Save to file
+for(ft in names(ds)){
+  # save appropriate filetype (ft)
+  write.csv(ds[[ft]], file = sprintf("ExampleData2/Example_IHC_sample_%s.csv",ft))
+}
+
+# Save R data files
+save(example_IHC_samples_dataset, file="ExampleData2/example_IHC_samples_run.RData")
 
 # Make a new list for other tables
 example_IHC_samples_run <- list()
@@ -29,3 +43,5 @@ save(PANC_TISS_ORDER, file="PANC_TISS_ORDER.RData")
 # Custom column levels - quantiles
 LEVELS <- list(l="low", i="intermed", h="high")
 save(LEVELS, file="LEVELS.RData")
+
+
