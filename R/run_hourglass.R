@@ -54,7 +54,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
   print(sprintf("Run started on %s.", format(start_time, "%a %b %d %X %Y")))
 
   # Do we need to run a ByPatient analysis?
-  run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$paired_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
+  run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$patient_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
 
   # Get datasets
   dss <- get_datasets(comparisons, datasets)
@@ -75,7 +75,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
     run <- comparisons[i, ]
 
     # Pick whether you want to look at all samples or samples averaged across patients
-    for (sample.or.patient in c("BySample", "ByPatient")) { # Note: ByPatient second so paired_id_column can be NA
+    for (sample.or.patient in c("BySample", "ByPatient")) { # Note: ByPatient second so patient_id_column can be NA
       # If the value is FALSE, skip
       if (!run[, sample.or.patient]) next
       tryCatch({
@@ -154,7 +154,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
           corr_method = run$corr_method,
           pval.test = run$pval_test,
           pval.label = ifelse(grepl("star", run$pval_label), "p.signif", "p.format"),
-          paired_analysis_column = run$paired_id_column,
+          paired_analysis_column = run$patient_id_column,
           do_paired_analysis = ifelse(sample.or.patient == "BySample", run$do_paired_analysis, FALSE),
           make.QC.param = run$qc_param_boxplots,
           make.QC.feature = run$qc_feature_boxplots,
