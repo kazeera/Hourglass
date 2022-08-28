@@ -13,11 +13,13 @@ run_comparison_helper(
   var_colors = NULL,
   gradient_palette = NULL,
   corr_method = "pearson",
-  pval.test = "wilcox.test",
+  pval.test = "t.test",
   pval.label = "p.signif",
+  boxplot_log10_y = F,
   paired_analysis_column = NA,
   make.QC.param = F,
   make.QC.feature = F,
+  make.feat.plots = F,
   make.het.plot = F,
   make.indiv.boxplot = F,
   make.overview.boxplot = F,
@@ -51,11 +53,15 @@ run_comparison_helper(
 
 \item{pval.label}{How to display p-values? String corresponding to "label" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
 
+\item{boxplot_log10_y}{Log10 the values on y axis for boxplots and patient paired slopegraphs? Logical (T/F). Default is FALSE.}
+
 \item{paired_analysis_column}{column name in ds$rowAnn to create paired analysis plots for, e.g. PatientID if ds is data for all cores}
 
 \item{make.QC.param}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 
 \item{make.QC.feature}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
+
+\item{make.feat.plots}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 
 \item{make.het.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 

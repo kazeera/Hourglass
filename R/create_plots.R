@@ -5,7 +5,7 @@
 #' @param also.complete Logical indicating whether to also make "complete cores" plots as a seperate folder, default FALSE.
 #' @export
 create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = "Sub1", var_colors = NULL, gradient_palette = NULL,
-                         corr_method = "pearson", pval.test = "wilcox.test", pval.label = "p.signif",
+                         corr_method = "pearson", pval.test = "t.test", pval.label = "p.signif", boxplot_log10_y = F,
                          make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
                          make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F, also.complete = F) {
   # # Create folder
@@ -27,7 +27,7 @@ create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = 
         # Run all cores with NAs, unclustered # make all plots
         create_plots_helper(ds, rowAnns, colAnns, out_dir, labels, var_colors,
           clust_row = T, gradient_palette = gradient_palette,
-          corr_method = corr_method, pval.test = pval.test, pval.label = pval.label,
+          corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
           make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
           make.heatmap = make.heatmap, make.corrplot = make.corrplot,
           make.overview.corrscatt = make.overview.corrscatt, make.indiv.corrscatt = make.indiv.corrscatt,
@@ -46,7 +46,7 @@ create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = 
         # 1) Run all cores with NAs, unclustered  # don't make plots that require computing correlations
         create_plots_helper(ds, rowAnns, colAnns, out_dir, labels, var_colors,
           gradient_palette = gradient_palette,
-          corr_method = corr_method, pval.test = pval.test, pval.label = pval.label,
+          corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
           make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
           make.heatmap = make.heatmap, make.corrplot = F,
           make.overview.corrscatt = F, make.indiv.corrscatt = F,
@@ -71,7 +71,7 @@ create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = 
             # Run complete cores, clustered # make all plots
             create_plots_helper(ds_comp, rowAnns, colAnns, sub_out_dir,
               labels = c(labels, "complete"), var_colors, clust_row = T, gradient_palette = gradient_palette,
-              corr_method = corr_method, pval.test = pval.test, pval.label = pval.label,
+              corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
               make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
               make.heatmap = make.heatmap, make.corrplot = make.corrplot,
               make.overview.corrscatt = make.overview.corrscatt, make.indiv.corrscatt = make.indiv.corrscatt,
@@ -96,12 +96,12 @@ create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = 
 #' @param gradient_palette RColorBrewer palette name for gradients (e.g. heatmap, correlation plots). See RColorBrewer::display.brewer.all() for all options.
 #' @export
 create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = "", var_colors = NA, clust_row = F, clust_col = F, gradient_palette = "RdBu",
-                                corr_method = "pearson", pval.test = "wilcox.test", pval.label = "p.signif",
+                                corr_method = "pearson", pval.test = "t.test", pval.label = "p.signif", boxplot_log10_y = F,
                                 make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
                                 make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F) {
-  # If there are no stains or rows to plot, return incomplete
+  # If there are less than 3 columns OR rows, do not plot all plots except indiv boxplot
   if (any(dim(ds$vals) < 3)) {
-    return()
+    make.FC.pval.plot <- make.corrplot <- make.overview.corrscatt <- make.barplot <- make.overview.boxplot <- make.heatmap <- FALSE
   }
 
   # - 1st df: col1 = rowAnn1, cols2:n = values
@@ -202,9 +202,7 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
   df2 <- melt(df) # reshape2
 
   # TODO make color palette for rowAnn
-  pal <- get_ann_colors(ds$rowAnn, rowAnns[!is.na(rowAnns)], var_colors) %>%
-    unname() %>%
-    unlist()
+  pal <- get_ann_colors(ds$rowAnn, rowAnns[!is.na(rowAnns)], var_colors) %>% unname() %>% unlist()
 
   ## Make overview boxplots
   if (make.overview.boxplot) {
@@ -214,7 +212,7 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
           df3 = df2[, c("variable", rowAnns[1], "value")],
           out_dir, labels, lvl.colors = pal,
           legend.title = rowAnns[1], xlab = colAnns[2],
-          log10 = T
+          log10_y = boxplot_log10_y
         )
       },
       error = function(err) {
@@ -226,9 +224,7 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
   ## Make individual boxplots
   if (make.indiv.boxplot) {
     # Get a vector of all the unique stains
-    all_vars <- df2$variable %>%
-      as.character() %>%
-      unique()
+    all_vars <- df2$variable %>% as.character() %>% unique()
     # Get the columns to plot and pdf filename
     pdf_filename <- sprintf("%s/%s_boxplots.pdf", out_dir, paste(labels, collapse = "_"))
     # Create pdf file of all plots
@@ -251,7 +247,7 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
           plot_indiv_boxplot(df3,
             labels = c(labels, v), out_dir, lvl.colors = pal, font_size = 30,
             xlab = "", ylab = ylab, rowAnns = rowAnns, save.to.file = F,
-            pval.label = pval.label, pval.test = pval.test
+            pval.label = pval.label, pval.test = pval.test, log10_y = boxplot_log10_y
           )
         },
         error = function(err) {

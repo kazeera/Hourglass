@@ -12,6 +12,13 @@
 avg_dataframe <- function(df, group_by = 1, rows_to_keep = NULL, cols_to_keep = NULL, sort_cols = FALSE) {
   # Make group column a character
   df[,group_by] <-  as.character(df[,group_by])
+  
+  # Remove rows where group_by ID is NA 
+  if(is.null(rows_to_keep)){
+    rows_to_keep <- !is.na(df[,group_by])
+  } else {
+    rows_to_keep <- rows_to_keep & !is.na(df[,group_by])
+  }
 
   # Subset data
   df <- subset_dataframe(df, rows_to_keep, cols_to_keep)
@@ -69,7 +76,7 @@ avg_dataset <- function(ds, group_by = 2, new_name = "Averaged", rows_to_keep = 
   if (is.numeric(group_by)) {
     group_by <- colnames(ds$rowAnn)[group_by]
   }
-
+  
   # Average rowAnn
   rowAnn <- avg_dataframe(ds$rowAnn, group_by, rows_to_keep)
 

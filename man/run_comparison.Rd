@@ -16,11 +16,13 @@ run_comparison(
   corr_method = "pearson",
   pval.test = "t.test",
   pval.label = "p.signif",
+  boxplot_log10_y = F,
   FC.method = "divide",
   paired_analysis_column = NA,
   do_paired_analysis = F,
   make.QC.param = F,
   make.QC.feature = F,
+  make.feat.plots = F,
   discrete_stacked_params = NULL,
   make.het.plot = F,
   make.indiv.boxplot = F,
@@ -57,13 +59,15 @@ run_comparison(
 
 \item{pval.label}{How to display p-values? String corresponding to "label" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
 
+\item{boxplot_log10_y}{Log10 the values on y axis for boxplots and patient paired slopegraphs? Logical (T/F). Default is FALSE.}
+
 \item{FC.method}{Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)}
 
 \item{paired_analysis_column}{column name in ds$rowAnn to create paired analysis plots for, e.g. PatientID if ds is data for all cores}
 
 \item{do_paired_analysis}{makes plots to look at subgroup differences within the same patient. Will only run if paired_analysis_column is specified.}
 
-\item{make.QC.param, make.QC.feature, make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot, make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
+\item{make.QC.param, make.QC.feature, make.feat.plots, make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot, make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 
 \item{discrete_stacked_params}{parameter names to search for in colAnn1 to make discrete stacked barplots, e.g. "Het.Score"}
 

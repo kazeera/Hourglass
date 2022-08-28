@@ -8,7 +8,6 @@ plot_indiv_paired(
   df,
   labels = "Group",
   out_dir = ".",
-  log10 = F,
   font_size = 30,
   line_size = 1.3,
   color_pal = NA,
@@ -17,6 +16,7 @@ plot_indiv_paired(
   rowAnns = c(NA, NA),
   pval.test = "t.test",
   pval.label = "p.format",
+  log10_y = F,
   save.to.file = T
 )
 }
@@ -26,8 +26,6 @@ plot_indiv_paired(
 \item{labels}{A character vector of at least length 1 that will be collapsed for file name/plot titles.}
 
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
-
-\item{log10}{Logical indicating whether to log10-transform values before plotting}
 
 \item{font_size}{The size of text labels on correlation plots. legend title. The size of legend text and plot title is font_size / 1.5. The size of legend text and plot subtitle is font_size / 3.}
 
@@ -44,6 +42,8 @@ plot_indiv_paired(
 \item{pval.label}{p-value label. String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).}
 
 \item{save.to.file}{If TRUE, save plot to file in out_dir. If FALSE, print to panel.}
+
+\item{log10}{Logical indicating whether to log10-transform values before plotting}
 }
 \value{
 Plot object if save.to.file is FALSE.

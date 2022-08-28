@@ -16,7 +16,7 @@ subset_dataframe <- function(df, rows_to_keep = NULL, cols_to_keep = NULL) {
   }
 
   # subset and return
-  data.frame(df[rows_to_keep, cols_to_keep])
+  data.frame(df[rows_to_keep, cols_to_keep,drop=FALSE])
 }
 
 #' Subset dataset list object to the rows and/or columns specified

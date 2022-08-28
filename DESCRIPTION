@@ -1,10 +1,10 @@
 Package: Hourglass
 Title: This Package Provides Visualizations of Annotated Numeric Data
-Version: 0.0.0.9000
+Version: 0.0.1.9000
 Authors@R: person("Kazeera", "Aliar", , "kazeeraaliar@gmail.com", role = c("aut", "cre"), comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: This package can be used to systematically interrogate multiparametric datasets in an automated manner. It allows users to 
+Description: See URL: {kazeera.github.io/Hourglass} for user's manual. This package can be used to systematically interrogate multiparametric datasets in an automated manner. It allows users to 
     filter and subset large datasets and compare groups in an automated manner. It iteratively creates plots into directories for each 
-    comparison specified. Plot functions can also be used seperately.
+    comparison specified. Plot functions can also be used seperately. 
 License: `use_mit_license()`, `use_gpl3_license()` or friends to
     pick a license
 Encoding: UTF-8

@@ -4,7 +4,7 @@
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @param pair_id Name or index of column in ds$rowAnn that count as patients or groups to pair by, i.e. which ID to average over, e.g. patient ID (if there are multiple rows per patient)
 #' @export
-run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", var_colors = NULL, pair_id = 1, pval.test = "t.test", pval.label = "p.signif") {
+run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", var_colors = NULL, pair_id = 1, pval.test = "t.test", pval.label = "p.signif", log10_y = F) {
   # Get data frame with individual pairs
   ds_sub <- get_paired_ds(ds, rowAnns[1], pair_id)
   # Get color palette for row annotations
@@ -37,8 +37,8 @@ run_paired_analysis <- function(ds, rowAnns, colAnns = NA, out_dir = ".", var_co
           if (nrow(df) < 2) next
           # Create plot
           plot_indiv_paired(df,
-                            labels = var1, color_pal = pal, pval.label = pval.label, pval.test = pval.test,
-                            xlab = rowAnns[1], ylab = col_name, rowAnns = rowAnns, save.to.file = F
+                            labels = var1, color_pal = pal, pval.label = pval.label, pval.test = pval.test, log10_y = log10_y,
+                            xlab = rowAnns[1], ylab = col_name, rowAnns = rowAnns, save.to.file = F, out_dir = out_dir
           )
         },
         finally = {
@@ -111,13 +111,13 @@ get_paired_ds <- function(ds, rowAnn1, pair_id = 1) {
 #' @param pval.label p-value label. String corresponding to label parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).
 #' @return Plot object if save.to.file is FALSE.
 #' @export
-plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", log10 = F, font_size = 30, line_size = 1.3, color_pal = NA,
+plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", font_size = 30, line_size = 1.3, color_pal = NA,
                               xlab = "variable", ylab = "value", rowAnns = c(NA, NA), pval.test = "t.test",
-                              pval.label = "p.format", save.to.file = T) {
+                              pval.label = "p.format", log10_y = F, save.to.file = T) {
   # Rename columns
   colnames(df)[1:3] <- c("case", "box", "value")
   # Log scale
-  if (log10) {
+  if (log10_y) {
     df$value <- log10(df$value) # a <- a + scale_y_continuous(trans='log10') # log transform
   }
 
@@ -139,7 +139,7 @@ plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", log10 = F, fo
 
   # Add stats to plot using ggpubr
   tryCatch({
-    a <- a + stat_compare_means(method = pval.test, comparisons = comb, na.rm = T, paired = paired, label = pval.label, size = font_size / 5, bracket.size = 1)
+    a <- a + stat_compare_means(method = pval.test, comparisons = comb, na.rm = T, paired = paired, label = pval.label, size = font_size / 5, bracket.size = 1, hide.ns = T)
   })
 
   # Trim x labels to 3 characters
@@ -188,11 +188,11 @@ plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", log10 = F, fo
   # Add labels to graph
   a <- a +
     labs(
-      title = paste(labels, collapse = "_"),
+      title = paste(labels, ylab, collapse = "_"),
       color = ifelse(!is.na(rowAnns[1]), rowAnns[1], ""),
       caption = sprintf("%s%s", pval.test, ifelse(pval.label == "p.signif", ", p: 0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", "")),
       subtitle = out_dir,
-      y = sprintf("%s%s", ifelse(log10, "log10 ", ""), ylab),
+      y = sprintf("%s%s", ifelse(log10_y, "log10 ", ""), ylab),
       x = xlab
     )
 

@@ -12,7 +12,8 @@ run_paired_analysis(
   var_colors = NULL,
   pair_id = 1,
   pval.test = "t.test",
-  pval.label = "p.signif"
+  pval.label = "p.signif",
+  log10_y = F
 )
 }
 \arguments{

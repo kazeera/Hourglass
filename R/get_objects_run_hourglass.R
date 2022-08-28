@@ -71,7 +71,7 @@ get_colors <- function(file_xl, sheet = "Colors") {
 #' @export
 get_datasets <- function(comparisons, datasets = NULL) {
   # Do we need to run a ByPatient analysis?
-  run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$patient_id_column[1]) # TODO see what output of excelwriter from kivy is - NA if missing or NULL?
+  run_bypatient <- any(comparisons$ByPatient) & !is.na(comparisons$patient_id_column[1]) 
 
   # Prepare datasets
   samples <- datasets[["samples"]]
@@ -90,6 +90,12 @@ get_datasets <- function(comparisons, datasets = NULL) {
     # Average dataset to make ByPatient
     if (run_bypatient) {
       patients <- avg_dataset(samples, comparisons$patient_id_column[1], "ByPatient") # , rows_to_keep = rows_to_keep)
+      
+      # Reorder columns to match samples
+      patients$vals <- patients$vals[,colnames(samples$vals)]
+      # Ensure columns and rows are in same order
+      patients$colAnn <- patients$colAnn[colnames(patients$vals),]
+      patients$rowAnn <- patients$rowAnn[rownames(patients$vals),]
     }
   }
 
@@ -97,7 +103,8 @@ get_datasets <- function(comparisons, datasets = NULL) {
   if (any(comparisons$do_remove_outliers)) {
     samples$vals <- samples$vals %>% remove_outliers_df()
     if (run_bypatient) {
-      patients$vals <- patients$vals %>% remove_outliers_df()
+      patients$vals <- patients$vals %>% remove_outliers_df() 
+      
     }
   }
 

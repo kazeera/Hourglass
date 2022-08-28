@@ -14,16 +14,17 @@
 #' @param corr_method Method for correlation (one of "pearson","spearman","kendall").
 #' @param pval.test Which two-samples testing should be used? String corresponding to "method" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "t.test" and "wilcox.test".
 #' @param pval.label How to display p-values? String corresponding to "label" parameter in \code{\link[ggpubr]{stat_compare_means}}. Allowed values are "p.signif" (stars) and "p.format" (number).
+#' @param boxplot_log10_y Log10 the values on y axis for boxplots and patient paired slopegraphs? Logical (T/F). Default is FALSE.
 #' @param FC.method Fold change computation method to use, either "divide" (for non-transformed values) or "subtract" (for log2-transformed values)
 #' @param do_paired_analysis makes plots to look at subgroup differences within the same patient. Will only run if paired_analysis_column is specified.
-#' @param make.QC.param,make.QC.feature,make.het.plot,make.indiv.boxplot,make.overview.boxplot,make.heatmap,make.corrplot,make.overview.corrscatt,make.indiv.corrscatt,make.barplot,make.FC.pval.plot Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.
+#' @param make.QC.param,make.QC.feature,make.feat.plots,make.het.plot,make.indiv.boxplot,make.overview.boxplot,make.heatmap,make.corrplot,make.overview.corrscatt,make.indiv.corrscatt,make.barplot,make.FC.pval.plot Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.
 #' @param paired_analysis_column column name in ds$rowAnn to create paired analysis plots for, e.g. PatientID if ds is data for all cores
 #' @param discrete_stacked_params parameter names to search for in colAnn1 to make discrete stacked barplots, e.g. "Het.Score"
 #' @param save_table Print MainComparison + ID data to csv file.
 #' @export
 run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.imp = NULL, feat_sets = NULL, var_colors = NULL, gradient_palette = "RdBu",
-                           corr_method = "pearson", pval.test = "t.test", pval.label = "p.signif",
-                           FC.method = "divide", paired_analysis_column = NA, do_paired_analysis = F, make.QC.param = F, make.QC.feature = F, discrete_stacked_params = NULL,
+                           corr_method = "pearson", pval.test = "t.test", pval.label = "p.signif", boxplot_log10_y = F,
+                           FC.method = "divide", paired_analysis_column = NA, do_paired_analysis = F, make.QC.param = F, make.QC.feature = F, make.feat.plots = F,discrete_stacked_params = NULL,
                            make.het.plot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
                            make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F, save_table = F) {
 
@@ -34,32 +35,36 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
     # Run paired boxplots
     run_paired_analysis(ds, rowAnns, colAnns,
                         out_dir = create_folder(paste(output_folder, ds$name, ds$comparison, "Paired", sep = "/")),
-                        var_colors, paired_analysis_column, pval.test, pval.label
+                        var_colors, paired_analysis_column, pval.test, pval.label, boxplot_log10_y
     )
   }
 
   # Make all plots
   run_comparison_helper(ds, rowAnns, colAnns,
                         out_dir = create_folder(paste(output_folder, ds$name, ds$comparison, sep = "/")),
-                        feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
-                        paired_analysis_column, make.QC.param, make.QC.feature,
+                        feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label, boxplot_log10_y,
+                        paired_analysis_column, make.QC.param, make.QC.feature, make.feat.plots,
                         make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
                         make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot, save_table
   )
 
   # Make discrete barplots, e.g. Het.Score
-  run_discrete_barplot_analysis(ds, rowAnns[1], colAnns,
-                                parameters = discrete_stacked_params,
-                                out_dir = create_folder(paste(output_folder, ds$name, ds$comparison, sep = "/")),
-                                gradient_palette = gradient_palette
-  )
+  if(isFALSE(is.na(discrete_stacked_params))){
+    discrete_stacked_params <- trimws(unlist(strsplit(discrete_stacked_params,",")))
+    run_discrete_barplot_analysis(ds, rowAnns[1], colAnns,
+                                  parameters = discrete_stacked_params,
+                                  out_dir = create_folder(paste(output_folder, ds$name, ds$comparison, sep = "/")),
+                                  gradient_palette = gradient_palette
+    )
+  }
+  
 
   # Imputed
   if (isFALSE(is.null(ds.imp))) {
     run_comparison_helper(ds.imp, rowAnns, colAnns,
                           out_dir = create_folder(paste(output_folder, ds.imp$name, ds.imp$comparison, sep = "/")),
-                          feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label,
-                          paired_analysis_column, make.QC.param, make.QC.feature,
+                          feat_sets, var_colors, gradient_palette, corr_method, pval.test, pval.label, boxplot_log10_y,
+                          paired_analysis_column, make.QC.param, make.QC.feature, make.feat.plots,
                           make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
                           make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot, save_table
     )
@@ -72,8 +77,8 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
 #' @export
 run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", feat_sets = NULL, var_colors = NULL, gradient_palette = NULL,
-                                  corr_method = "pearson", pval.test = "wilcox.test", pval.label = "p.signif",
-                                  paired_analysis_column = NA, make.QC.param = F, make.QC.feature = F,
+                                  corr_method = "pearson", pval.test = "t.test", pval.label = "p.signif", boxplot_log10_y = F,
+                                  paired_analysis_column = NA, make.QC.param = F, make.QC.feature = F, make.feat.plots = F,
                                   make.het.plot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
                                   make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F, save_table = F) {
   if (isTRUE(save_table)){
@@ -97,14 +102,13 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
     for (param1 in params) {
       # Get logical of whether or not to keep columns in data table
       cols_to_keep <- ds$colAnn[, colAnns[1]] %in% param1
-      if (sum(cols_to_keep) < 3) next
       # Subset dataset object accordingly
       ds_sub <- subset_dataset(ds, cols_to_keep = cols_to_keep)
       colnames(ds_sub$vals) <- ds_sub$colAnn[, colAnns[2]]
       # Create plots # just boxplots
       create_plots(ds_sub, rowAnns, colAnns, out_dir2,
                    labels = param1, var_colors, gradient_palette,
-                   corr_method, pval.test, pval.label,
+                   corr_method, pval.test, pval.label, boxplot_log10_y,
                    make.indiv.boxplot, make.overview.boxplot
       )
       # Turn off null devices
@@ -124,14 +128,13 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
     for (feat1 in features) {
       # Get logical of whether or not to keep columns in data table
       cols_to_keep <- ds$colAnn[, colAnns[2]] %in% feat1
-      if (sum(cols_to_keep) < 3) next
       # Subset dataset object accordingly
       ds_sub <- subset_dataset(ds, cols_to_keep = cols_to_keep)
       colnames(ds_sub$vals) <- ds_sub$colAnn[, colAnns[1]]
       # Create plots # just boxplots
       create_plots(
         ds_sub, rowAnns, colAnns, out_dir2, feat1, var_colors, gradient_palette,
-        corr_method, pval.test, pval.label,
+        corr_method, pval.test, pval.label, boxplot_log10_y,
         make.indiv.boxplot, make.overview.boxplot
       )
       # Turn off null devices
@@ -140,7 +143,7 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
   }
 
   # Analysis 3: Make biologically relevant heatmaps by combining stains from handpicked parameters #defined in main.script
-  if (!is.null(feat_sets)) {
+  if (!is.null(feat_sets) & make.feat.plots) {
     # Create a directory in "Feature Sets" folder if colAnns = NA
     out_dir2 <- ifelse(all(is.na(colAnns)), out_dir, create_folder(sprintf("%s/Feature Sets", out_dir)))
     # colAnns = c(run$param_column, run$feature_column
@@ -167,7 +170,7 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
             }
             # Create plots # make all plots
             create_plots(res$ds, rowAnns, res$colAnns, create_folder(sprintf("%s/%s", out_dir2, res$feat_sets_name)), res$feat_sets_name, var_colors, gradient_palette,
-                         corr_method, pval.test, pval.label,
+                         corr_method, pval.test, pval.label, boxplot_log10_y,
                          make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot,
                          make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot,
                          also.complete = T
