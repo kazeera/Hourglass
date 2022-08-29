@@ -57,7 +57,7 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
                                   gradient_palette = gradient_palette
     )
   }
-  
+
 
   # Imputed
   if (isFALSE(is.null(ds.imp))) {
@@ -86,7 +86,7 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
   }
 
   # Run heterogeneity of rowAnn1 in samples belonging to one patient
-  if (!is.na(paired_analysis_column) & isTRUE(make.het.plot)) {
+  if (grepl("ByPatient", ds$name) & isTRUE(make.het.plot)) {
     run_het_analysis(ds, rowAnn1 = rowAnns[1], pID = paired_analysis_column, out_dir = out_dir, var_colors = var_colors)
   }
 

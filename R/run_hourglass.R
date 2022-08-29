@@ -178,7 +178,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         }
 
         # Check whether user wants to divide cohort
-        sub_analyses <- strsplit(run$WithinGroup, ";") %>%
+        sub_analyses <- strsplit(run$WithinGroup, ",") %>%
           unlist() %>%
           trimws()
         if (length(sub_analyses) == 0 | isTRUE(is.na(sub_analyses))) next
