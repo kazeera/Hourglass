@@ -55,70 +55,6 @@
 <script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
 
 
-<style type="text/css">
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-    color: #aaaaaa;
-  }
-pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-}
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.at { color: #7d9029; } /* Attribute */
-code span.bn { color: #40a070; } /* BaseN */
-code span.bu { } /* BuiltIn */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.ch { color: #4070a0; } /* Char */
-code span.cn { color: #880000; } /* Constant */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.dt { color: #902000; } /* DataType */
-code span.dv { color: #40a070; } /* DecVal */
-code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.ex { } /* Extension */
-code span.fl { color: #40a070; } /* Float */
-code span.fu { color: #06287e; } /* Function */
-code span.im { } /* Import */
-code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code span.op { color: #666666; } /* Operator */
-code span.ot { color: #007020; } /* Other */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.st { color: #4070a0; } /* String */
-code span.va { color: #19177c; } /* Variable */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-</style>
 
 
 </head>
@@ -207,11 +143,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="header">
 <h1 class="title">User’s Guide for Hourglass</h1>
 <p class="author"><em>Written by Kazeera Aliar</em></p>
-<p class="date" style="margin-top: 1.5em;"><em>last revised Aug 26, 2022</em></p>
 </div>
 <div id="preface" class="section level1 hasAnchor" number="1">
 <h1><span class="header-section-number">1</span> Preface<a href="index.html#preface" class="anchor-section" aria-label="Anchor link to header"></a></h1>
-<p>This is the official guide for <strong>Hourglass</strong>, the tool to systematically interrogate multiparametric datasets in a semi-automated manner. It allows users to filter/subset datasets and perform analysis at the global, regional and patient-paired levels to identify communalities and differences.</p>
+<p>This is the official guide for <strong>Hourglass</strong>, the software tool to systematically interrogate multiparametric datasets in a semi-automated manner. It allows users to filter/subset datasets and perform analysis at the global, regional and patient-paired levels to identify communalities and differences.</p>
 <div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-1"></span>
 <img src="images/Hourglass_logo-removebg.png" alt="The Hourglass logo." width="10%" />
 <p class="caption">
@@ -220,19 +155,19 @@ Figure 1.1: The Hourglass logo.
 </div>
 <p>Hourglass exists as an open-source desktop application for Windows/MacOS and a stand-alone R package. Please refer to our <a href="https://www.biorxiv.org/content/10.1101/2022.09.12.507618v2">link</a> manuscript for more information.</p>
 <div class="figure" style="text-align: center"><span id="fig:unnamed-chunk-2"></span>
-<img src="images/Hourglass_art.PNG" alt="The Hourglass concept: input data, computational processing, output graphs." width="55%" />
+<img src="images/Hourglass_art.PNG" alt="The Hourglass concept: input data, computational processing, output graphs." width="50%" />
 <p class="caption">
 Figure 1.2: The Hourglass concept: input data, computational processing, output graphs.
 </p>
 </div>
 <p><strong>Acknowledgements</strong></p>
 <p>We are ready to share Hourglass with the world. It’s about <em>time</em>.</p>
-<p>First of all, I would like to thank Dr. Barbara Grünwald, whose role cannot be overstated. She is the phenomenal force who helped conceptualize this toolbox and drove this project forward. It started off as a script, with 300 lines of code in a single for loop, and progressively grew bigger as we added more stains and figured out new ways to interrogate the data.</p>
-<p>Next, I would like to thank Henry Waterhouse, who built the graphical user interface with me, from planning to launch. Bowen Zhang and Parinaz Nasr Esfahani supported software development and testing for the MacOS version. Foram Vyas, Emily Poulton, and Nathan Chan are the image analysis experts who quantified the IHC data and consistently offered creative feedback. I would like to thank my supervisor, Dr. Rama Khokha, Dr. Paul Waterhouse, Dr. Niklas Krebs, the Khokha Lab (<a href="https://khokhalab.ca/">https://khokhalab.ca/</a>) and collaborators, for contributing and sharing their excitement about Hourglass.</p>
+<p>First of all, I would like to thank Dr. Barbara Grünwald, whose role cannot be overstated. She is the phenomenal force who helped conceptualize this toolbox and drove this project forward. It started off as a script, with 200 lines of code in a single <em>for</em> loop, and progressively grew bigger as we added more stains and figured out new ways to interrogate the data.</p>
+<p>Next, I would like to thank Henry Waterhouse, who built the graphical user interface with me, from planning to launch. Bowen Zhang and Parinaz Nasr Esfahani supported software development and testing for the MacOS version. Foram Vyas, Emily Poulton, and Nathan Chan are the image analysis experts who quantified the IHC data and consistently offered creative feedback. I would like to thank my supervisor, Dr. Rama Khokha, Dr. Niklas Krebs, the Khokha Lab (<a href="https://khokhalab.ca/">https://khokhalab.ca/</a>) and collaborators, for contributing and sharing their excitement about Hourglass.</p>
 <p>I also would like to thank the developers of R, python, and Kivy for facilitating the creation of Hourglass, the StackOverflow community for having answers to all our questions, Github for providing a platform in which this program is easily accessible, and RStudio for creating R markdown and bookdown to facilitate the making of the R package and this book.</p>
 <p>- Kazeera</p>
 <p><strong>Contributors</strong></p>
-<p><img src="images/contributors11.PNG" width="75%" /><img src="images/contributors21.PNG" width="75%" /></p>
+<p><img src="images/contributors1.png" width="75%" /><img src="images/contributors2.png" width="75%" /></p>
 <p><strong>Source Code for Book</strong><br />
 See Github repository (<a href="https://github.com/kazeera/Hourglass-book">link</a>).</p>
 <p><strong>Contact Us</strong><br />
