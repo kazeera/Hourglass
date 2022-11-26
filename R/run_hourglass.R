@@ -64,6 +64,19 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
   patients_imp <- dss[["patients_imp"]]
   rm(dss)
 
+  # Print datasets to file
+  tryCatch({
+    # Save ByPatient tables
+    if(any(comparisons$ByPatient) & !is.na(comparisons$patient_id_column[1])){
+      write.csv(patients$vals, sprintf("%s/ByPatient_values.csv", main_folder))
+    }
+    # Save imputed tables
+    if (any(comparisons$do_impute)) {
+      write.csv(samples_imp$vals, sprintf("%s/BySample_imputed_values.csv", main_folder))
+      write.csv(patients_imp$vals, sprintf("%s/ByPatient_imputed_values.csv", main_folder))
+    }
+  })
+  
   # Create main output
   if(any(comparisons$ByPatient & comparisons$do_survival_analysis)){
     surv_folder <- create_folder(paste0(main_folder, "/ByPatient/Survival"))

@@ -157,7 +157,7 @@ plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", font_size = 3
   # Add a line for mean
   a <- a + stat_summary(
     fun = mean, geom = "errorbar", aes(ymax = ..y.., ymin = ..y..),
-    position = position_dodge(width = 0.3), width = 0.25, color = "black", size = line_size
+    position = position_dodge(width = 0.3), width = 0.25, color = "black", size = 2
   )
 
   # Add theme

@@ -129,11 +129,12 @@ plot_profile_barplot <- function(df2, pos = "stack", var_colors = NA, out_dir = 
 
       # Convert y-axis to 0-100% and add horizontal line at 50% of y axis
       if (pos == "fill") {
-        g <- g + scale_y_continuous(labels = percent_format()) + # scales
-          geom_hline(yintercept = 0.5)
-      } else {
-        g <- g + geom_hline(yintercept = (layer_scales(g)$y$range$range[2]) / 2) # layer_scales returns the y-axis range, [2] is the upper bound (max)
-      }
+        g <- g + scale_y_continuous(labels = percent_format()) # scales
+          # geom_hline(yintercept = 0.5)
+      } 
+      # else {
+      #   g <- g + geom_hline(yintercept = (layer_scales(g)$y$range$range[2]) / 2) # layer_scales returns the y-axis range, [2] is the upper bound (max)
+      # }
 
       # Save to file
       if (save.to.file) {
