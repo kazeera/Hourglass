@@ -31,7 +31,7 @@ plot_overview_boxplot <- function(df3, out_dir = ".", labels = "", log10_y = F, 
   # Make plot
   p3 <- ggplot(df3, aes(x = variable, y = value, fill = level)) +
     geom_boxplot(aes(fill = level), outlier.color = NA) +
-    geom_point(position = position_jitterdodge(jitter.width=0.01), color = dot_color, size = 0.2, alpha = 0.5) +
+      geom_point(position = position_jitterdodge(jitter.width =0.01), color = dot_color, size = 0.2, alpha = 0.5) +
     scale_fill_manual(values = lvl.colors) +
     labs(
       title = paste(labels, collapse = "_",

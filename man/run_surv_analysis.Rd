@@ -4,7 +4,7 @@
 \alias{run_surv_analysis}
 \title{Iteratively plot survival curves (Kaplan Meier)}
 \usage{
-run_surv_analysis(ds, rowAnn1, run, surv_folder = ".")
+run_surv_analysis(ds, rowAnn1, run, surv_folder = ".", var_colors = NULL)
 }
 \arguments{
 \item{ds}{A dataset object (a list with vals, rowAnn, colAnn, comparison, name).}
@@ -12,6 +12,8 @@ run_surv_analysis(ds, rowAnn1, run, surv_folder = ".")
 \item{rowAnn1}{A string description/label for file names and plot title; could be strata name}
 
 \item{run}{A one row data frame or list object with logicals for what to run, names: surv_time_column, surv_status_column}
+
+\item{var_colors}{List of colors, where elements are hex codes and element names are rowAnn variables. e.g. list("Tumour"="#2f4f4Fff", "Stroma"="#d2691eff") See ?get_colors for more info.}
 
 \item{output_folder}{The main output folder for all custom analysis plots and boxplots for by.parameter and by.feature analysis}
 }

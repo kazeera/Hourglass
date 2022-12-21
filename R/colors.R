@@ -193,6 +193,7 @@ get_rowAnn_color_pal <- function(ds, rowAnns, var_colors = NULL) {
 #'
 #' @param pal Either 1) Data frame, where column 1 is variables and column 2 is hex codes, 2) List object indicating color palette, where elements are hex codes and element names are variables. e.g. list("Tissue.type-Tumour"="#2f4f4Fff", "Tissue.type-Stroma"="#d2691eff")
 #' @param to_remove Vector of hex codes to remove from palette, default is white ("#ffffffff"(,)
+#' @param is_df Boolean. Is the "pal" value a data frame object?
 #' @return List of colors, where elements are hex codes and element names are variables. As a result of "cleaning", element names don't have 2 parts, are duplicated, and is white e.g. list("Tumour"="#2f4f4Fff", "Stroma"="#d2691eff")
 #' @export
 clean_colors <- function(pal, to_remove = "#ffffffff", is_df = T) {

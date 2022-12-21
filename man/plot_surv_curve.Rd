@@ -4,7 +4,13 @@
 \alias{plot_surv_curve}
 \title{Plot individual survival curve (Kaplan Meier)}
 \usage{
-plot_surv_curve(df, descr = "", out_dir = ".", save.to.file = F)
+plot_surv_curve(
+  df,
+  descr = "",
+  out_dir = ".",
+  line_colors = NULL,
+  save.to.file = F
+)
 }
 \arguments{
 \item{df}{A data frame with 3 columns: time, status (censoring), col (variable to stratify by)}
@@ -12,6 +18,8 @@ plot_surv_curve(df, descr = "", out_dir = ".", save.to.file = F)
 \item{descr}{A string description/label for file names and plot title; could be strata name}
 
 \item{out_dir}{The output directory where the plot will be saved, default is current working directory.}
+
+\item{line_colors}{A named vector for colors - names=variable/strata and values=hex codes.}
 
 \item{save.to.file}{A logical indicating whether to save to out_dir (T) or print to panel (F)}
 }

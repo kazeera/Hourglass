@@ -4,14 +4,22 @@
 #' @param rowAnn1 A string description/label for file names and plot title; could be strata name
 #' @param run A one row data frame or list object with logicals for what to run, names: surv_time_column, surv_status_column
 #' @param output_folder The main output folder for all custom analysis plots and boxplots for by.parameter and by.feature analysis
+#' @param var_colors List of colors, where elements are hex codes and element names are rowAnn variables. e.g. list("Tumour"="#2f4f4Fff", "Stroma"="#d2691eff") See ?get_colors for more info.
 #' @export
-run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".") {
+run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".", var_colors = NULL) {
   # Make survival plots
   tryCatch({
     # Make data frame and rename columns
     df <- ds$rowAnn[,c(run$surv_time_column, run$surv_status_column, rowAnn1)]
     # Rename columns
     colnames(df)[1:3] <- c("time", "status", "col")
+    
+    # Get colors
+    var_colors <- var_colors[unique(df$col)] %>% unlist()
+
+    # Filter to what's present
+    df <- df[df$col %in% names(var_colors),]
+    
     # Back up variables from original comparisons for later sex comparisons
     df_original <- df
 
@@ -24,23 +32,26 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".") {
     pdf(filename)
 
     # Plot curve with current strata
-    plot_surv_curve(df, label, out_dir)
+    plot_surv_curve(df, label, out_dir, var_colors)
 
     # If it's a custom analysis (ie groups split into low, int, high), perform binning of 3 groups
     if (all(unique(df$col[!is.na(df$col)]) %in% unlist(LEVELS))) {
+      # Add new colors
+      var_colors <- c(var_colors, "low+int"=unname(var_colors["low"]), "int+high"=unname(var_colors["high"]))
+      
       # First bin first and second quartile
       col_lvls <- df$col
       df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$l) # "intermed" will become "low"
-      plot_surv_curve(df, descr = paste(label, "(low+int vs high)"), out_dir)
+      plot_surv_curve(df, descr = paste(label, "(low+int vs high)"), out_dir, var_colors)
 
       # Next bin second and third quartile
       df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$h) # "intermed" will become "high"
-      plot_surv_curve(df, descr = paste(label, "(low vs int+high)"), out_dir)
+      plot_surv_curve(df, descr = paste(label, "(low vs int+high)"), out_dir, var_colors)
 
       # Now remove int
       col_lvls[col_lvls == LEVELS$i] <- NA # "intermed" will become NA
       df$col <- col_lvls
-      plot_surv_curve(df, descr = paste(label, "(no int)"), out_dir)
+      plot_surv_curve(df, descr = paste(label, "(no int)"), out_dir, var_colors)
     }
   })
   dev.off()
@@ -72,24 +83,23 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".") {
         # Save to file
         filename <- sprintf("%s/%s_survplot.pdf", out_dir_orig, label)
         pdf(filename)
-        plot_surv_curve(df, label, out_dir)
+        plot_surv_curve(df, label, out_dir, var_colors)
 
         # If it's a custom analysis (ie groups split into low, int, high), perform binning of 3 groups
         if (all(unique(df$col[!is.na(df$col)]) %in% unlist(LEVELS))) {
-
           # First bin first and second quartile
           col_lvls <- df$col
           df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$l) # "intermed" will become "low"
-          plot_surv_curve(df, descr = paste(label, "(low+int vs high)"), out_dir)
+          plot_surv_curve(df, descr = paste(label, "(low+int vs high)"), out_dir, var_colors)
 
           # Next bin second and third quartile
           df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$h) # "intermed" will become "high"
-          plot_surv_curve(df, descr = paste(label, "(low vs int+high)"), out_dir)
+          plot_surv_curve(df, descr = paste(label, "(low vs int+high)"), out_dir, var_colors)
 
           # Now remove int
           col_lvls[col_lvls == LEVELS$i] <- NA # "intermed" will become NA
           df$col <- col_lvls
-          plot_surv_curve(df, descr = paste(label, "(no int)"), out_dir)
+          plot_surv_curve(df, descr = paste(label, "(no int)"), out_dir, var_colors)
         }
       })
       dev.off()
@@ -102,9 +112,10 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".") {
 #' @param df A data frame with 3 columns: time, status (censoring), col (variable to stratify by)
 #' @param descr A string description/label for file names and plot title; could be strata name
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
+#' @param line_colors A named vector for colors - names=variable/strata and values=hex codes.
 #' @param save.to.file A logical indicating whether to save to out_dir (T) or print to panel (F)
 #' @export
-plot_surv_curve <- function(df, descr = "", out_dir = ".", save.to.file = F) {
+plot_surv_curve <- function(df, descr = "", out_dir = ".", line_colors = NULL, save.to.file = F) {
   # library(survival) # computing survival analyses
   # library(survminer) #  summarizing and visualizing the results of survival analysis
   # library(viridis) # color palette
@@ -112,7 +123,7 @@ plot_surv_curve <- function(df, descr = "", out_dir = ".", save.to.file = F) {
 
   # Rename columns
   colnames(df)[1:3] <- c("time", "status", "col")
-
+  
   tryCatch(
     {
       # Compute KM survival estimate
@@ -122,8 +133,12 @@ plot_surv_curve <- function(df, descr = "", out_dir = ".", save.to.file = F) {
       labs <- gsub("col=", "", names(fit$strata)) # "col=high" "col=intermed" "col=low" to "high"     "intermed" "low"
 
       # Make colors
-      line_colors <- plasma(n = length(fit$n)+1) %>% .[-(length(.)+1)]
-
+      if(is.null(line_colors)){
+        line_colors <- plasma(n = length(fit$n)+1) %>% .[-(length(.)+1)]
+      } else {
+        line_colors <- line_colors[names(line_colors) %in% labs]
+      }
+      
       # ggplot theme
       theme <- theme(
         # grid

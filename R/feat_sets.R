@@ -9,61 +9,53 @@
 #' @return A list object specifying: ds, colAnns, feat_sets_name (name of custom analysis)
 #' @export
 subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standard", feat_sets_order = T) {
-
+  # Rename dataframes
+  sets <- feat_sets$sets
+  sets$GroupName <- trimws(sets$GroupName)
+  params <- feat_sets$params
+  
   # Parameter column
   param_col <- paste(std.or.alt, "Parameter", sep="_")
 
   # Name of analysis
-  feat_sets_name <- feat_sets$sets[i, 1]
-  if(std.or.alt == "Alternative")
-    feat_sets_name <- paste0(feat_sets_name, "_alt")
+  name <- sets[i, 1]
   
   # Find list of features ---
-  # This line splits the features into a vector: eg. "1,2,3,4" turns into "1" "2" "3" "4"
-  feats <- strsplit(feat_sets$sets[i, 2], split = ",") %>% unlist %>% trimws
-  # Independent features (not part of a group)
-  indiv_feats <- paste(feats[! feats %in% feat_sets$sets$GroupName], collapse=",")
-  # Find features of each group recursively
-  while(any(feats %in% feat_sets$sets$GroupName)){
-    true <- feats %in% feat_sets$sets$GroupName
+  feats <- strsplit(sets$GroupList[sets$GroupName == name], ",") %>% unlist %>% trimws %>% .[!is.na(.)]
+  
+  while(any(feats %in% sets$GroupName)){
     # Match group names to features
-    feats <- suppressMessages(plyr::mapvalues(feats[true], from=feat_sets$sets$GroupName, to=feat_sets$sets$GroupList))
+    feats <- suppressMessages(plyr::mapvalues(feats, from=sets$GroupName, to=sets$GroupList))
     # Split strings by commas
-    feats <- strsplit(feats, split = ",") %>% unlist()
-    # Add independent features
-    if(any(!feats %in% feat_sets$sets$GroupName)){
-      indiv_feats <- paste(paste(feats[!feats %in% feat_sets$sets$GroupName], collapse=","), indiv_feats, sep=",")
-    }
+    feats <- strsplit(feats, split = ",") %>% unlist() %>% trimws %>% .[!is.na(.)]
   }
-  # Convert to a vector
-  indiv_feats <- strsplit(indiv_feats, split = ",") %>% unlist %>% trimws
-                        
+  
   # Check whether any colann1/"Feature" combo is duplicated, e.g. TIMP1-Pos.Pix.Perc shows up in more than one place
   # Prevents error: duplication leads to incorrect dimensions for colAnn
-  dup <- duplicated(feat_sets$params[, c(param_col, "Feature")])
+  dup <- duplicated(params[, c(param_col, "Feature")])
   # Find logical vector of rows to keep
-  rows_feat <- !dup & feat_sets$params$Feature %in% indiv_feats
+  rows_feat <- !dup & params$Feature %in% feats
 
   # Subset to columns in column annotation of interest
   cols_to_keep <- interaction(ds$colAnn[, c(colAnns[2], colAnns[1])]) %in%
-    interaction(feat_sets$params[rows_feat, c("Feature", param_col)])
+    interaction(params[rows_feat, c("Feature", param_col)])
   # # Do not continue with analysis if the parameter and stains don't match the columns in the input data
   if (sum(cols_to_keep) < 3)
-    errorCondition(sprintf("In get_feat_sets_ds, can't continue with %s because less than 3 columns.", feat_sets_name))
+    errorCondition(sprintf("In get_feat_sets_ds, can't continue with %s because less than 3 columns.", name))
 
   # Subset dataset object accordingly
   ds_sub <- subset_dataset(ds, cols_to_keep = cols_to_keep)
 
   # Prevents error: column order of ds$vals and ds$colAnn are not the same
   if (any(rownames(ds_sub$colAnn) != colnames(ds_sub$vals))) {
-    errorCondition(sprintf("In get_feat_sets_ds, can't continue with %s because column names of colAnn and vals don't match.", feat_sets_name))
+    errorCondition(sprintf("In get_feat_sets_ds, can't continue with %s because column names of colAnn and vals don't match.", name))
   }
 
   # If custom analysis order should be preserved, apply to ds_sub
   if (feat_sets_order) {
     # Get order from custom analysis
     rows_feat_order <-
-      paste(feat_sets$params[rows_feat, "Feature"], feat_sets$params[rows_feat, param_col], sep = "_")
+      paste(params[rows_feat, "Feature"], params[rows_feat, param_col], sep = "_")
     # Get current order
     colAnn_order <- paste(ds_sub$colAnn[, colAnns[2]], ds_sub$colAnn[, colAnns[1]], sep = "_")
     # Get new order
@@ -76,7 +68,7 @@ subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standar
 
   # Return result as list
   list(
-    feat_sets_name = feat_sets_name,
+    feat_sets_name = ifelse(std.or.alt == "Alternative", paste0(name, "_alt"), name),
     ds = ds_sub,
     colAnns = colAnns
   )
