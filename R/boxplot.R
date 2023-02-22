@@ -127,10 +127,10 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = F,
   a <- ggplot(df, aes(box, value)) +
     geom_boxplot(aes(fill = box), width = 0.8, lwd = 1, color = "black", na.rm = T, outlier.color = NA) + # , alpha = alpha_box) +
     scale_fill_manual(values = lvl.colors)
-  
+
   # Make list of unique elements
   ele <- unique(as.character(df$box))
-  
+
   # Show statistics based on user specifications
   if(isTRUE(show_stats)){
     # Make list of combinations (order doesn't matter) for p-values
@@ -140,9 +140,10 @@ plot_indiv_boxplot <- function(df, labels = "Group", out_dir = ".", log10_y = F,
     # Add significance levels
     # Star height relative to bars
     vjust <- ifelse(pval.label == "p.signif", 0.5, -0.1)
+    text_size <- ifelse(pval.label == "p.signif", font_size/2.5, 5)
     a <- a + stat_compare_means(
       method = pval.test, comparisons = comb, na.rm = T, vjust = vjust, hide.ns = T,
-      label = pval.label, size = font_size / 2.5, bracket.size = 1
+      label = pval.label, size = text_size, bracket.size = 1
     )
   }
 
