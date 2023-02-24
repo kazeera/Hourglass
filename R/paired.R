@@ -136,10 +136,15 @@ plot_indiv_paired <- function(df, labels = "Group", out_dir = ".", font_size = 3
 
   # Paired 2 sample test only supported for 2 groups
   paired <- ifelse(length(e) == 2, T, F)
-
+  
+  # Stars vs number formatting
+  vjust <- ifelse(pval.label == "p.signif", 0.5, -0.1)
+  text_size <- ifelse(pval.label == "p.signif", font_size/2.5, 5)
+  
   # Add stats to plot using ggpubr
   tryCatch({
-    a <- a + stat_compare_means(method = pval.test, comparisons = comb, na.rm = T, paired = paired, label = pval.label, size = font_size / 5, bracket.size = 1, hide.ns = T)
+    a <- a + stat_compare_means(method = pval.test, comparisons = comb, na.rm = T, paired = paired, label = pval.label, 
+                                size = text_size, vjust = vjust, bracket.size = 1, hide.ns = T)
   })
 
   # Trim x labels to 3 characters
