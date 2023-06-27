@@ -13,7 +13,7 @@ get_comparisons <- function(file_xl, sheet = "Comparisons") {
   # Transpose to data frame
   df2 <- df[, -1] %>%
     t() %>%
-    data.frame()
+    data.frame(stringsAsFactors = F)
 
   # Name columns
   colnames(df2) <- df[, 1]
@@ -89,7 +89,7 @@ get_datasets <- function(comparisons, datasets = NULL) {
 
     # Average dataset to make ByPatient
     if (run_bypatient) {
-      patients <- avg_dataset(samples, comparisons$patient_id_column[1], "ByPatient") # , rows_to_keep = rows_to_keep)
+      patients <- avg_dataset(samples, as.character(comparisons$patient_id_column[1]), "ByPatient") # , rows_to_keep = rows_to_keep)
       
       # Reorder columns to match samples
       patients$vals <- patients$vals[,colnames(samples$vals)]

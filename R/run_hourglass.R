@@ -127,7 +127,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
         # make new ds$rowAnn column for level (low, intermediate, high)
         if (!is.na(run$CustomComparison) | is_continuous) {
           # Define variable
-          col_name <- ifelse(!is.na(run$CustomComparison), run$CustomComparison, run$MainComparison)
+          col_name <- ifelse(!is.na(run$CustomComparison), run$CustomComparison, run$MainComparison) %>% trimws
           # ds 1: Raw data
           new <- add_to_rowAnn(ds, col_name, as.integer(run$n_custom_quantiles))
           rowAnn1 <- new$rowAnn1
