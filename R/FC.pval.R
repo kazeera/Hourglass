@@ -16,7 +16,7 @@ make_FC.pval_df <- function(df, rowAnn_col = 1, rev = T, vs.other = T, group_nam
     if (is.numeric(rowAnn_col)) {
       rowAnn_col <- colnames(df)[rowAnn_col]
     }
-      
+
     # Get all variables stored in column names
     all_vars <- colnames(df)[!colnames(df) %in% rowAnn_col]
 
@@ -167,11 +167,10 @@ make_FC.pval_df_helper <- function(p_df3, rowAnn_col = 1, val_col = 2, rev = F, 
 make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_dir = ".", pval.label = "p.signif", gradient_palette = "RdBu",
                               group_name_sep = "/", trim_x = 3, pval_size = 8, pval_color = "white", log2FC = F, scale_FC = "cap_outliers", rescale_to = c(0, 1),
                               x_axis_angle = 0, save.to.file = F, font_size = 10, line_size = 1, alphabetical_row = F) {
-  # Error checking
-  if (!scale_FC %in% c("scale_column", "scale_row", "none", "cap_outliers")) {
-    errorCondition(message = "Ensure scale_FC parameter in make_FC.pval_plot has value of: 'scale_column', 'scale_row', 'none', or 'cap_outliers'")
-    return()
-  }
+  # # Error checking
+  #   errorCondition(message = "Ensure scale_FC parameter in make_FC.pval_plot has value of: 'scale_column', 'scale_row', 'none', or 'cap_outliers'")
+  #   return()
+  # }
 
   # Apply log transformation
   if (log2FC) {
@@ -239,10 +238,12 @@ make_FC.pval_plot <- function(df, x_lab = "", y_lab = "", plot_title = "", out_d
   # Color gradient for heatmap
   pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(100)
 
-  # Should rows not be sorted?
+  # Should rows not be sorted? Then factor current order to keep levels
+  df$Var <- as.character(df$Var)
   if (isFALSE(alphabetical_row)) {
     df$Var <- factor(df$Var, levels = unique(df$Var))
   }
+
   # Plot
   p <- ggplot(df, aes(x = group, y = Var, fill = Fold.change)) +
     geom_tile() +

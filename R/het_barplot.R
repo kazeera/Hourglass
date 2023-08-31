@@ -26,24 +26,30 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
   # 1 intermed  1_21043     1
   # 2      low  1_21043     1
   # 3     high  1_33581     1
-  
-  # # Plot all patients
-  # plot_het_barplot(df2, labels = "all samples", e = e, save.to.file = F)
-  
+
+  # Backup all patients #2023Jun27
+  df2_all <- df2
+
   # Remove patients with just 1 sample
   x <- plyr::count(df2$variable) %>% data.frame()
   df2 <- df2[df2$variable %in% x$x[x$freq != 1], ]
-  
+
   # Make subtitle for plots
   num <- length(x$x[x$freq != 1]); den <- length(!is.na(unique(df$variable))) #numerator and denominator
   subtitle <- sprintf("%s out of %s patients (%s%%) exhibit regional heterogeneity:", num, den, round(num*100/den,digits = 1))
-  
+  subtitle_all <- sprintf("all %s patients", nrow(df2_all))
+
   # Initiate file
   pdf(file = sprintf("%s/%s_samples.pdf", out_dir, rowAnn1))
   # Plot patients with >1 sample
   plot_het_barplot(df2, title=rowAnn1, subtitle=subtitle, pos="stack", var_colors=var_colors, save.to.file=F)
   # Plot patients with >1 sample
   plot_het_barplot(df2, title=rowAnn1, subtitle=subtitle, pos="fill", var_colors=var_colors, save.to.file=F)
+
+  # Plot patients (all samples)
+  plot_het_barplot(df2_all, title=rowAnn1, subtitle=subtitle_all, pos="stack", var_colors=var_colors, save.to.file=F)
+  # Plot patients (all samples)
+  plot_het_barplot(df2_all, title=rowAnn1, subtitle=subtitle_all, pos="fill", var_colors=var_colors, save.to.file=F)
   # Save file
   dev.off()
 }
@@ -70,7 +76,7 @@ run_het_analysis <- function(ds, rowAnn1, pID = 1, out_dir = ".", var_colors = N
 plot_het_barplot <- function(df2, title = "", subtitle = "", pos = "stack", var_colors = NULL, font_size = 20, out_dir = ".", save.to.file = T) {
   # Initialize ggplot
   g <- ggplot(df2, aes(x = reorder(variable, -value), y = value, fill = group))
-  
+
   # Add geom layers
   g <- g +
     geom_bar(stat = "identity", position = pos, width = .8, na.rm = T) + # bars
@@ -103,21 +109,21 @@ plot_het_barplot <- function(df2, title = "", subtitle = "", pos = "stack", var_
       # legend.position="bottom",
       legend.key.size = unit(1, "line")
     )
-  
+
   if (!is.null(var_colors)) {
     # Colours for bars
     var_colors <- var_colors[unique(df2$group)] %>% unlist()
     # Add to graph
     g <- g + scale_fill_manual(values = var_colors)
   }
-  
+
   # Convert y-axis to 0-100%
   if (pos == "fill") {
     suppressWarnings(
     g <- g + scale_y_continuous(expand = c(0,0), labels = percent_format()) # scales
     )
   }
-  
+
   # Save to file
   if (save.to.file) {
     # # Graphing params
