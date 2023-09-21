@@ -1,4 +1,5 @@
 # Hourglass (R Package)
+[![DOI](https://zenodo.org/badge/397323448.svg)](https://zenodo.org/badge/latestdoi/397323448)
 
 <!-- badges: start -->
   <!-- badges: end -->
