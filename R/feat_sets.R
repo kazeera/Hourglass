@@ -53,15 +53,19 @@ subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standar
 
   # If custom analysis order should be preserved, apply to ds_sub
   if (feat_sets_order) {
-    # Get order from custom analysis
-    rows_feat_order <-
-      paste(params[rows_feat, "Feature"], params[rows_feat, param_col], sep = "_")
-    # Get current order
-    colAnn_order <- paste(ds_sub$colAnn[, colAnns[2]], ds_sub$colAnn[, colAnns[1]], sep = "_")
-    # Get new order
-    new_order <- match(rows_feat_order, colAnn_order) %>%
-      colnames(ds_sub$vals)[.]
+    # Replace the following commented out code with update below
+    # # Get order from custom analysis
+    # rows_feat_order <-
+    #   paste(params[rows_feat, "Feature"], params[rows_feat, param_col], sep = "_")
+    # # Get current order
+    # colAnn_order <- paste(ds_sub$colAnn[, colAnns[2]], ds_sub$colAnn[, colAnns[1]], sep = "_")
+    # # Get new order
+    # new_order <- match(rows_feat_order, colAnn_order) %>%
+    #   colnames(ds_sub$vals)[.]
 
+    # Update Oct 10, 2023 - make new order 
+    x <- match(unique(feats), ds_sub$colAnn[,colAnns[2]])
+    new_order <- rownames(ds_sub$colAnn)[x]
     # Rename rows
     ds_sub <- sort_dataset(ds_sub, col_order = new_order)
   }
