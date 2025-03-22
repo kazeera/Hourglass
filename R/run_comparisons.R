@@ -162,7 +162,6 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
           {
             # Subset dataset
             res <- subset_feat_sets_ds(ds, feat_sets, i, colAnns, std.or.alt)
-            colnames(res$ds$vals) <- get_nth_part(colnames(res$ds$vals), "\\.", 1) # TODO do this part in subset_feat_sets_ds() last line
 
             # If there are no stains or rows to plot, return incomplete
             if (any(dim(res$ds$vals) < 3)) {

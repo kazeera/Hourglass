@@ -33,8 +33,8 @@ This function will take a long time to run depending on the number of variables.
 
 \seealso{
 Other plotting: 
-\code{\link{plot_corrplotgg}()},
 \code{\link{plot_corrplot}()},
+\code{\link{plot_corrplotgg}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
 \code{\link{plot_het_barplot}()},

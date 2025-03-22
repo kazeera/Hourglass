@@ -82,8 +82,8 @@ Transforms a numeric data frame/matrix and plots corresponding heatmap using the
 }
 \seealso{
 Other plotting: 
-\code{\link{plot_corrplotgg}()},
 \code{\link{plot_corrplot}()},
+\code{\link{plot_corrplotgg}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_het_barplot}()},
 \code{\link{plot_indiv_boxplot}()},

@@ -75,8 +75,8 @@ Creates single box plot.
 }
 \seealso{
 Other plotting: 
-\code{\link{plot_corrplotgg}()},
 \code{\link{plot_corrplot}()},
+\code{\link{plot_corrplotgg}()},
 \code{\link{plot_discrete_barplot}()},
 \code{\link{plot_heatmap}()},
 \code{\link{plot_het_barplot}()},

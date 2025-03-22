@@ -21,7 +21,11 @@ plot_overview_corr_scatt <- function(mat, out_dir = ".", labels = "", corr_metho
       mat <- mat[has_at.least_n.vals(mat, "row", 7), ]
     }
   }
-
+  
+  # Add a page for labels (previous version before Mar 20, 2025 had it overlapping with x axis scale at top)
+  plot.new()
+  text(x=.5, y=.5, paste(labels, collapse = "_"))  # first 2 numbers are xy-coordinates within [0, 1]
+  
   # Make plot
   p <- pairs.panels(mat,
     method = corr_method,
@@ -35,7 +39,6 @@ plot_overview_corr_scatt <- function(mat, out_dir = ".", labels = "", corr_metho
     hist.col = hist.col,
     ellipses = F
   )
-  title(main = paste(labels, collapse = "_"))
 
   # Graphing params
   if (save.to.file) {

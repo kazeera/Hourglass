@@ -57,29 +57,7 @@ run_comparison_helper(
 
 \item{paired_analysis_column}{column name in ds$rowAnn to create paired analysis plots for, e.g. PatientID if ds is data for all cores}
 
-\item{make.QC.param}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.QC.feature}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.feat.plots}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.het.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.indiv.boxplot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.overview.boxplot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.heatmap}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.corrplot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.overview.corrscatt}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.indiv.corrscatt}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.barplot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
-
-\item{make.FC.pval.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
+\item{make.QC.param, make.QC.feature, make.feat.plots, make.het.plot, make.indiv.boxplot, make.overview.boxplot, make.heatmap, make.corrplot, make.overview.corrscatt, make.indiv.corrscatt, make.barplot, make.FC.pval.plot}{Logicals (TRUE/FALSE) indicating whether to make these plots. Note: make.indiv.corrscatt = T takes a long time.}
 
 \item{save_table}{Print MainComparison + ID data to csv file.}
 }

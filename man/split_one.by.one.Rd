@@ -13,9 +13,6 @@ split_one.by.one(x, delimiter, un_list = T)
 
 \item{un_list}{A logical value whether to unlist}
 }
-\value{
-
-}
 \description{
 Split string and iteratively return parts pasted to first part
 }

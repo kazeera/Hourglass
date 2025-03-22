@@ -11,6 +11,10 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".", var_colors = 
   tryCatch({
     # Make data frame and rename columns
     df <- ds$rowAnn[,c(run$surv_time_column, run$surv_status_column, rowAnn1)]
+    
+    # Ensure the survival time column is numeric
+    df[[run$surv_status_column]] <- as.numeric(df[[run$surv_status_column]])
+    
     # Rename columns
     colnames(df)[1:3] <- c("time", "status", "col")
     

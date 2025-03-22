@@ -67,9 +67,10 @@ subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standar
     x <- match(unique(feats), ds_sub$colAnn[,colAnns[2]])
     new_order <- rownames(ds_sub$colAnn)[x]
     # Rename rows
-    ds_sub <- sort_dataset(ds_sub, col_order = new_order)
+    ds_sub <- sort_dataset(ds_sub, col_order = new_order[!is.na(new_order)])
+    colnames(ds_sub$vals) <- get_nth_part(colnames(ds_sub$vals), "\\.", 1) 
   }
-
+  
   # Return result as list
   list(
     feat_sets_name = ifelse(std.or.alt == "Alternative", paste0(name, "_alt"), name),
