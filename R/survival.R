@@ -11,19 +11,19 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".", var_colors = 
   tryCatch({
     # Make data frame and rename columns
     df <- ds$rowAnn[,c(run$surv_time_column, run$surv_status_column, rowAnn1)]
-    
+
     # Ensure the survival time column is numeric
     df[[run$surv_status_column]] <- as.numeric(df[[run$surv_status_column]])
-    
+
     # Rename columns
     colnames(df)[1:3] <- c("time", "status", "col")
-    
+
     # Get colors
     var_colors <- var_colors[unique(df$col)] %>% unlist()
 
     # Filter to what's present
     df <- df[df$col %in% names(var_colors),]
-    
+
     # Back up variables from original comparisons for later sex comparisons
     df_original <- df
 
@@ -42,7 +42,7 @@ run_surv_analysis <- function(ds, rowAnn1, run, surv_folder = ".", var_colors = 
     if (all(unique(df$col[!is.na(df$col)]) %in% unlist(LEVELS))) {
       # Add new colors
       var_colors <- c(var_colors, "low+int"=unname(var_colors["low"]), "int+high"=unname(var_colors["high"]))
-      
+
       # First bin first and second quartile
       col_lvls <- df$col
       df$col <- bin_vars(col_lvls, LEVELS$i, LEVELS$l) # "intermed" will become "low"
@@ -127,7 +127,7 @@ plot_surv_curve <- function(df, descr = "", out_dir = ".", line_colors = NULL, s
 
   # Rename columns
   colnames(df)[1:3] <- c("time", "status", "col")
-  
+
   tryCatch(
     {
       # Compute KM survival estimate
@@ -142,7 +142,7 @@ plot_surv_curve <- function(df, descr = "", out_dir = ".", line_colors = NULL, s
       } else {
         line_colors <- line_colors[names(line_colors) %in% labs]
       }
-      
+
       # ggplot theme
       theme <- theme(
         # grid

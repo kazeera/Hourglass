@@ -238,12 +238,47 @@ get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
   if (!"LEVELS" %in% ls(envir = .GlobalEnv)) {
     LEVELS <- list(l = "low", i = "int", h = "high")
   }
-  # Assign quantile to vector # e.g. if n_quantiles = 3, we will assign each value in v to which quartile it belongs in (1 to 4)
-  w <- try(as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE)))
+  # # Assign quantile to vector # e.g. if n_quantiles = 3, we will assign each value in v to which quartile it belongs in (1 to 4)
+  # w <- try(as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE)))
+  # if (class(w) == "try-error") {
+  #   w <- as.integer(cut(v, quantile(v, probs = 0:n_quantiles / n_quantiles, na.rm = T, include.lowest = TRUE)))
+  # }
+  # # w <- as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE))
+  #
+  # --- First attempt ---
+  w <- try(as.integer(cut(
+    v,
+    quantile(v, 0:n_quantiles / n_quantiles, na.rm = TRUE, names = FALSE),
+    include = TRUE
+  )))
+
+  # --- Second attempt (fallback) ---
   if (class(w) == "try-error") {
-    w <- as.integer(cut(v, quantile(v, probs = 0:n_quantiles / n_quantiles, na.rm = T, include.lowest = TRUE)))
+    w <- try(as.integer(cut(
+      v,
+      quantile(v, probs = 0:n_quantiles / n_quantiles, na.rm = TRUE, include.lowest = TRUE),
+      labels = FALSE
+    )))
   }
-  # w <- as.integer(cut(v, quantile(v, 0:n_quantiles / n_quantiles, na.rm = T, names = FALSE), include = TRUE))
+
+  # --- NEW: fallback if quantiles fail OR quantile cutpoints are not unique ---
+  # Check if w still has errors OR if quantile boundaries are duplicated
+  if (class(w) == "try-error" ||
+      any(duplicated(quantile(v, 0:n_quantiles / n_quantiles, na.rm = TRUE)))) {
+
+    message("WARNING PLEASE READ: Quantile cut failed (i.e. cannot group this variable into quantiles). Using rank-based binning instead.")
+    # rank-based equal-size groups
+    na_idx <- is.na(v)
+    v_non_na <- v[!na_idx]
+
+    ranks <- rank(v_non_na, ties.method = "first")
+    group <- ceiling(ranks / (length(v_non_na) / n_quantiles))
+    group[group > n_quantiles] <- n_quantiles
+
+    # put into w, preserving NA positions
+    w <- rep(NA_integer_, length(v))
+    w[!na_idx] <- group
+  }
 
   # If the quantile number is just needed, return
   if (return_num) {

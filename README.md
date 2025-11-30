@@ -1,9 +1,12 @@
 # Hourglass (R Package)
-[![DOI](https://zenodo.org/badge/397323448.svg)](https://zenodo.org/badge/latestdoi/397323448)
+
+Read publication [here](https://pathsocjournals.onlinelibrary.wiley.com/doi/10.1002/path.6199).
+Read user's guide [here](https://kazeera.github.io/Hourglass/).
+
 
 <!-- badges: start -->
   <!-- badges: end -->
-  Available as an R package, Hourglass is a computational toolkit that streamlines processing and visualization of massive multiparametric datasets.
+  Available as both an R package and a desktop application, Hourglass is a computational toolkit that streamlines processing and visualization of multiparametric datasets.
 
 <!-- badges: start -->
   <!-- badges: end -->
@@ -25,7 +28,7 @@ library(Hourglass)
 ```
 
 There are 4 components:
-  1) comparisons and user options
+1) comparisons and user options
 2) color palette for subgroups
 3) feature sets and respective parameters
 4) optional - dataset object
