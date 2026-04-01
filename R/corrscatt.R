@@ -78,17 +78,17 @@ plot_indiv_corrscatt <- function(df, rowAnn_col = 1, cor.method = "spearman", ou
 
   pdf_filename <- sprintf("%s/%s_corrscatt_indiv.pdf", out_dir, paste(labels, collapse = "_"))
   # For each permutation, make a scatter plot
+  pdf(pdf_filename, onefile = T)
+
   for (i in nrow(perm)) {
-    # Get columns of interest
     v1 <- perm[i, 1]
     v2 <- perm[i, 2]
-    # Make plot and save
-    p <- ggscatter(df,
-                   x = v1, y = v2, # color = rowAnn_col, palette = c("red", "orange", "blue"),
-                   add = "reg.line", conf.int = TRUE,
-                   cor.coef = TRUE, cor.method = cor.method, title = sprintf("%s-%s, %s", v1, v2, label),
-                   xlab = v1, ylab = v2
-    )
+    p <- ggscatter(df, x = v1, y = v2, add = "reg.line",
+                   conf.int = TRUE, cor.coef = TRUE, cor.method = cor.method,
+                   title = sprintf("%s-%s, %s", v1, v2, label), xlab = v1,
+                   ylab = v2)
+
+    print(p)
   }
   dev.off()
 }
