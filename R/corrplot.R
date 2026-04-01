@@ -18,12 +18,12 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
     rowAnn_col <- colnames(df)[rowAnn_col]
   }
   val_cols <- !colnames(df) %in% rowAnn_col
-
+  
   # if(any(is.na(unlist(df[, val_cols])))) return()
-
+  
   # Get number of vars other than annotation row
   n_stains <- ncol(df) - 1
-
+  
   # from trial and error #TODO find more efficient way
   x <- ifelse(n_stains < 5, 0.6 * n_stains, 0.4 * n_stains)
   x <- n_stains / 2
@@ -32,32 +32,32 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
     as.character() %>%
     unique() %>%
     .[!is.na(.)]
-
+  
   # Keep elements of interest (no NAs in annotations)
   df <- df[, rowAnn_col] %in% grps %>% df[., ]
-
+  
   # Don't continue if NAs exist
   if (any(is.na(df[, val_cols]))) {
     return()
   }
-
+  
   # Specify point sizes
   text_size <- ifelse(n_stains < 20, 0.071 * n_stains, 0.035 * n_stains) # stain label size
   pch_size <- ifelse(n_stains < 20, 0.081 * n_stains, 0.04 * n_stains) # star size
-
+  
   tryCatch(expr = {
     # Some may return NULL if there are NAs/not enough groups because:
     # [1] "Error in cor.test.default(x = mat[, i], y = mat[, j], ...): not enough finite observations\n"
     # Initialize file
     filename <- sprintf("%s/%s_corrplot.pdf", out_dir, paste(labels, collapse = "_"))
-
+    
     # Create pdf file of all plots
     pdf(filename, onefile = TRUE) # , height = x, width = x)
     if (plot_gg) {
       # save.image("run_cor.RData")
       # For all data points regardless of stratification
       plot_corrplotgg(df[, val_cols], labels = c("All", labels), gradient_palette = gradient_palette, out_dir = out_dir, corr_method = corr_method, pval.label = pval.label)
-
+      
       # For each group,
       for (group in grps) {
         # Get indices
@@ -67,7 +67,7 @@ run_corrplot_analysis <- function(df, rowAnn_col = 1, out_dir = ".", labels = ""
     } else {
       # For all grps in' scaffold column name regardless of subtype
       plot_corrplot(df[, val_cols], labels = c("All", labels), gradient_palette = gradient_palette)
-
+      
       # For each group,
       for (group in grps) {
         # Get indices
@@ -108,21 +108,21 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
   if (any(is.na(mat))) {
     errorCondition("Cannot make correlation plots with NAs")
   }
-
+  
   # Make color palette gradient
   pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(50)
-
+  
   tryCatch(expr = {
     # Get correlation matrices
     corr_mat <- cor(mat, use = corr_method[1], method = corr_method[2])
-
+    
     # Cluster correlation matrix
     corr_mat <- cluster_corrmat(corr_mat)
-
+    
     # Rename columns
     mat2 <- melt(corr_mat)
     colnames(mat2) <- c("Var1", "Var2", "corr")
-
+    
     # Add stars if applicable
     if (!isFALSE(pval.label)) {
       # Add p values
@@ -131,18 +131,18 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
       mat2 <- cbind(mat2, p.value = round(melt(sig_test$p)[, 3], 2))
       mat2$p_stars <- pval_to_stars(mat2$p.value)
     }
-
+    
     # Get circle size (so it doesn't go passed geom tile boundaries)
     # Get star size (geom_text, so it's not too small/big)
     x <- length(unique(mat2$Var1))
     circ_max <- ifelse(is.null(circ_max), 130 * (1 / x), circ_max) # 140.391*(1/x), circ_max)
     star_size <- ifelse(is.null(star_size), -0.25 * x + 8, star_size)
     if (star_size < 1) star_size <- 2
-
+    
     # Font size
     if (x >= 10) font_size <- 10
     if (x >= 50) font_size <- 5
-
+    
     # Plot
     # Create the heatmap
     p <- ggplot(mat2, aes(x = Var2, y = Var1)) +
@@ -153,7 +153,7 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
       scale_x_discrete(expand = c(0, 0)) + # remove space between grid and axes
       scale_y_discrete(expand = c(0, 0)) +
       coord_equal(ratio = 1)
-
+    
     # Add stars if applicable
     if (!isFALSE(pval.label)) {
       if (pval.label == "p.signif") {
@@ -165,7 +165,7 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
           geom_text(aes(label = p.value), size = star_size, color = pval_color, vjust = 0.5)
       }
     }
-
+    
     # Theme and labels
     p <- p +
       theme(
@@ -193,7 +193,7 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
         y = ylab,
         x = xlab
       )
-
+    
     if (save.to.file) {
       # Graphing params
       file_h <- (length(unique(mat2$Var2)) + 7) / 4 + 2 # file width
@@ -225,12 +225,12 @@ plot_corrplotgg <- function(mat, xlab = "", ylab = "", labels = "", corr_method 
 plot_corrplot <- function(mat, labels = "", text_size = 0.5, pch_size = 0.5, gradient_palette = "RdBu", corr_method = c("pairwise.complete.obs", "spearman")) {
   # Make color palette gradient
   pal_grad <- get_col_palette(gradient_palette, rev = T) %>% get_col_gradient(50)
-
+  
   tryCatch(expr = {
     # Get correlation matrices and significance tables
     sig_test <- corrplot::cor.mtest(mat, method = corr_method[2])
     corr_mat <- cor(mat, use = corr_method[1], method = corr_method[2])
-
+    
     # Make plot
     corrplot(corr_mat,
       method = "circle", col = pal_grad, # gradient palette defined in constants.R

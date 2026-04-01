@@ -315,6 +315,7 @@ get_levels <- function(v, n_quantiles = 3, add = NA, return_num = F) {
 #'
 #' @param x A numeric vector
 #' @param sep Delimeter between value and number
+#' @export
 make.unique.2 <- function(x, sep='.'){
   ave(x, x, FUN=function(a){if(length(a) > 1){paste(a, 1:length(a), sep=sep)} else {a}})
 }
@@ -399,6 +400,7 @@ as_numeric_factor <- function(x) {
 #' @return The data frame, ann_df, with columns subsetted to names specified by anns or NA if
 #' @examples
 #' reform_ann_df(DNase, "conc")
+#' @export
 reform_ann_df <- function(ann_df, anns) {
   found <- anns %in% colnames(ann_df)
   # Return NA if all annotations are not found in column names

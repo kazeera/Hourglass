@@ -40,7 +40,7 @@ subset_feat_sets_ds <- function(ds, feat_sets, i, colAnns, std.or.alt = "Standar
   cols_to_keep <- interaction(ds$colAnn[, c(colAnns[2], colAnns[1])]) %in%
     interaction(params[rows_feat, c("Feature", param_col)])
   # # Do not continue with analysis if the parameter and stains don't match the columns in the input data
-  if (sum(cols_to_keep) < 3)
+  if (sum(cols_to_keep) < 2)
     errorCondition(sprintf("In get_feat_sets_ds, can't continue with %s because less than 3 columns.", name))
 
   # Subset dataset object accordingly

@@ -120,6 +120,7 @@ get_comparison_name <- function(current, filters, delim = ";", all_out_dirs = NU
 #' @param ds A dataset object (a list with vals, rowAnn, colAnn, comparison, name).
 #' @param rowAnns A character vector of 1-2 column names in ds$rowAnn. c(MainComparison, Subgroup)
 #' @param out_dir The output directory where the plot will be saved, default is current working directory.
+#' @export
 save_table <- function(ds, rowAnns, out_dir = "."){
   # Make table
   df <- cbind(ID = rownames(ds$rowAnn), ds$rowAnn[,rowAnns[1],drop=F])

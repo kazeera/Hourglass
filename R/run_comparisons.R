@@ -27,7 +27,7 @@ run_comparison <- function(ds, rowAnns, colAnns = NA, output_folder = ".", ds.im
                            FC.method = "divide", paired_analysis_column = NA, do_paired_analysis = F, make.QC.param = F, make.QC.feature = F, make.feat.plots = F,discrete_stacked_params = NULL,
                            make.het.plot = F, make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
                            make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F, save_table = F) {
-
+  
   # Paired analysis
   if (do_paired_analysis & !is.na(paired_analysis_column)) {
     # # Run variation plot -shows heterogeneity of rowAnn1 in samples belonging to one patient
@@ -84,20 +84,20 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
   if (isTRUE(save_table)){
     save_table(ds, rowAnns, out_dir)
   }
-
+  
   # Run heterogeneity of rowAnn1 in samples belonging to one patient
   if (grepl("BySample", ds$name) & isTRUE(make.het.plot)) {
     run_het_analysis(ds, rowAnn1 = rowAnns[1], pID = paired_analysis_column, out_dir = out_dir, var_colors = var_colors)
   }
-
+  
   # Analysis 1: Make QC plots stratified by parameter
   if (isTRUE(make.QC.param)) {
     # Create a directory in each comparison folder
     out_dir2 <- create_folder(sprintf("%s/QC %s", out_dir, colAnns[1]))
-
+    
     # Parameters of column annotations to run
     params <- ds$colAnn[, colAnns[1]] %>% unique()
-
+    
     # Considering all stains, make heatmaps
     for (param1 in params) {
       # Get logical of whether or not to keep columns in data table
@@ -115,15 +115,15 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
       turn_off_null_devices()
     }
   }
-
+  
   # Analysis 2: Make QC plots stratified by stain/feature/gene
   if (isTRUE(make.QC.feature)) {
     # Create a directory in each comparison folder
     out_dir2 <- create_folder(sprintf("%s/QC %s", out_dir, colAnns[2]))
-
+    
     # Parameters of column annotations to run
     features <- ds$colAnn[, colAnns[2]] %>% unique()
-
+    
     # Considering all stains, make heatmaps
     for (feat1 in features) {
       # Get logical of whether or not to keep columns in data table
@@ -141,13 +141,13 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
       turn_off_null_devices()
     }
   }
-
+  
   # Analysis 3: Make biologically relevant heatmaps by combining stains from handpicked parameters #defined in main.script
   if (!is.null(feat_sets) & make.feat.plots) {
     # Create a directory in "Feature Sets" folder if colAnns = NA
     out_dir2 <- ifelse(all(is.na(colAnns)), out_dir, create_folder(sprintf("%s/Feature Sets", out_dir)))
     # colAnns = c(run$param_column, run$feature_column
-
+    
     # Make plots for each feature set
     for (i in 1:nrow(feat_sets$sets)) {
       # Specify whether run parameters include Alternative analysis
@@ -162,9 +162,9 @@ run_comparison_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", 
           {
             # Subset dataset
             res <- subset_feat_sets_ds(ds, feat_sets, i, colAnns, std.or.alt)
-
+            
             # If there are no stains or rows to plot, return incomplete
-            if (any(dim(res$ds$vals) < 3)) {
+            if (any(dim(res$ds$vals) < 2)) {
               next
             }
             # Create plots # make all plots

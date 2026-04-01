@@ -19,19 +19,19 @@ create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = 
   ds <- p$ds
   # pal <- p$pal #TODO
   rm(p)
-
+  
   # Depending on whether we're looking at a dataset with NAs or not
   if (!any(is.na(ds$vals))) {
     tryCatch(
       {
         # Run all cores with NAs, unclustered # make all plots
         create_plots_helper(ds, rowAnns, colAnns, out_dir, labels, var_colors,
-          clust_row = T, gradient_palette = gradient_palette,
-          corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
-          make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
-          make.heatmap = make.heatmap, make.corrplot = make.corrplot,
-          make.overview.corrscatt = make.overview.corrscatt, make.indiv.corrscatt = make.indiv.corrscatt,
-          make.barplot = make.barplot, make.FC.pval.plot = make.FC.pval.plot
+                            clust_row = T, gradient_palette = gradient_palette,
+                            corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
+                            make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
+                            make.heatmap = make.heatmap, make.corrplot = make.corrplot,
+                            make.overview.corrscatt = make.overview.corrscatt, make.indiv.corrscatt = make.indiv.corrscatt,
+                            make.barplot = make.barplot, make.FC.pval.plot = make.FC.pval.plot
         )
       },
       error = function(err) {
@@ -45,12 +45,12 @@ create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = 
       {
         # 1) Run all cores with NAs, unclustered  # don't make plots that require computing correlations
         create_plots_helper(ds, rowAnns, colAnns, out_dir, labels, var_colors,
-          gradient_palette = gradient_palette,
-          corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
-          make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
-          make.heatmap = make.heatmap, make.corrplot = F,
-          make.overview.corrscatt = F, make.indiv.corrscatt = F,
-          make.barplot = make.barplot, make.FC.pval.plot = make.FC.pval.plot
+                            gradient_palette = gradient_palette,
+                            corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
+                            make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
+                            make.heatmap = make.heatmap, make.corrplot = F,
+                            make.overview.corrscatt = F, make.indiv.corrscatt = F,
+                            make.barplot = make.barplot, make.FC.pval.plot = make.FC.pval.plot
         )
       },
       error = function(err) {
@@ -63,19 +63,19 @@ create_plots <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", labels = 
           # 2) Subset to only complete rows (no NAs)
           # ALT: rows_to_keep <- has_less.than.eq.to_NA.thres(ds$vals, col.or.row = "row", NA_thres = 0)
           ds_comp <- subset_dataset(ds, rows_to_keep = complete.cases(ds$vals))
-
+          
           if (nrow(ds_comp$vals) > 2) {
             # Make a new out directory with 'complete" at end
             sub_out_dir <- create_folder(sprintf("%s complete", out_dir))
-
+            
             # Run complete cores, clustered # make all plots
             create_plots_helper(ds_comp, rowAnns, colAnns, sub_out_dir,
-              labels = c(labels, "complete"), var_colors, clust_row = T, gradient_palette = gradient_palette,
-              corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
-              make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
-              make.heatmap = make.heatmap, make.corrplot = make.corrplot,
-              make.overview.corrscatt = make.overview.corrscatt, make.indiv.corrscatt = make.indiv.corrscatt,
-              make.barplot = make.barplot, make.FC.pval.plot = make.FC.pval.plot
+                                labels = c(labels, "complete"), var_colors, clust_row = T, gradient_palette = gradient_palette,
+                                corr_method = corr_method, pval.test = pval.test, pval.label = pval.label, boxplot_log10_y = boxplot_log10_y,
+                                make.indiv.boxplot = make.indiv.boxplot, make.overview.boxplot = make.overview.boxplot,
+                                make.heatmap = make.heatmap, make.corrplot = make.corrplot,
+                                make.overview.corrscatt = make.overview.corrscatt, make.indiv.corrscatt = make.indiv.corrscatt,
+                                make.barplot = make.barplot, make.FC.pval.plot = make.FC.pval.plot
             )
           }
         },
@@ -100,15 +100,15 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
                                 make.indiv.boxplot = F, make.overview.boxplot = F, make.heatmap = F, make.corrplot = F,
                                 make.overview.corrscatt = F, make.indiv.corrscatt = F, make.barplot = F, make.FC.pval.plot = F) {
   # If there are less than 3 columns OR rows, do not plot all plots except indiv boxplot
-  if (any(dim(ds$vals) < 3)) {
+  if (any(dim(ds$vals) < 2)) {
     make.FC.pval.plot <- make.corrplot <- make.overview.corrscatt <- make.barplot <- make.overview.boxplot <- make.heatmap <- FALSE
   }
-
+  
   # - 1st df: col1 = rowAnn1, cols2:n = values
   # Make the first column the main row annotation/stratification variable
   df <- data.frame(ds$rowAnn[, rowAnns[1]], ds$vals)
   colnames(df)[1] <- rowAnns[1]
-
+  
   ## Make fold-change (FC) p-value heatmap
   if (make.FC.pval.plot) {
     tryCatch(
@@ -123,7 +123,7 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
       }
     )
   }
-
+  
   ## Make correlation plots
   if (make.corrplot) {
     tryCatch(
@@ -135,7 +135,7 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
       }
     )
   }
-
+  
   ## Make correlation scatter plots
   # Overview # When number of variables are over 100, it crashes
   if (make.overview.corrscatt & ncol(ds$vals) <= 50) {
@@ -163,20 +163,19 @@ create_plots_helper <- function(ds, rowAnns = 1, colAnns = NA, out_dir = ".", la
       }
     )
   }
-
+  
   # Individual pairwise comparisons (in a new folder)
   if (make.indiv.corrscatt) {
-    # tryCatch(
-    #   {
-    #     corr_out_dir <- create_folder(paste(out_dir, "Correlation Scatter", sep = "/"))
-    #     plot_indiv_corrscatt(df[, -1], out_dir, labels, cor.method = corr_method)
-    #   },
-    #   error = function(err) {
-    #     print(sprintf("%s", err))
-    #   }
-    # )
+    tryCatch(
+      {
+        plot_indiv_corrscatt(df, rowAnn_col = 1, corr_method, out_dir, labels)
+      },
+      error = function(err) {
+        print(sprintf("%s", err))
+      }
+    )
   }
-
+  
   ## Make stacked bar plots
   if (make.barplot) {
     tryCatch(

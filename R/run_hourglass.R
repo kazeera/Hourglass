@@ -5,6 +5,18 @@
 #' @param xl_file The path to an Excel file with 4 worksheets: Colors, Comparisons, FeatureSets, FeatureParameters. See documentation for more information.
 #' @export
 run_from_excel <- function(xl_file){
+  # # Check for any errors
+  # chk <- check_hourglass_excel(xl_file)
+  # if (!chk$valid) {
+  #   message("Hourglass Excel check failed:")
+  #   message(paste0(" - ", chk$errors, collapse = "\n"))
+  #   stop("Fix the Excel template errors and try again.", call. = FALSE)
+  # }
+  # if (length(chk$warnings)) {
+  #   message("Hourglass Excel check warnings:")
+  #   message(paste0(" - ", chk$warnings, collapse = "\n"))
+  # }
+  # 
   # Read in color palette
   var_colors <- get_colors(xl_file, sheet = "Colors")
   
@@ -17,7 +29,7 @@ run_from_excel <- function(xl_file){
   # Go to where excel fle is located # remove everything after last forward slash (escape character)
   main_folder <- ifelse(grepl("\\/",xl_file), sub("\\/[^\\/]+$", "",xl_file), ".")
   main_folder <- create_folder(paste0(main_folder, "/", format(Sys.Date(), "%y%m%d"), " Hourglass"))
-
+  
   # Run Hourglass
   run_Hourglass(comparisons, var_colors, feat_sets, main_folder)
 }
@@ -180,6 +192,7 @@ run_Hourglass <- function(comparisons, var_colors, feat_sets, main_folder = ".",
             make.heatmap = run$heatmap,
             make.corrplot = run$corrplot,
             make.overview.corrscatt = run$corrscatt_overview,
+            make.indiv.corrscatt = run$corrscatt_indiv,
             make.FC.pval.plot = run$pval_FC_heatmap,
             make.barplot = run$barplot_profile,
             save_table = run$save_table

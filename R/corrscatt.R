@@ -21,11 +21,11 @@ plot_overview_corr_scatt <- function(mat, out_dir = ".", labels = "", corr_metho
       mat <- mat[has_at.least_n.vals(mat, "row", 7), ]
     }
   }
-  
+
   # Add a page for labels (previous version before Mar 20, 2025 had it overlapping with x axis scale at top)
   plot.new()
   text(x=.5, y=.5, paste(labels, collapse = "_"))  # first 2 numbers are xy-coordinates within [0, 1]
-  
+
   # Make plot
   p <- pairs.panels(mat,
     method = corr_method,
@@ -71,21 +71,24 @@ plot_indiv_corrscatt <- function(df, rowAnn_col = 1, cor.method = "spearman", ou
   if (is.numeric(rowAnn_col)) {
     rowAnn_col <- colnames(df)[rowAnn_col]
   }
+  df <- df[,-1]
   # Get all permutations
   perm <- permutations(n = ncol(df), r = 2, colnames(df), repeats.allowed = F) # gtools
   label <- paste(labels, collapse = "_")
+
+  pdf_filename <- sprintf("%s/%s_corrscatt_indiv.pdf", out_dir, paste(labels, collapse = "_"))
   # For each permutation, make a scatter plot
-  lapply(1:nrow(perm), function(i) {
+  for (i in nrow(perm)) {
     # Get columns of interest
     v1 <- perm[i, 1]
     v2 <- perm[i, 2]
     # Make plot and save
     p <- ggscatter(df,
-      x = v1, y = v2, # color = rowAnn_col, palette = c("red", "orange", "blue"),
-      add = "reg.line", conf.int = TRUE,
-      cor.coef = TRUE, cor.method = cor.method, title = sprintf("%s-%s, %s", v1, v2, label),
-      xlab = v1, ylab = v2
+                   x = v1, y = v2, # color = rowAnn_col, palette = c("red", "orange", "blue"),
+                   add = "reg.line", conf.int = TRUE,
+                   cor.coef = TRUE, cor.method = cor.method, title = sprintf("%s-%s, %s", v1, v2, label),
+                   xlab = v1, ylab = v2
     )
-    ggsave(sprintf("%s/%s.%s_%s_corr_regression2.png", out_dir, v1, v2, cor.method), plot = p)
-  })
+  }
+  dev.off()
 }
